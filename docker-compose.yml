@@ -12,7 +12,7 @@ version: "3"
 services:
   ckan:
     container_name: ckan
-    build: .
+    image: registry.gitlab.com/nina-data/nina-ckan-test/ckan:v1
     links:
       - db
       - solr
