@@ -12,7 +12,7 @@ version: "3"
 services:
   ckan:
     container_name: ckan
-    image: registry.gitlab.com/coat-no/ckan-custom/master:f0ef1daf185ce11d36bf7f752bfa5553b71f69b1
+    build: .
     links:
       - db
       - solr
