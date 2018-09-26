@@ -18,13 +18,18 @@ ENV CKAN_STORAGE_PATH=/var/lib/ckan
 
 RUN ckan-paster make-config --no-interactive ckan "${CKAN_CONFIG}/production.ini" 
 
-RUN ckan-pip install -e "git+https://github.com/ckan/ckanext-spatial.git@stable#egg=ckanext-spatial" \
+RUN ckan-pip install -e git+https://github.com/ckan/ckanext-spatial.git@stable#egg=ckanext-spatial \
     && ckan-pip install --upgrade --no-cache-dir -r $CKAN_VENV/src/ckanext-spatial/pip-requirements.txt \
     && crudini --set $CKAN_CONFIG/production.ini app:main ckan.plugins "$(crudini --get $CKAN_CONFIG/production.ini app:main ckan.plugins) spatial_metadata spatial_query" \
     && crudini --set $CKAN_CONFIG/production.ini app:main ckanext.spatial.search_backend solr
 
+# Install CKANext-harvest, dependency for CKANext-dcat 
+RUN ckan-pip install -e git+https://github.com/ckan/ckanext-harvest.git#egg=ckanext-harvest \
+    && ckan-pip install -r $CKAN_VENV/src/ckanext-harvest/pip-requirements.txt \
+    && crudini --set $CKAN_CONFIG/production.ini app:main ckan.plugins "$(crudini --get $CKAN_CONFIG/production.ini app:main ckan.plugins) harvest ckan_harvester"
+
 RUN ckan-pip install -e git+https://github.com/ckan/ckanext-dcat.git#egg=ckanext-dcat \
-    && ckan-pip install -r $CKAN_VENV/src/ckanet-dcat/requirements.txt \
+    && ckan-pip install -r $CKAN_VENV/src/ckanext-dcat/requirements.txt \
     && crudini --set $CKAN_CONFIG/production.ini app:main ckan.plugins "$(crudini --get $CKAN_CONFIG/production.ini app:main ckan.plugins) dcat dcat_rdf_harvester dcat_json_harvester dcat_json_interface structured_data" 
 
 
