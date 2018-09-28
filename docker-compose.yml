@@ -14,7 +14,7 @@ volumes:
 services:
   ckan:
     container_name: ckan
-    image: registry.gitlab.com/nina-data/nina-ckan-test/ckan:v1
+    image: registry.gitlab.com/nina-data/nina-ckan-test:latest
     links:
       - db
       - solr
