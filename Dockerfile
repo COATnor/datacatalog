@@ -32,6 +32,9 @@ RUN ckan-pip install -e git+https://github.com/ckan/ckanext-dcat.git@v0.0.7#egg=
     && ckan-pip install -r $CKAN_VENV/src/ckanext-dcat/requirements.txt \
     && crudini --set $CKAN_CONFIG/production.ini app:main ckan.plugins "$(crudini --get $CKAN_CONFIG/production.ini app:main ckan.plugins) dcat dcat_rdf_harvester dcat_json_harvester dcat_json_interface structured_data" 
 
+RUN ckan-pip install -e git+https://gitlab+deploy-token-18189:Bjbr5KuvuPgDZh7Cp2sQ@gitlab.com/nina-data/ckanext-coat.git#egg=ckanext-coat \
+   && ckan-pip install -r $CKAN_VENV/src/ckanext-coat/requirements.txt \
+   && crudini --set $CKAN_CONFIG/production.ini app:main ckan.plugins "$(crudini --get $CKAN_CONFIG/production.ini app:main ckan.plugins) coat"
 
 ENTRYPOINT ["/ckan-entrypoint.sh"]
 
