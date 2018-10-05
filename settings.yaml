@@ -1,0 +1,48 @@
+- name: ckanext-spatial
+  repository: https://github.com/ckan/ckanext-spatial
+  version: stable
+  settings:
+    ckan.plugins: spatial_metadata spatial_query
+    ckanext.spatial.search_backend: solr
+  targets:
+    - dev
+    - deploy
+#- name: ckanext-geoview
+#  repository: https://github.com/ckan/ckanext-geoview
+#  version: v0.0.13
+#  settings:
+#    ckan.plugins: resource_proxy geojson_view
+#    ckan.views.default_views: geojson_view
+#  targets:
+#    - dev
+#    - deploy
+- name: ckanext-harvest
+  repository: https://github.com/ckan/ckanext-harvest
+  version: v1.1.1
+  settings:
+    ckan.plugins: harvest ckan_harvester
+  targets:
+    - dev
+    - deploy
+- name: ckanext-dcat
+  repository: https://github.com/ckan/ckanext-dcat
+  version: v0.0.7
+  settings:
+    ckan.plugins: dcat dcat_rdf_harvester dcat_json_interface structured_data
+  targets:
+    - dev
+    - deploy
+- name: ckanext-coat
+  repository: https://gitlab+deploy-token-18189:Bjbr5KuvuPgDZh7Cp2sQ@gitlab.com/nina-data/ckanext-coat.git
+  version: master
+  settings:
+    ckan.plugins: coat
+  targets:
+    - deploy
+- name: ckanext-coat
+  local: true
+  repository: extensions/ckanext-coat
+  settings:
+    ckan.plugins: coat
+  targets:
+    - dev
