@@ -1,6 +1,6 @@
 - name: ckanext-spatial
   repository: https://github.com/ckan/ckanext-spatial
-  version: stable
+  version: master
   settings:
     ckan.plugins: spatial_metadata spatial_query
     ckanext.spatial.search_backend: solr
