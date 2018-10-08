@@ -5,6 +5,7 @@ import yaml # fades
 
 import argparse
 import os
+import string
 
 parser = argparse.ArgumentParser(description="Genetare Docker files from Jinja templates")
 parser.add_argument('--settings', default='settings.yaml', help="Variables for the templates")
@@ -12,7 +13,11 @@ parser.add_argument('--templates', default='templates', help="Templates director
 parser.add_argument('--output', default='output', help="Output directory")
 parser.add_argument('targets', metavar='target', nargs='*', default=['dev', 'deploy'],help="Targets")
 args = parser.parse_args()
-conf = yaml.load(open(args.settings))
+
+with open(args.settings) as settings:
+    template = string.Template(settings.read())
+
+conf = yaml.load(template.safe_substitute(os.environ))
 
 environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(args.templates),
