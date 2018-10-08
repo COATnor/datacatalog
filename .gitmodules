@@ -1,3 +1,0 @@
-[submodule "extensions/ckan-coat"]
-	path = extensions/ckanext-coat
-	url = git@gitlab.com:nina-data/ckan-coat.git
