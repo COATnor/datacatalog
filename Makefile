@@ -7,5 +7,10 @@ generate :
 	    $(PYTHON) -m pip install -r requirements.txt && $(PYTHON) dockerfiles-generator.py; \
 	fi
 
+prepare :
+	git clone git@gitlab.com:nina-data/ckanext-coat.git
+	sudo chown -R 900 ckanext-coat
+	sudo chcon -Rt svirt_sandbox_file_t ckanext-coat 2>/dev/null || :
+
 clean :
 	rm -r output

@@ -41,7 +41,7 @@
     - deploy
 - name: ckanext-coat
   local: true
-  repository: ../ckanext-coat
+  repository: ckanext-coat
   settings:
     ckan.plugins: coat
   targets:
