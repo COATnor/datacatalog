@@ -1,4 +1,5 @@
 PYTHON ?= python3
+.PHONY = generate prepare clean
 
 generate :
 	if test -z "$$VIRTUAL_ENV"; then \
