@@ -19,7 +19,7 @@ $ docker-compose up --build
 
 ```
 $ cd output/deploy
-$ docker build -t registry.gitlab.com/nina-data/nina-ckan-test .
+$ docker build -t registry.gitlab.com/nina-data/nina-ckan-coat:latest .
 $ docker-compose up
 ```
 
