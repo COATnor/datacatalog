@@ -133,3 +133,5 @@ else:
     ids = [group['Id'] for group in manager.endpoint_list()]
     endpoint = random.choice(ids)
     manager.stack_create(args.name, endpoint, compose, env)
+
+print("Done.")

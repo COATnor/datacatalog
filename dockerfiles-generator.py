@@ -40,3 +40,5 @@ for filename in os.listdir(args.templates):
         print(f"Generating {filename} for target \"{target}\"...")
         with open(os.path.join(target_dir, filename), 'w') as output:
             output.write(template.render(target=target, extensions=conf))
+
+print("Done.")
