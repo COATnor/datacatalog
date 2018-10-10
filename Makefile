@@ -1,5 +1,6 @@
 PYTHON ?= python3
-.PHONY = generate prepare clean
+SRC = $(wildcard *.py)
+.PHONY = generate prepare test clean
 
 generate :
 	if test -z "$$VIRTUAL_ENV"; then \
@@ -13,5 +14,9 @@ prepare :
 	sudo chown -R 900 ckanext-coat
 	sudo chcon -Rt svirt_sandbox_file_t ckanext-coat 2>/dev/null || :
 
+test : $(SRC)
+	 $(PYTHON) -m py_compile $^
+
 clean :
 	rm -r output
+	rm -r __pycache__
