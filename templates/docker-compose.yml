@@ -3,13 +3,20 @@
 ##################################################################
 # Matteo De Stefano, Francesco Frassinelli - Derived from:
 #   https://github.com/ckan/ckan/blob/master/contrib/docker/docker-compose.yml
-version: "3"
 
+# Workaround for https://github.com/portainer/portainer/issues/2345#issuecomment-428197441
+version: "2"
+
+# Driver has to be specified because of https://github.com/docker/libcompose/issues/509
 volumes:
 #  ckan_config:
+#    driver: local
 #  ckan_home:
+#    driver: local
   ckan_storage:
+    driver: local
   pg_data:
+    driver: local
 
 services:
   ckan:

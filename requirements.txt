@@ -1,2 +1,5 @@
+## dockerfiles-generator.py
 jinja2
 pyaml
+## portainer.py
+requests
