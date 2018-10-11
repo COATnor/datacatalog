@@ -4,33 +4,71 @@
 
 ## Description
 
-[NINA](https://www.nina.no/) [CKAN](https://ckan.org/) catalogue for [COAT](https://www.coat.no/) project.
+[NINA](https://www.nina.no/) [CKAN](https://ckan.org/) catalogue for the [COAT](https://www.coat.no/) project.
 It is a customized distribution of CKAN which includes the [ckanext-coat extension](https://gitlab.com/nina-data/ckanext-coat).
 
 `make` launches `dockerfiles-generator.py` to generate an `output` directory containing a directory for each target.
 
-## Usage
+## Requirements
 
-Requirements:
-  - Docker
+All the tools and scripts in this file have been developed and tested on GNU/Linux systems only.
+
+Dependencies:
   - Python 3.6+
   - Make
+  - Docker
+  - Portainer (optional)
 
-### Development
+If the dependencies are met, but `python3 -V` shows an incompatible version, please export the `PYTHON` variable like this:
 
 ```bash
-$ make
+export PYTHON="python3.6"
+```
+
+## Development
+
+```bash
 $ make prepare # dev only
-$ cd output/dev
-$ docker-compose up --build
+$ make
+$ (cd output/dev && docker-compose up --build)
 ```
 
-Changes made under the `ckanext-coat` directory will affect the running container.
+The `--build` option forces `docker-compose` to build the image locally instead of fetching it from the Docker Registry.
 
-### Deployment
+Please stop the containers before running `make` again. Use `CTRL+C` to stop them.
+
+Changes made inside the `ckanext-coat` directory will affect the running container.
+
+### Testing
+
+Please fix the errors and warnings raised by these commands before doing a commit.
+
+```bash
+$ make test
+$ make style
+```
+
+## Deployment
 
 ```bash
 $ make
-$ cd output/deploy
-$ docker-compose up # image from registry
+$ (cd output/deploy && docker-compose up --detach)
 ```
+
+The `--detach` option run containers in the background.
+
+Please stop the containers before running `make` again. To stop them run:
+
+```bash
+$ (cd output/deploy && docker-compose stop)
+```
+
+## Portainer
+
+If you want to deploy on Portainer, export `PORTAINER_USERNAME` and `PORTAINER_PASSWORD` and run:
+
+```bash
+$ make deploy PROJECT="output/deploy" NAME="ninackancoat" SERVER="http://locahlost:9000"
+```
+
+Do not store secrets in Bash history: check if `HISTCONTROL is set to `ignorespace` or `ignoreboth` in your `.bashrc` file.

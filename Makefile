@@ -1,6 +1,6 @@
 PYTHON ?= python3
 SRC = $(wildcard *.py)
-.PHONY = generate prepare test style clean
+.PHONY = generate deploy prepare test style clean
 
 ifdef VIRTUAL_ENV
   PYCMD = python -m pip install -r requirements.txt && python
@@ -10,6 +10,9 @@ endif
 
 generate :
 	$(PYCMD) dockerfiles-generator.py
+
+deploy :
+	$(PYCMD) portainer-deploy.py $(NAME) $(PROJECT) $(SERVER)
 
 prepare :
 	git clone git@gitlab.com:nina-data/ckanext-coat.git
