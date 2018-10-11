@@ -28,9 +28,16 @@ RUN ckan-pip install -e git+{{ ext.repository }}@{{ ext.version }}#egg={{ ext.na
         ckan-pip install --upgrade --no-cache-dir -r $CKAN_VENV/src/{{ ext.name }}/requirements.txt; \
     fi && \
 {% endif %}
-{% for key, value in ext.settings.items() %}
+{% if ext.settings_set %}
+{% for key, value in ext.settings_set.items() %}
+    crudini --set $CKAN_CONFIG/production.ini app:main {{ key }} "{{ value }}" && \
+{% endfor %}
+{% endif %}
+{% if ext.settings_add %}
+{% for key, value in ext.settings_add.items() %}
     crudini --set $CKAN_CONFIG/production.ini app:main {{ key }} "$(crudini --get $CKAN_CONFIG/production.ini app:main {{ key }} 2>/dev/null) {{ value }}" && \
 {% endfor %}
+{% endif %}
     :
 {% endfor %}
 
