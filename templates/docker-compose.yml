@@ -21,12 +21,9 @@ volumes:
 services:
   ckan:
     container_name: ckan
-{% if target == 'deploy' %}
     image: registry.gitlab.com/nina-data/nina-ckan-coat:latest
-{% else %}
     build:
       context: .
-{% endif %}
     links:
       - db
       - solr
