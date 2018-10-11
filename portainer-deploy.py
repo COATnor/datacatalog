@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""Deploy stack on Portainer."""
 
 import requests
 
@@ -10,6 +11,11 @@ import string
 
 
 def raise_for_status_verbose(req_function):
+    """Decorate requests for extra error handling.
+
+    It executes raise_for_status and add the server response to the error
+    message.
+    """
     def wrapper(*args, **kwargs):
         res = req_function(*args, **kwargs)
         try:
@@ -21,7 +27,10 @@ def raise_for_status_verbose(req_function):
 
 
 class PortainerManager:
+    """Simple (and incomplete) Portainer API manager."""
+
     def __init__(self, server, username=None, password=None, **options):
+        """Set API endpoint, credentials and options."""
         self.api = server+'/api'
         self.username = username
         self.password = password
@@ -41,18 +50,22 @@ class PortainerManager:
         return requests.post(self.api+'/auth', data=credentials, **self.opts)
 
     def authentication(self):
+        """Authenticate and retrieve a JSON Web Token."""
         token = self._token_request().json()['jwt']
         self.opts['headers']['Authorization'] = 'Bearer '+token
+        return token
 
     @raise_for_status_verbose
     def _stack_list_request(self):
         return requests.get(self.api+'/stacks', **self.opts)
 
     def stack_list(self):
+        """Get a list of the stacks."""
         return self._stack_list_request().json()
 
     @raise_for_status_verbose
     def stack_create(self, name, endpoint, stack, env):
+        """Create a new stack."""
         config = json.dumps({
             'StackFileContent': stack,
             'Env': [env],
@@ -64,6 +77,7 @@ class PortainerManager:
 
     @raise_for_status_verbose
     def stack_update(self, uid, endpoint, stack, env):
+        """Update the configuration of a stack."""
         config = json.dumps({
             'StackFileContent': stack,
             'Env': [env],
@@ -75,6 +89,7 @@ class PortainerManager:
 
     @raise_for_status_verbose
     def stack_delete(self, uid):
+        """Delete a stack."""
         return requests.delete(f"{self.api}/stacks/{uid}", **self.opts)
 
     @raise_for_status_verbose
@@ -82,11 +97,12 @@ class PortainerManager:
         return requests.get(f"{self.api}/endpoint_groups", **self.opts)
 
     def endpoint_list(self):
+        """Get a list of the endpoints."""
         return self._endpoint_list_request().json()
 
 
 # Parser
-parser = argparse.ArgumentParser(description="Deploy stack on Portainer")
+parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('name', help='Name of the stack')
 parser.add_argument('project_directory',
                     help="Working directory containing the Compose an file")

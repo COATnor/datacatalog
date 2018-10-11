@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""Generate Docker files from Jinja templates."""
 
 import jinja2
 import yaml
@@ -7,8 +8,7 @@ import argparse
 import os
 import string
 
-parser = argparse.ArgumentParser(description="Generate "
-                                 "Docker file from Jinja templates")
+parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--settings', default='settings.yaml',
                     help="Variables for the templates")
 parser.add_argument('--templates', default='templates',
