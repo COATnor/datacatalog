@@ -11,14 +11,24 @@ variables:
   DOCKER_DRIVER: overlay2
 
 before_script:
-  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+  - apk update
+  - apk add python3 make
+  - pip3 install fades
 
-build:
-  stage: build
+stages:
+  - test
+  - docker
+
+test:
+  stage: test
   script:
-    - apk update
-    - apk add python3 make
-    - pip3 install fades
+    - make test
+    - make style
+
+docker:
+  stage: docker
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
     - make
     - docker pull $CONTAINER_IMAGE:latest || true
     - docker build --cache-from $CONTAINER_IMAGE:latest --tag $CONTAINER_IMAGE:$CI_COMMIT_SHA --tag $CONTAINER_IMAGE:latest output/deploy
