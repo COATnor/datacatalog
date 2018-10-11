@@ -48,3 +48,9 @@
     ckan.plugins: coat
   targets:
     - dev
+- name: config
+  settings_set:
+    ckan.site_title: COAT catalog
+  targets:
+    - dev
+    - deploy

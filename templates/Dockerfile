@@ -18,7 +18,7 @@ ENV CKAN_STORAGE_PATH=/var/lib/ckan
 RUN ckan-paster make-config --no-interactive ckan "${CKAN_CONFIG}/production.ini" 
 
 {% for ext in extensions if target in ext.targets %}
-{% if ext.local %}
+{% if ext.local or not ext.repository %}
 RUN : && \
 {% else %}
 RUN ckan-pip install -e git+{{ ext.repository }}@{{ ext.version }}#egg={{ ext.name }} && \
