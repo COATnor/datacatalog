@@ -2,12 +2,14 @@ PYTHON ?= python3
 SRC = $(wildcard *.py)
 .PHONY = generate prepare test clean
 
+ifdef VIRTUAL_ENV
+  PYCMD = python -m pip install -r requirements.txt && python
+else
+  PYCMD = $(PYTHON) -m fades -V >/dev/null 2>&1 || $(PYTHON) -m pip install --user fades && $(PYTHON) -m fades -r requirements.txt -x python
+endif
+
 generate :
-	if test -z "$$VIRTUAL_ENV"; then \
-	    $(PYTHON) -m fades -V &>/dev/null || $(PYTHON) -m pip install --user fades && $(PYTHON) -m fades -r requirements.txt dockerfiles-generator.py; \
-	else \
-	    $(PYTHON) -m pip install -r requirements.txt && $(PYTHON) dockerfiles-generator.py; \
-	fi
+	$(PYCMD) dockerfiles-generator.py
 
 prepare :
 	git clone git@gitlab.com:nina-data/ckanext-coat.git
@@ -15,7 +17,7 @@ prepare :
 	sudo chcon -Rt svirt_sandbox_file_t ckanext-coat 2>/dev/null || :
 
 test : $(SRC)
-	 $(PYTHON) -m py_compile $^
+	$(PYCMD) -m py_compile $^
 
 clean :
 	rm -r output
