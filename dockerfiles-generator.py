@@ -7,11 +7,17 @@ import argparse
 import os
 import string
 
-parser = argparse.ArgumentParser(description="Genetare Docker files from Jinja templates")
-parser.add_argument('--settings', default='settings.yaml', help="Variables for the templates")
-parser.add_argument('--templates', default='templates', help="Templates directory")
-parser.add_argument('--output', default='output', help="Output directory")
-parser.add_argument('targets', metavar='target', nargs='*', default=['dev', 'deploy'],help="Targets")
+parser = argparse.ArgumentParser(description="Generate "
+                                 "Docker file from Jinja templates")
+parser.add_argument('--settings', default='settings.yaml',
+                    help="Variables for the templates")
+parser.add_argument('--templates', default='templates',
+                    help="Templates directory")
+parser.add_argument('--output', default='output',
+                    help="Output directory")
+parser.add_argument('targets', metavar='target', nargs='*',
+                    default=['dev', 'deploy'],
+                    help="Targets")
 args = parser.parse_args()
 
 with open(args.settings) as settings:
