@@ -3,3 +3,7 @@ jinja2
 pyaml
 ## portainer.py
 requests
+## Makefile
+flake8
+pep8-naming
+pydocstyle

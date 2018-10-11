@@ -1,6 +1,6 @@
 PYTHON ?= python3
 SRC = $(wildcard *.py)
-.PHONY = generate prepare test clean
+.PHONY = generate prepare test style clean
 
 ifdef VIRTUAL_ENV
   PYCMD = python -m pip install -r requirements.txt && python
@@ -18,6 +18,10 @@ prepare :
 
 test : $(SRC)
 	$(PYCMD) -m py_compile $^
+
+style : $(SRC)
+	$(PYCMD) -m flake8 $^
+	$(PYCMD) -m pydocstyle $^
 
 clean :
 	rm -r output
