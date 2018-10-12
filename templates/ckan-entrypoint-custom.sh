@@ -12,4 +12,6 @@ if [ -f $CKAN_VENV/src/{{ ext.name }}/pip-requirements.txt ]; then
 fi
 {% endfor %}
 
+{% include "ckan-entrypoint-custom/"+target ignore missing %}
+
 exec /ckan-entrypoint.sh "$@"
