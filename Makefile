@@ -1,18 +1,22 @@
 PYTHON ?= python3
-SRC = $(wildcard *.py)
-.PHONY = generate deploy prepare test style clean
+REQUIREMENTS = $(realpath requirements.txt)
+SRC = $(wildcard tools/*/*.py)
+.PHONY = generate deploy populate prepare test style clean
 
 ifdef VIRTUAL_ENV
-  PYCMD = python -m pip install -r requirements.txt && python
+  PYCMD = python -m pip install -r $(REQUIREMENTS) && python
 else
-  PYCMD = $(PYTHON) -m fades -V >/dev/null 2>&1 || $(PYTHON) -m pip install --user fades && $(PYTHON) -m fades -r requirements.txt -x python
+  PYCMD = $(PYTHON) -m fades -V >/dev/null 2>&1 || $(PYTHON) -m pip install --user fades && $(PYTHON) -m fades -r$(REQUIREMENTS) -x python
 endif
 
 generate :
-	$(PYCMD) dockerfiles-generator.py
+	cd tools/docker && $(PYCMD) generator.py
 
 deploy :
-	$(PYCMD) portainer-deploy.py $(NAME) $(PROJECT) $(SERVER)
+	cd tools/portainer && $(PYCMD) deploy.py $(NAME) $(PROJECT) $(SERVER)
+
+populate :
+	cd tools/ckan && $(PYCMD) populate.py $(SERVER)
 
 prepare :
 	git clone git@gitlab.com:nina-data/ckanext-coat.git
@@ -27,5 +31,5 @@ style : $(SRC)
 	-$(PYCMD) -m pydocstyle $^
 
 clean :
-	rm -r output
-	rm -r __pycache__
+	rm -r tools/docker/output
+	rm -r tools/*/__pycache__

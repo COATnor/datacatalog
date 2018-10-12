@@ -1,0 +1,6 @@
+organizations:
+  - name: nina
+    id: nina
+    title: NINA
+    description: Norsk institutt for naturforskning                                
+    image_url: 'https://www.nina.no/Portals/NINA/Bilder/logoweb.png'

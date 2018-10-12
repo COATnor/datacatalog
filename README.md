@@ -30,7 +30,7 @@ export PYTHON="python3.6"
 ```bash
 $ make prepare # dev only
 $ make
-$ (cd output/dev && docker-compose up --build)
+$ (cd tools/docker/output/dev && docker-compose up --build)
 ```
 
 The `--build` option forces `docker-compose` to build the image locally instead of fetching it from the Docker Registry.
@@ -43,6 +43,8 @@ It could be needed to restart the `ckan` container after changes.
 The credentials for the development image are:
   - Username: administrator
   - Password: administrator
+
+Due to a [CKAN issue](https://github.com/ckan/ckan/issues/3319), up to 2 additional restart of the container could be needed (the first for establishing a connection with the database, the second for setting up the user).
 
 ### Testing
 
@@ -57,7 +59,7 @@ $ make style
 
 ```bash
 $ make
-$ (cd output/deploy && docker-compose up --detach)
+$ (cd tools/docker/output/deploy && docker-compose up --detach)
 ```
 
 The `--detach` option run containers in the background.
@@ -65,7 +67,7 @@ The `--detach` option run containers in the background.
 Please stop the containers before running `make` again. To stop them run:
 
 ```bash
-$ (cd output/deploy && docker-compose stop)
+$ (cd tools/docker/output/deploy && docker-compose stop)
 ```
 
 ## Portainer
@@ -73,7 +75,17 @@ $ (cd output/deploy && docker-compose stop)
 If you want to deploy on Portainer, export `PORTAINER_USERNAME` and `PORTAINER_PASSWORD` and run:
 
 ```bash
-$ make deploy PROJECT="output/deploy" NAME="ninackancoat" SERVER="http://localhost:9000"
+$ make deploy PROJECT="tools/docker/output/deploy" NAME="ninackancoat" SERVER="http://localhost:9000"
 ```
+
+## Providing initial data
+
+Ìf you want to provide initial data to CKAN, export `CKAN_API_KEY` (available on your user profile) and run:
+
+```bash
+$ make populate SERVER="http://localhost:5000"
+```
+
+## Security
 
 Do not store secrets in Bash history: check if `HISTCONTROL is set to `ignorespace` or `ignoreboth` in your `.bashrc` file.

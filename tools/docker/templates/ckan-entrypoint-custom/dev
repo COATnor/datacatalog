@@ -1,0 +1,1 @@
+yes | ckan-paster --plugin=ckan sysadmin add administrator email=root@localhost password=administrator -c "${CKAN_CONFIG}/production.ini" || :

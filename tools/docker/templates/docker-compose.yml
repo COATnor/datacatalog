@@ -47,7 +47,7 @@ services:
 #      - ckan_home:/usr/lib/ckan
       - ckan_storage:/var/lib/ckan
 {% for ext in extensions if target in ext.targets and ext.local %}
-      - ../../{{ ext.repository }}:/usr/lib/ckan/venv/src/{{ ext.name }}
+      - ../../../../{{ ext.repository }}:/usr/lib/ckan/venv/src/{{ ext.name }}
 {% endfor %}
 
   datapusher:
