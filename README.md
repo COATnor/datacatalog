@@ -38,6 +38,11 @@ The `--build` option forces `docker-compose` to build the image locally instead 
 Please stop the containers before running `make` again. Use `CTRL+C` to stop them.
 
 Changes made inside the `ckanext-coat` directory will affect the running container.
+It could be needed to restart the `ckan` container after changes.
+
+The credentials for the development image are:
+  - Username: administrator
+  - Password: administrator
 
 ### Testing
 
@@ -68,7 +73,7 @@ $ (cd output/deploy && docker-compose stop)
 If you want to deploy on Portainer, export `PORTAINER_USERNAME` and `PORTAINER_PASSWORD` and run:
 
 ```bash
-$ make deploy PROJECT="output/deploy" NAME="ninackancoat" SERVER="http://locahlost:9000"
+$ make deploy PROJECT="output/deploy" NAME="ninackancoat" SERVER="http://localhost:9000"
 ```
 
 Do not store secrets in Bash history: check if `HISTCONTROL is set to `ignorespace` or `ignoreboth` in your `.bashrc` file.
