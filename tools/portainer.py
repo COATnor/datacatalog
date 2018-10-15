@@ -1,91 +1,12 @@
 #!/usr/bin/env python3
 """Deploy stack on Portainer."""
 
-import requests
-
-from helpers.requests import raise_for_status_verbose
+from portainer.api import PortainerManager
 
 import argparse
-import json
 import os
 import random
 import string
-
-
-class PortainerManager:
-    """Simple (and incomplete) Portainer API manager."""
-
-    def __init__(self, server, username=None, password=None, **options):
-        """Set API endpoint, credentials and options."""
-        self.api = server+'/api'
-        self.username = username
-        self.password = password
-        if not self.username:
-            self.username = os.environ['PORTAINER_USERNAME']
-        if not self.password:
-            self.password = os.environ['PORTAINER_PASSWORD']
-        self.opts = options
-        self.opts['headers'] = {}
-
-    @raise_for_status_verbose
-    def _token_request(self):
-        credentials = json.dumps({
-            'Username': self.username,
-            'Password': self.password,
-        })
-        return requests.post(self.api+'/auth', data=credentials, **self.opts)
-
-    def authentication(self):
-        """Authenticate and retrieve a JSON Web Token."""
-        token = self._token_request().json()['jwt']
-        self.opts['headers']['Authorization'] = 'Bearer '+token
-        return token
-
-    @raise_for_status_verbose
-    def _stack_list_request(self):
-        return requests.get(self.api+'/stacks', **self.opts)
-
-    def stack_list(self):
-        """Get a list of the stacks."""
-        return self._stack_list_request().json()
-
-    @raise_for_status_verbose
-    def stack_create(self, name, endpoint, stack, env):
-        """Create a new stack."""
-        config = json.dumps({
-            'StackFileContent': stack,
-            'Env': [env],
-            'Name': name,
-        })
-        params = {'type': 2, 'method': 'string', 'endpointId': str(endpoint)}
-        return requests.post(f"{self.api}/stacks",
-                             params=params, data=config, **self.opts)
-
-    @raise_for_status_verbose
-    def stack_update(self, uid, endpoint, stack, env):
-        """Update the configuration of a stack."""
-        config = json.dumps({
-            'StackFileContent': stack,
-            'Env': [env],
-            'Prune': True,
-        })
-        params = {'endpointId': str(endpoint)}
-        return requests.put(f"{self.api}/stacks/{uid}",
-                            params=params, data=config, **self.opts)
-
-    @raise_for_status_verbose
-    def stack_delete(self, uid):
-        """Delete a stack."""
-        return requests.delete(f"{self.api}/stacks/{uid}", **self.opts)
-
-    @raise_for_status_verbose
-    def _endpoint_list_request(self):
-        return requests.get(f"{self.api}/endpoint_groups", **self.opts)
-
-    def endpoint_list(self):
-        """Get a list of the endpoints."""
-        return self._endpoint_list_request().json()
-
 
 # Parser
 parser = argparse.ArgumentParser(description=__doc__)
@@ -119,6 +40,8 @@ compose = string.Template(compose).substitute(env)
 # Initialization and authentication
 manager = PortainerManager(
     server=args.server,
+    username=os.environ['PORTAINER_USERNAME'],
+    password=os.environ['PORTAINER_PASSWORD'],
     verify=False,  # HTTPS self-signed certificate workaround
 )
 print("Authenticating...")

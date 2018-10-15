@@ -4,7 +4,7 @@
 import yaml
 import requests
 
-from helpers import raise_for_status_verbose
+from helpers.requests import raise_for_status_verbose
 
 import argparse
 import os
