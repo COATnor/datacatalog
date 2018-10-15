@@ -5,7 +5,7 @@
 #   https://github.com/ckan/ckan/blob/master/contrib/docker/docker-compose.yml
 
 # Workaround for https://github.com/portainer/portainer/issues/2345#issuecomment-428197441
-version: "2"
+version: "2.1"
 
 # Driver has to be specified because of https://github.com/docker/libcompose/issues/509
 volumes:
@@ -28,6 +28,9 @@ services:
       - db
       - solr
       - redis
+    depends_on:
+      db:
+        condition: service_healthy
     ports:
       - "${CKAN_PORT}:5000"
     environment:
@@ -64,6 +67,8 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
       - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
 
   solr:
     container_name: solr

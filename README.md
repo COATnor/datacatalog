@@ -44,8 +44,6 @@ The credentials for the development image are:
   - Username: administrator
   - Password: administrator
 
-Due to a [CKAN issue](https://github.com/ckan/ckan/issues/3319), up to 2 additional restart of the container could be needed (the first for establishing a connection with the database, the second for setting up the user).
-
 ### Testing
 
 Please fix the errors and warnings raised by these commands before doing a commit.
