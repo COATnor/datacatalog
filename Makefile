@@ -1,6 +1,6 @@
 PYTHON ?= python3
 REQUIREMENTS = $(realpath requirements.txt)
-SRC = $(wildcard tools/*/*.py)
+SRC = $(wildcard tools/*.py)
 .PHONY = generate deploy populate prepare test style clean
 
 ifdef VIRTUAL_ENV
@@ -10,13 +10,13 @@ else
 endif
 
 generate :
-	cd tools/docker && $(PYCMD) generator.py
+	cd tools/docker && $(PYCMD) ../docker.py
 
 deploy :
-	cd tools/portainer && $(PYCMD) deploy.py $(NAME) $(PROJECT) $(SERVER)
+	$(PYCMD) tools/portainer.py $(NAME) $(PROJECT) $(SERVER)
 
 populate :
-	cd tools/ckan && $(PYCMD) populate.py $(SERVER)
+	cd tools/ckan && $(PYCMD) ../ckan.py $(SERVER)
 
 prepare :
 	git clone git@gitlab.com:nina-data/ckanext-coat.git
