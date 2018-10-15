@@ -88,4 +88,4 @@ $ make populate SERVER="http://localhost:5000"
 
 ## Security
 
-Do not store secrets in Bash history: check if `HISTCONTROL is set to `ignorespace` or `ignoreboth` in your `.bashrc` file.
+Do not store secrets in Bash history: check if `HISTCONTROL` is set to `ignorespace` or `ignoreboth` in your `.bashrc` file.
