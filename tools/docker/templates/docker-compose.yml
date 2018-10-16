@@ -45,6 +45,11 @@ services:
       - CKAN_MAX_UPLOAD_SIZE_MB=${CKAN_MAX_UPLOAD_SIZE_MB}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - DS_RO_PASS=${DATASTORE_READONLY_PASSWORD}
+{% for ext in extensions if target in ext.targets and ext.settings_set_startup %}
+{% for key, value in ext.settings_set_startup.items() %}
+      - {{ value }}={{ "${"+value+"}" }}
+{% endfor %}
+{% endfor %}
     volumes:
 #      - ckan_config:/etc/ckan
 #      - ckan_home:/usr/lib/ckan

@@ -79,6 +79,10 @@ Please stop the containers before running `make` again. To stop them run:
 $ (cd tools/docker/output/deploy && docker-compose stop)
 ```
 
+## LDAP login
+
+Export `LDAP_PASSWORD` to activate NINA LDAP.
+
 ## Portainer
 
 If you want to deploy on Portainer, export `PORTAINER_USERNAME` and `PORTAINER_PASSWORD` and run:
