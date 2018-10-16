@@ -5,7 +5,15 @@ USER root
 # Install required system packages
 RUN apt-get -q -y update && \
     DEBIAN_FRONTEND=noninteractive apt-get -q -y upgrade && \
-    apt-get -q -y install crudini && \
+    apt-get -q -y install crudini \
+{% for ext in extensions if target in ext.targets %}
+{% if ext.packages %}
+{% for pkg in ext.packages %}
+{{ pkg }} \
+{% endfor %}
+{% endif %}
+{% endfor %}
+&& \
     apt-get -q clean && \
     rm -rf /var/lib/apt/lists/*
 
