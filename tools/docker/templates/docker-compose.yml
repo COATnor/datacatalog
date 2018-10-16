@@ -52,6 +52,8 @@ services:
 {% for ext in extensions if target in ext.targets and ext.local %}
       - ../../../../{{ ext.repository }}:/usr/lib/ckan/venv/src/{{ ext.name }}
 {% endfor %}
+    stdin_open: true
+    tty: true
 
   datapusher:
     container_name: datapusher

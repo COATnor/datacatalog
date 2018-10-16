@@ -38,7 +38,6 @@ The `--build` option forces `docker-compose` to build the image locally instead 
 Please stop the containers before running `make` again. Use `CTRL+C` to stop them.
 
 Changes made inside the `ckanext-coat` directory will affect the running container.
-It could be needed to restart the `ckan` container after changes.
 
 The credentials for the development image are:
   - Username: administrator
@@ -52,6 +51,18 @@ Please fix the errors and warnings raised by these commands before doing a commi
 $ make test
 $ make style
 ```
+
+### Debugging
+
+Add this line before the Python code you would like to debug:
+
+`import pdb; pdb.set_trace()`
+
+Attach to the CKAN container:
+
+`$ docker attach ckan`
+
+Interact with the CKAN in order to break into the Python debugger.
 
 ## Deployment
 
