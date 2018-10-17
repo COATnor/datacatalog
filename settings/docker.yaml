@@ -2,9 +2,9 @@
   repository: https://github.com/ckan/ckanext-spatial
   version: master
   settings_add:
-    ckan.plugins: spatial_metadata spatial_query
+    - ["app:main", ckan.plugins, spatial_metadata spatial_query]
   settings_set:
-    ckanext.spatial.search_backend: solr
+    - ["app:main", ckanext.spatial.search_backend, solr]
   targets:
     - dev
     - deploy
@@ -27,17 +27,17 @@
     - libldap2-dev
     - libssl-dev
   settings_add:
-    ckan.plugins: ldap
+    - ["app:main", ckan.plugins, ldap]
   settings_set:
-    ckanext.ldap.uri: ldap://nindc05.nina.no:389
-    ckanext.ldap.auth.dn: ldapquery
-    ckanext.ldap.base_dn: ou=brukere,dc=nina,dc=no
-    ckanext.ldap.search.filter: sAMAccountName={login}
-    ckanext.ldap.username: sAMAccountName
-    ckanext.ldap.email: mail
-    ckanext.ldap.ckan_fallback: true
+    - ["app:main", ckanext.ldap.uri, "ldap://nindc05.nina.no:389"]
+    - ["app:main", ckanext.ldap.auth.dn, ldapquery]
+    - ["app:main", ckanext.ldap.base_dn, "ou=brukere,dc=nina,dc=no"]
+    - ["app:main", ckanext.ldap.search.filter, "sAMAccountName={login}"]
+    - ["app:main", ckanext.ldap.username, sAMAccountName]
+    - ["app:main", ckanext.ldap.email, mail]
+    - ["app:main", ckanext.ldap.ckan_fallback, true]
   settings_set_startup:
-    ckanext.ldap.auth.password: LDAP_PASSWORD
+    - ["app:main", ckanext.ldap.auth.password, LDAP_PASSWORD]
   targets:
     - dev
     - deploy
@@ -45,7 +45,7 @@
   repository: https://github.com/aptivate/ckanext-datasetversions.git
   version: master
   settings_add:
-    ckan.plugins: datasetversions
+    - ["app:main", ckan.plugins, datasetversions]
   targets:
     - dev
     - deploy
@@ -53,21 +53,26 @@
   repository: https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.com/nina-data/ckanext-coat.git
   version: master
   settings_add:
-    ckan.plugins: coat
+    - ["app:main", ckan.plugins, coat]
   targets:
     - deploy
 - name: ckanext-coat
   local: true
   repository: ckanext-coat
   settings_add:
-    ckan.plugins: coat
+    - ["app:main", ckan.plugins, coat]
   targets:
     - dev
 - name: config
   settings_set:
-    ckan.site_title: COAT catalog
-    ckan.site_intro_text: "# Welcome to the COAT catalog"
-    ckan.site_logo: "https://www.coat.no/Portals/coat/Images/cropped-coat_logo_black2014_tr.png"
+    - ["app:main", ckan.site_title, "COAT catalog"]
+    - ["app:main", ckan.site_intro_text, "# Welcome to the COAT catalog"]
+    - ["app:main", ckan.site_logo, "https://www.coat.no/Portals/coat/Images/cropped-coat_logo_black2014_tr.png"]
   targets:
     - dev
     - deploy
+- name: config-dev
+  settings_set:
+    - [DEFAULT, debug, true]
+  targets:
+    - dev
