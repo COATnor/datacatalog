@@ -16,18 +16,7 @@ before_script:
   - apk add python3 make
   - pip3 install fades
 
-stages:
-  - test
-  - docker
-
-test:
-  stage: test
-  script:
-    - make test
-    - make style
-
 docker:
-  stage: docker
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
     - make

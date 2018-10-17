@@ -7,7 +7,7 @@
 [NINA](https://www.nina.no/) [CKAN](https://ckan.org/) catalogue for the [COAT](https://www.coat.no/) project.
 It is a customized distribution of CKAN which includes the [ckanext-coat extension](https://gitlab.com/nina-data/ckanext-coat).
 
-`make` launches `docker.py` to generate an `output` directory containing a directory for each target.
+It uses the tools provided by the [nina-data/tools](https://gitlab.com/nina-data/tools) repository.
 
 ## Requirements
 
@@ -42,15 +42,6 @@ Changes made inside the `ckanext-coat` directory will affect the running contain
 The credentials for the development image are:
   - Username: administrator
   - Password: administrator
-
-### Testing
-
-Please fix the errors and warnings raised by these commands before doing a commit.
-
-```bash
-$ make test
-$ make style
-```
 
 ### Debugging
 
