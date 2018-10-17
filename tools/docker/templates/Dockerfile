@@ -17,13 +17,6 @@ RUN apt-get -q -y update && \
     apt-get -q clean && \
     rm -rf /var/lib/apt/lists/*
 
-# install gosu for a better su+exec command
-ARG GOSU_VERSION=1.10
-RUN dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')" \
-  && wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch" \
-  && chmod +x /usr/local/bin/gosu \
-  && gosu nobody true
-
 # Define environment variables
 ENV CKAN_HOME /usr/lib/ckan
 ENV CKAN_VENV $CKAN_HOME/venv

@@ -14,15 +14,15 @@ crudini --set $CKAN_CONFIG/production.ini app:main {{ key }} {{ "${"+value+"}" }
 {% endfor %}
 {% endif %}
 {% if ext.local %}
-gosu ckan ckan-pip install -e $CKAN_VENV/src/{{ ext.name }}
+chroot --userspec=ckan / ckan-pip install -e $CKAN_VENV/src/{{ ext.name }}
 if [ -f $CKAN_VENV/src/{{ ext.name }}/pip-requirements.txt ]; then
-    gosu ckan-pip install --upgrade --no-cache-dir -r $CKAN_VENV/src/{{ ext.name }}/pip-requirements.txt ||  
-    gosu ckan-pip install --upgrade --no-cache-dir -r $CKAN_VENV/src/{{ ext.name }}/requirements.txt
+    chroot --userspec=ckan / ckan-pip install --upgrade --no-cache-dir -r $CKAN_VENV/src/{{ ext.name }}/pip-requirements.txt ||
+    chroot --userspec=ckan / ckan-pip install --upgrade --no-cache-dir -r $CKAN_VENV/src/{{ ext.name }}/requirements.txt
 fi
 {% endif %}
 {% endfor %}
 
-gosu ckan /ckan-entrypoint.sh
+chroot --userspec=ckan / /ckan-entrypoint.sh
 {% include "ckan-entrypoint-custom/"+target ignore missing %}
 
-exec gosu ckan "$@"
+exec chroot --userspec=ckan / "$@"
