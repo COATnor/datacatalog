@@ -7,7 +7,7 @@
 [NINA](https://www.nina.no/) [CKAN](https://ckan.org/) catalogue for the [COAT](https://www.coat.no/) project.
 It is a customized distribution of CKAN which includes the [ckanext-coat extension](https://gitlab.com/nina-data/ckanext-coat).
 
-`make` launches `dockerfiles-generator.py` to generate an `output` directory containing a directory for each target.
+`make` launches `docker.py` to generate an `output` directory containing a directory for each target.
 
 ## Requirements
 
@@ -30,7 +30,7 @@ export PYTHON="python3.6"
 ```bash
 $ make prepare # dev only
 $ make
-$ (cd tools/docker/output/dev && docker-compose up --build)
+$ (cd output/dev && docker-compose up --build)
 ```
 
 The `--build` option forces `docker-compose` to build the image locally instead of fetching it from the Docker Registry.
@@ -68,7 +68,7 @@ Interact with the CKAN in order to break into the Python debugger.
 
 ```bash
 $ make
-$ (cd tools/docker/output/deploy && docker-compose up --detach)
+$ (cd output/deploy && docker-compose up --detach)
 ```
 
 The `--detach` option run containers in the background.
@@ -76,7 +76,7 @@ The `--detach` option run containers in the background.
 Please stop the containers before running `make` again. To stop them run:
 
 ```bash
-$ (cd tools/docker/output/deploy && docker-compose stop)
+$ (cd output/deploy && docker-compose stop)
 ```
 
 ## LDAP login
@@ -88,7 +88,7 @@ Export `LDAP_PASSWORD` to activate NINA LDAP.
 If you want to deploy on Portainer, export `PORTAINER_USERNAME` and `PORTAINER_PASSWORD` and run:
 
 ```bash
-$ make deploy PROJECT="tools/docker/output/deploy" NAME="ninackancoat" SERVER="http://localhost:9000"
+$ make deploy PROJECT="output/deploy" NAME="ninackancoat" SERVER="http://localhost:9000"
 ```
 
 ## Providing initial data

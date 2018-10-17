@@ -10,13 +10,13 @@ else
 endif
 
 generate :
-	cd tools/docker && $(PYCMD) ../docker.py
+	$(PYCMD) tools/docker.py --templates=tools/docker/templates-ckan --settings=settings/docker.yaml
 
 deploy :
 	$(PYCMD) tools/portainer.py $(NAME) $(PROJECT) $(SERVER)
 
 populate :
-	cd tools/ckan && $(PYCMD) ../ckan.py $(SERVER)
+	$(PYCMD) tools/ckan.py $(SERVER) --initial=settings/ckan.yaml
 
 prepare :
 	git clone git@gitlab.com:nina-data/ckanext-coat.git
@@ -31,5 +31,5 @@ style : $(SRC)
 	-$(PYCMD) -m pydocstyle $^
 
 clean :
-	rm -r tools/docker/output
-	rm -r tools/*/__pycache__
+	rm -rf output
+	rm -rf tools/*/__pycache__
