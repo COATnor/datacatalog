@@ -7,6 +7,9 @@ CKAN_VENV=$CKAN_HOME/venv
 {% for ext in extensions if target in ext.targets %}
 {% if ext.settings_set_startup %}
 {% for key, value in ext.settings_set_startup.items() %}
+if [ -z {{ "${"+value+"}" }} ]; then
+    {{ value }}="PLEASE_SET_{{ value }}"
+fi
 crudini --set $CKAN_CONFIG/production.ini app:main {{ key }} {{ "${"+value+"}" }}
 {% endfor %}
 {% endif %}
