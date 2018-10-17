@@ -12,10 +12,12 @@ crudini --set $CKAN_CONFIG/production.ini app:main {{ key }} {{ "${"+value+"}" }
 {% endif %}
 {% if ext.local %}
 chroot --userspec=ckan / ckan-pip install -e $CKAN_VENV/src/{{ ext.name }}
-if [ -f $CKAN_VENV/src/{{ ext.name }}/pip-requirements.txt ]; then
-    chroot --userspec=ckan / ckan-pip install --upgrade --no-cache-dir -r $CKAN_VENV/src/{{ ext.name }}/pip-requirements.txt ||
-    chroot --userspec=ckan / ckan-pip install --upgrade --no-cache-dir -r $CKAN_VENV/src/{{ ext.name }}/requirements.txt
+for filename in pip-requirements.txt requirements.txt dev-requirements.txt; do
+if [ -f $CKAN_VENV/src/{{ ext.name }}/$filename ]; then
+    chroot --userspec=ckan / ckan-pip install --upgrade --no-cache-dir -r $CKAN_VENV/src/{{ ext.name }}/$filename
+    break
 fi
+done
 {% endif %}
 {% endfor %}
 

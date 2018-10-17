@@ -30,11 +30,12 @@ RUN ckan-paster make-config --no-interactive ckan "${CKAN_CONFIG}/production.ini
 RUN : && \
 {% else %}
 RUN ckan-pip install -e git+{{ ext.repository }}@{{ ext.version }}#egg={{ ext.name }} && \
-    if [ -f $CKAN_VENV/src/{{ ext.name }}/pip-requirements.txt ]; then \
-        ckan-pip install --upgrade --no-cache-dir -r $CKAN_VENV/src/{{ ext.name }}/pip-requirements.txt; \
-    else \
-        ckan-pip install --upgrade --no-cache-dir -r $CKAN_VENV/src/{{ ext.name }}/requirements.txt; \
-    fi && \
+    for filename in pip-requirements.txt requirements.txt dev-requirements.txt; do \
+    if [ -f $CKAN_VENV/src/{{ ext.name }}/$filename ]; then \
+        ckan-pip install --upgrade --no-cache-dir -r $CKAN_VENV/src/{{ ext.name }}/$filename; \
+        break; \
+    fi \
+    done && \
 {% endif %}
 {% if ext.settings_set %}
 {% for key, value in ext.settings_set.items() %}
