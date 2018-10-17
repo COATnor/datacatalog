@@ -57,6 +57,14 @@
   targets:
     - dev
     - deploy
+- name: ckanext-datasetversions
+  repository: https://github.com/aptivate/ckanext-datasetversions.git
+  version: master
+  settings_add:
+    ckan.plugins: datasetversions
+  targets:
+    - dev
+    - deploy
 - name: ckanext-coat
   repository: https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.com/nina-data/ckanext-coat.git
   version: master
