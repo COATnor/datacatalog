@@ -42,8 +42,8 @@
     - dev
     - deploy
 - name: ckanext-datasetversions
-  repository: https://github.com/aptivate/ckanext-datasetversions.git
-  version: master
+  repository: https://github.com/frafra/ckanext-datasetversions.git
+  version: flask-migration
   settings_add:
     - ["app:main", ckan.plugins, datasetversions]
   targets:
