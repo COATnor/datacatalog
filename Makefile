@@ -12,7 +12,7 @@ deploy :
 	$(PYCMD) tools/portainer.py $(NAME) $(PROJECT) $(SERVER)
 
 populate :
-	$(PYCMD) tools/ckan.py --initial=settings/ckan.yaml $(SERVER)
+	$(PYCMD) tools/ckan.py --initial=settings/ckan.yaml --server=$(SERVER)
 
 prepare :
 	git clone git@gitlab.com:nina-data/ckanext-coat.git
