@@ -4,8 +4,8 @@
   settings_add:
     - ["app:main", ckan.plugins, scheming_datasets]
   settings_set:
-    - ["app:main", ckanext.scheming.dataset_schemas, ckanext.coat:coat_schema.json]
-    - ["app:main", ckanext.scheming.presets, ckanext.scheming:presets.json]
+    - ["app:main", ckanext.scheming.dataset_schemas, "ckanext.coat:coat_schema.json"]
+    - ["app:main", ckanext.scheming.presets, "ckanext.scheming:presets.json"]
     - ["app:main", ckanext.scheming.dataset_fallback, false]
   targets:
     - dev
