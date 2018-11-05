@@ -41,14 +41,6 @@
   targets:
     - dev
     - deploy
-- name: ckanext-datasetversions
-  repository: https://github.com/frafra/ckanext-datasetversions.git
-  version: flask-migration
-  settings_add:
-    - ["app:main", ckan.plugins, datasetversions]
-  targets:
-    - dev
-    - deploy
 - name: ckanext-coat
   repository: https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.com/nina-data/ckanext-coat.git
   version: master
