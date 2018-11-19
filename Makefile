@@ -11,7 +11,7 @@ generate :
                                  --output=output
 
 deploy :
-	$(PYCMD) tools/portainer.py $(NAME) $(PROJECT) $(SERVER)
+	$(PYCMD) tools/portainer.py $(NAME) $(PROJECT) --server=$(SERVER)
 
 populate :
 	$(PYCMD) tools/ckan.py --initial=settings/ckan.yaml --server=$(SERVER)
