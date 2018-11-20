@@ -2,5 +2,17 @@ organizations:
   - name: nina
     id: nina
     title: NINA
-    description: Norsk institutt for naturforskning                                
+    description: Norsk institutt for naturforskning
     image_url: 'https://www.nina.no/Portals/NINA/Bilder/logoweb.png'
+
+datasets:
+  - name: testdataset
+    title: This is the title
+    private: False
+    author: administrator
+    author_email: administrator@pippo.pip
+    maintainer: administrator
+    maintainer_email: administrator@pippo.pip
+    notes: Just some notes
+    version: 1.0
+    owner_org: nina
