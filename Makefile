@@ -6,7 +6,6 @@ generate :
 	$(PYCMD) tools/docker.py --settings=settings/docker.yaml \
                                  --templates \
                                      tools/docker/templates/ckan \
-                                     tools/docker/templates/ckan-gitweb \
                                  --extensions=. \
                                  --output=output
 
