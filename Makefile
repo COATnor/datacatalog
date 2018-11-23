@@ -2,7 +2,7 @@
 
 include tools/pycmd.mk
 
-generate :
+generate : clean
 	$(PYCMD) tools/docker.py --settings=settings/docker.yaml \
                                  --templates \
                                      tools/docker/templates/ckan \
