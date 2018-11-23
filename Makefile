@@ -21,4 +21,4 @@ prepare :
 	sudo chcon -Rt svirt_sandbox_file_t ckanext-coat 2>/dev/null || :
 
 clean :
-	rm -r output
+	rm -rf output
