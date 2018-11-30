@@ -43,7 +43,7 @@
     - deploy
 - name: ckanext-coat
   repository: https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.com/nina-data/ckanext-coat.git
-  version: master
+  version: hardlinks
   settings_add:
     - ["app:main", ckan.plugins, coat]
   targets:
