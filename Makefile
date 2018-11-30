@@ -6,6 +6,7 @@ generate : clean
 	$(PYCMD) tools/docker.py --settings=settings/docker.yaml \
                                  --templates \
                                      tools/docker/templates/ckan \
+                                     templates/ckan \
                                  --extensions=. \
                                  --output=output
 
