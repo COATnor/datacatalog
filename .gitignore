@@ -1,6 +1,6 @@
 # Project directories
 output/
-ckanext-coat/
+ckanext-*/
 
 # vim temporary/swap files
 *~
