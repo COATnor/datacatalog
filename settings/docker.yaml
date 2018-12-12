@@ -41,6 +41,20 @@
   targets:
     - dev
     - deploy
+- name: ckanext-datasetversions
+  repository: https://github.com/frafra/ckanext-datasetversions.git
+  version: private-datasets
+  settings_add:
+    - ["app:main", ckan.plugins, datasetversions]
+  targets:
+    - deploy
+- name: ckanext-datasetversions
+  repository: ckanext-datasetversions
+  local: true
+  settings_add:
+    - ["app:main", ckan.plugins, datasetversions]
+  targets:
+    - dev
 - name: ckanext-coat
   repository: https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.com/nina-data/ckanext-coat.git
   version: hardlinks

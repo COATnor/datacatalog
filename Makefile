@@ -7,6 +7,7 @@ generate : clean
                                  --templates \
                                      tools/docker/templates/ckan \
                                      templates/ckan \
+                                     templates/ckan-solr-managed \
                                  --extensions=. \
                                  --output=output
 

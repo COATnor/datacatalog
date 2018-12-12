@@ -21,7 +21,7 @@ volumes:
 services:
   ckan:
     container_name: ckan
-    image: registry.gitlab.com/nina-data/nina-ckan-coat/hardlinks:latest
+    image: registry.gitlab.com/nina-data/nina-ckan-coat/datasetversions:latest
     build:
       context: .
     links:
@@ -85,7 +85,7 @@ services:
 
   solr:
     container_name: solr
-    image: ckan/solr:latest
+    build: solr
     ports:
       - "8983:8983"
 
