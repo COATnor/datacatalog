@@ -10,6 +10,7 @@ variables:
   DOCKER_HOST: tcp://docker:2375
   DOCKER_DRIVER: overlay2
   GIT_SUBMODULE_STRATEGY: recursive
+  TARGET: deploy-gitlab
 
 before_script:
   - apk update
@@ -21,11 +22,11 @@ docker:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
     - make
     - docker pull $CONTAINER_IMAGE:latest || true
-    - docker build --cache-from $CONTAINER_IMAGE:latest --tag $CONTAINER_IMAGE:$CI_COMMIT_SHA --tag $CONTAINER_IMAGE:latest output/deploy
+    - docker build --cache-from $CONTAINER_IMAGE:latest --tag $CONTAINER_IMAGE:$CI_COMMIT_SHA --tag $CONTAINER_IMAGE:latest output/$TARGET
     - docker push $CONTAINER_IMAGE:$CI_COMMIT_SHA
     - docker push $CONTAINER_IMAGE:latest
     - docker pull $CONTAINER_IMAGE/solr:latest || true
-    - docker build --cache-from $CONTAINER_IMAGE/solr:latest --tag $CONTAINER_IMAGE/solr:$CI_COMMIT_SHA --tag $CONTAINER_IMAGE/solr:latest output/deploy/solr
+    - docker build --cache-from $CONTAINER_IMAGE/solr:latest --tag $CONTAINER_IMAGE/solr:$CI_COMMIT_SHA --tag $CONTAINER_IMAGE/solr:latest output/$TARGET/solr
     - docker push $CONTAINER_IMAGE/solr:$CI_COMMIT_SHA
     - docker push $CONTAINER_IMAGE/solr:latest
   artifacts:

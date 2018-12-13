@@ -55,7 +55,9 @@ Attach to the CKAN container:
 
 Interact with the CKAN in order to break into the Python debugger.
 
-## Deployment
+## Deployment (local)
+
+Set `GITLAB_USER` and `GITLAB_PASSOWRD` variables to clone private repositories.
 
 ```bash
 $ make

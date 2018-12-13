@@ -9,7 +9,10 @@ generate : clean
                                      templates/ckan \
                                      templates/ckan-solr-managed \
                                  --extensions=. \
-                                 --output=output
+                                 --output=output \
+				dev \
+				deploy \
+				deploy-gitlab
 
 deploy :
 	$(PYCMD) tools/portainer.py $(NAME) $(PROJECT) --server=$(SERVER)
