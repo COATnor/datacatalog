@@ -60,14 +60,14 @@
     - dev
 - name: ckanext-coat
   repository: https://$GITLAB_USERNAME:$GITLAB_PASSWORD@gitlab.com/nina-data/ckanext-coat.git
-  version: hardlinks
+  version: master
   settings_add:
     - ["app:main", ckan.plugins, coat]
   targets:
     - deploy
 - name: ckanext-coat
   repository: https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.com/nina-data/ckanext-coat.git
-  version: hardlinks
+  version: master
   settings_add:
     - ["app:main", ckan.plugins, coat]
   targets:
