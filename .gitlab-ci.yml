@@ -24,15 +24,15 @@ docker:
     - cd output/$TARGET
     - docker pull $CONTAINER_IMAGE:latest || true
     - docker build --cache-from $CONTAINER_IMAGE:latest --tag $CONTAINER_IMAGE:$CI_COMMIT_SHA --tag $CONTAINER_IMAGE:latest .
-    - docker push $CONTAINER_IMAGE:$CI_COMMIT_SHA
-    - docker push $CONTAINER_IMAGE:latest
     - docker pull $CONTAINER_IMAGE/solr:latest || true
     - docker build --cache-from $CONTAINER_IMAGE/solr:latest --tag $CONTAINER_IMAGE/solr:$CI_COMMIT_SHA --tag $CONTAINER_IMAGE/solr:latest solr
-    - docker push $CONTAINER_IMAGE/solr:$CI_COMMIT_SHA
-    - docker push $CONTAINER_IMAGE/solr:latest
     - fades -d docker-compose -x docker-compose up --detach
     - wget --spider --recursive --no-directories --no-verbose --wait 0.1 --retry-connrefused --waitretry 1 --tries 60 --level 1 docker:5000
     - fades -d docker-compose -x docker-compose down --volumes
+    - docker push $CONTAINER_IMAGE:$CI_COMMIT_SHA
+    - docker push $CONTAINER_IMAGE:latest
+    - docker push $CONTAINER_IMAGE/solr:$CI_COMMIT_SHA
+    - docker push $CONTAINER_IMAGE/solr:latest
   artifacts:
     paths:
       - output/deploy/docker-compose.yml
