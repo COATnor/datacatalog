@@ -26,9 +26,9 @@ docker:
     - docker build --cache-from $CONTAINER_IMAGE:latest --tag $CONTAINER_IMAGE:$CI_COMMIT_SHA --tag $CONTAINER_IMAGE:latest .
     - docker pull $CONTAINER_IMAGE/solr:latest || true
     - docker build --cache-from $CONTAINER_IMAGE/solr:latest --tag $CONTAINER_IMAGE/solr:$CI_COMMIT_SHA --tag $CONTAINER_IMAGE/solr:latest solr
-    - docker-compose up --detach
-    - wget --spider --recursive --no-directories --no-verbose --wait 0.1 --retry-connrefused --waitretry 10 --tries 18 --level 1 docker:5000
-    - docker-compose down --volumes
+#    - docker-compose up --detach
+#    - wget --spider --recursive --no-directories --no-verbose --wait 0.1 --retry-connrefused --waitretry 10 --tries 18 --level 1 docker:5000
+#    - docker-compose down --volumes
     - docker push $CONTAINER_IMAGE:$CI_COMMIT_SHA
     - docker push $CONTAINER_IMAGE:latest
     - docker push $CONTAINER_IMAGE/solr:$CI_COMMIT_SHA
