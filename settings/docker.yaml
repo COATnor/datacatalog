@@ -19,30 +19,6 @@
 #  targets:
 #    - dev
 #    - deploy
-- name: ckanext-ldap
-  repository: https://github.com/NaturalHistoryMuseum/ckanext-ldap.git
-  version: ckan-upgrade-2.8.0a
-  packages:
-    - libsasl2-dev
-    - python-dev
-    - libldap2-dev
-    - libssl-dev
-  settings_add:
-    - ["app:main", ckan.plugins, ldap]
-  settings_set:
-    - ["app:main", ckanext.ldap.uri, "ldap://nindc05.nina.no:389"]
-    - ["app:main", ckanext.ldap.auth.dn, ldapquery]
-    - ["app:main", ckanext.ldap.base_dn, "ou=brukere,dc=nina,dc=no"]
-    - ["app:main", ckanext.ldap.search.filter, "sAMAccountName={login}"]
-    - ["app:main", ckanext.ldap.username, sAMAccountName]
-    - ["app:main", ckanext.ldap.email, mail]
-    - ["app:main", ckanext.ldap.ckan_fallback, true]
-  settings_set_startup:
-    - ["app:main", ckanext.ldap.auth.password, LDAP_PASSWORD]
-  targets:
-    - dev
-    - deploy
-    - deploy-gitlab
 - name: ckanext-datasetversions
   repository: https://github.com/frafra/ckanext-datasetversions.git
   version: private-datasets
