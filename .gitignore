@@ -1,6 +1,8 @@
 # Project directories
 output/
 ckanext-*/
+.idea/*
+
 
 # vim temporary/swap files
 *~
