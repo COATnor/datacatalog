@@ -59,7 +59,14 @@
   repository: https://$GITLAB_USERNAME:$GITLAB_PASSWORD@gitlab.com/nina-data/ckanext-coatcustom.git
   version: master
   settings_add:
-    - ["app:main", ckan.plugins, coat]
+    - ["app:main", ckan.plugins, coatcustom]
+  targets:
+    - deploy
+- name: ckanext-coatcustom
+  local: true
+  repository: ckanext-coatcustom
+  settings_add:
+    - ["app:main", ckan.plugins, coatcustom]
   targets:
     - dev
 - name: config
