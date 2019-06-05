@@ -21,7 +21,7 @@ populate :
 	$(PYCMD) tools/ckan.py --initial=settings/ckan.yaml --server=$(SERVER)
 
 prepare :
-	git clone git@gitlab.com:nina-data/ckanext-coat.git -b remove_customisations
+	git clone git@gitlab.com:nina-data/ckanext-coat.git
 	git clone git@gitlab.com:nina-data/ckanext-coatcustom.git
 	git clone https://github.com/frafra/ckanext-datasetversions -b private-datasets
 	sudo chown -R 900 ckanext-*
