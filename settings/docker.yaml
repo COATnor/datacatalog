@@ -63,6 +63,13 @@
   targets:
     - deploy
 - name: ckanext-coatcustom
+  repository: https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.com/nina-data/ckanext-coat.git
+  version: master
+  settings_add:
+    - ["app:main", ckan.plugins, coatcustom]
+  targets:
+    - deploy-gitlab
+- name: ckanext-coatcustom
   local: true
   repository: ckanext-coatcustom
   settings_add:

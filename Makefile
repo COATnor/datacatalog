@@ -29,6 +29,3 @@ prepare :
 
 clean :
 	rm -rf output
-	rm -rf ckanext-coat
-	rm -rf ckanext-coatcustom
-	rm -rf ckanext-datasetversions
