@@ -22,9 +22,13 @@ populate :
 
 prepare :
 	git clone git@gitlab.com:nina-data/ckanext-coat.git
+	git clone git@gitlab.com:nina-data/ckanext-coatcustom.git
 	git clone https://github.com/frafra/ckanext-datasetversions -b private-datasets
 	sudo chown -R 900 ckanext-*
 	sudo chcon -Rt svirt_sandbox_file_t ckanext-* 2>/dev/null || :
 
 clean :
 	rm -rf output
+	rm -rf ckanext-coat
+	rm -rf ckanext-coatcustom
+	rm -rf ckanext-datasetversions
