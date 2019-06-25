@@ -1,3 +1,16 @@
+- name: ckanext-scheming
+  repository: https://github.com/ckan/ckanext-scheming
+  version: master
+  settings_add:
+    - ["app:main", ckan.plugins, scheming_datasets]
+  settings_set:
+    - ["app:main", scheming.dataset_schemas, "ckanext.coatcustom:coat_schema.json"]
+    - ["app:main", scheming.presets, "ckanext.scheming:presets.json"]
+    - ["app:main", scheming.dataset_fallback, false]
+  targets:
+    - dev
+    - deploy
+    - deploy-gitlab
 - name: ckanext-spatial
   repository: https://github.com/frafra/ckanext-spatial
   version: no-extras_list
