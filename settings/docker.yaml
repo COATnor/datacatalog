@@ -93,8 +93,9 @@
   settings_set:
     - ["app:main", ckan.site_title, "COAT catalog"]
     - ["app:main", ckan.site_intro_text, "# Welcome to the COAT catalog"]
-    - ["app:main", ckan.site_logo, "https://www.coat.no/Portals/coat/Images/cropped-coat_logo_black2014_tr.png"]
+    - ["app:main", ckan.site_logo, "images/coat.png"]
     - ["app:main", ckan.datastore.sqlalchemy.pool_pre_ping, true]
+    - ["app:main", ckan.favicon, "images/coat.png"]
   targets:
     - dev
     - deploy
