@@ -21,9 +21,9 @@ populate :
 	$(PYCMD) tools/ckan.py --initial=settings/ckan.yaml --server=$(SERVER)
 
 prepare :
-	git clone git@gitlab.com:nina-data/ckanext-coat.git
-	git clone git@gitlab.com:nina-data/ckanext-coatcustom.git
-	git clone https://github.com/frafra/ckanext-datasetversions -b private-datasets
+	[ -d ckanext-coat ] || git clone git@gitlab.com:nina-data/ckanext-coat.git
+	[ -d ckanext-coatcustom ] || git clone git@gitlab.com:nina-data/ckanext-coatcustom.git
+	[ -d ckanext-datasetversions ] || git clone https://github.com/frafra/ckanext-datasetversions -b private-datasets
 	sudo chown -R 900 ckanext-*
 	sudo chcon -Rt svirt_sandbox_file_t ckanext-* 2>/dev/null || :
 
