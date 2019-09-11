@@ -82,14 +82,14 @@
     - dev
 - name: ckanext-coatcustom
   repository: https://$GITLAB_USERNAME:$GITLAB_PASSWORD@gitlab.com/nina-data/ckanext-coatcustom.git
-  version: master
+  version: coat_meta_schema_temp
   settings_add:
     - ["app:main", ckan.plugins, coatcustom]
   targets:
     - deploy
 - name: ckanext-coatcustom
   repository: https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.com/nina-data/ckanext-coatcustom.git
-  version: master
+  version: coat_meta_schema_temp
   settings_add:
     - ["app:main", ckan.plugins, coatcustom]
   targets:
