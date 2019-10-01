@@ -39,6 +39,7 @@
   version: master
   settings_add:
     - ["app:main", ckan.plugins, coat]
+    - ["app:main", ckanext.coat.resource_name_globally_unique, true]
   targets:
     - deploy
 - name: ckanext-coat
@@ -46,6 +47,7 @@
   version: master
   settings_add:
     - ["app:main", ckan.plugins, coat]
+    - ["app:main", ckanext.coat.resource_name_globally_unique, true]
   targets:
     - deploy-gitlab
 - name: ckanext-coat
@@ -53,6 +55,7 @@
   repository: ckanext-coat
   settings_add:
     - ["app:main", ckan.plugins, coat]
+    - ["app:main", ckanext.coat.resource_name_globally_unique, true]
   targets:
     - dev
 - name: ckanext-coatcustom
