@@ -14,6 +14,8 @@ volumes:
 #    driver: local
   ckan_storage:
     driver: local
+  solr_data:
+    driver: local
   pg_data:
     driver: local
 {% block volumes %}{% endblock %}
@@ -21,7 +23,7 @@ volumes:
 services:
   ckan:
     container_name: ckan
-    image: registry.gitlab.com/nina-data/nina-ckan-coat/master:latest
+    image: registry.gitlab.com/nina-data/nina-ckan-coat/master
     build:
       context: .
     links:
@@ -33,10 +35,6 @@ services:
       - db
     ports:
       - "${CKAN_PORT}:5000"
-    labels:
-      - "traefik.frontend.rule=PathPrefixStrip:/"
-      - "traefik.backend=home"
-      - "traefik.enable=true"
     environment:
       # Defaults work with linked containers, change to use own Postgres, SolR, Redis or Datapusher
       - CKAN_SQLALCHEMY_URL=postgresql://ckan:${POSTGRES_PASSWORD}@db/ckan
@@ -74,19 +72,20 @@ services:
 
   db:
     container_name: db
-    image: ckan/postgresql:latest
+    image: registry.gitlab.com/nina-data/ckan/nina-2-8-3/postgresql
     environment:
       - DS_RO_PASS=${DATASTORE_READONLY_PASSWORD}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
       - pg_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "postgres"]
+      test: ["CMD", "pg_isready", "-U", "ckan"]
 
   solr:
     container_name: solr
-    image: registry.gitlab.com/nina-data/nina-ckan-coat/master/solr:latest
-    build: solr
+    image: registry.gitlab.com/nina-data/ckan/nina-2-8-3/solr
+    volumes:
+      - solr_data:/opt/solr/server/solr/ckan
     ports:
       - "8983:8983"
 

@@ -21,7 +21,7 @@
 #    - deploy
 - name: ckanext-datasetversions
   repository: https://github.com/frafra/ckanext-datasetversions.git
-  version: private-datasets
+  version: staging
   settings_add:
     - ["app:main", ckan.plugins, datasetversions]
   targets:

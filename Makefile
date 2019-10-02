@@ -7,7 +7,6 @@ generate : clean
                                  --templates \
                                      tools/docker/templates/ckan \
                                      templates/ckan \
-                                     templates/ckan-solr-managed \
                                  --extensions=. \
                                  --output=output \
 				dev \
@@ -23,7 +22,7 @@ populate :
 prepare :
 	[ -d ckanext-coat ] || git clone git@gitlab.com:nina-data/ckanext-coat.git
 	[ -d ckanext-coatcustom ] || git clone git@gitlab.com:nina-data/ckanext-coatcustom.git
-	[ -d ckanext-datasetversions ] || git clone https://github.com/frafra/ckanext-datasetversions -b private-datasets
+	[ -d ckanext-datasetversions ] || git clone https://github.com/frafra/ckanext-datasetversions -b staging
 	sudo chown -R 900 ckanext-*
 	sudo chcon -Rt svirt_sandbox_file_t ckanext-* 2>/dev/null || :
 
