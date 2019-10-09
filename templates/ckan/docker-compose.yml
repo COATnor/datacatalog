@@ -93,6 +93,10 @@ services:
     container_name: redis
     image: redis:latest
 
+  checker:
+    image: busybox
+    command: sh -c 'while true; do wget "http://ckan:5000/dataset/" -O /dev/null -o /dev/null || echo "[`date`] error"; sleep 3m; done'
+
 {% include "docker-compose-custom/"+target ignore missing %}
 
 {% block containers %}{% endblock %}
