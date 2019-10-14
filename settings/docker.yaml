@@ -41,6 +41,25 @@
 #  targets:
 #    - dev
 #    - deploy
+- name: ckanext-oauth2
+  repository: https://github.com/NINAnor/ckanext-oauth2
+  version: feide
+  settings_add:
+    - ["app:main", ckan.plugins, oauth2]
+  settings_set:
+#    - ["app:main", ckan.oauth2.register_url, https://YOUR_OAUTH_SERVICE/users/sign_up]
+#    - ["app:main", ckan.oauth2.reset_url, https://YOUR_OAUTH_SERVICE/users/password/new]
+#    - ["app:main", ckan.oauth2.edit_url, https://YOUR_OAUTH_SERVICE/settings]
+    - ["app:main", ckan.oauth2.profile_api_url, https://auth.dataporten.no/userinfo]
+    - ["app:main", ckan.oauth2.scope, profile email]
+#    - ["app:main", ckan.oauth2.rememberer_name, auth_tkt]
+    - ["app:main", ckan.oauth2.profile_api_user_field, email]
+    - ["app:main", ckan.oauth2.profile_api_fullname_field, name]
+    - ["app:main", ckan.oauth2.profile_api_mail_field, email]
+#    - ["app:main", ckan.oauth2.authorization_header, OAUTH2_HEADER]
+  targets:
+    - deploy
+    - deploy-gitlab
 - name: ckanext-datasetversions
   repository: https://github.com/frafra/ckanext-datasetversions.git
   version: staging

@@ -45,6 +45,10 @@ x-common-ckan:
     CKAN_MAX_UPLOAD_SIZE_MB: ${CKAN_MAX_UPLOAD_SIZE_MB}
     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     DS_RO_PASS: ${DATASTORE_READONLY_PASSWORD}
+    CKAN_OAUTH2_AUTHORIZATION_ENDPOINT: ${CKAN_OAUTH2_AUTHORIZATION_ENDPOINT}
+    CKAN_OAUTH2_TOKEN_ENDPOINT: ${CKAN_OAUTH2_TOKEN_ENDPOINT}
+    CKAN_OAUTH2_CLIENT_ID: ${CKAN_OAUTH2_CLIENT_ID}
+    CKAN_OAUTH2_CLIENT_SECRET: ${CKAN_OAUTH2_CLIENT_SECRET}
 {% for ext in extensions if target in ext.targets and ext.settings_set_startup %}
 {% for section, key, value in ext.settings_set_startup %}
     {{ value }}: {{ "${"+value+"}" }}
