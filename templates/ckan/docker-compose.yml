@@ -4,7 +4,7 @@
 # Matteo De Stefano, Francesco Frassinelli - Derived from:
 #   https://github.com/ckan/ckan/blob/master/contrib/docker/docker-compose.yml
 
-version: "3.0"
+version: "3.4"
 
 # Driver has to be specified because of https://github.com/docker/libcompose/issues/509
 volumes:
