@@ -22,15 +22,15 @@
     - dev
     - deploy
     - deploy-gitlab
-- name: ckanext-dcat
-  repository: https://github.com/ckan/ckanext-dcat
-  version: master
-  settings_add:
-    - ["app:main", ckan.plugins, dcat structured_data]
-  targets:
-    - dev
-    - deploy
-    - deploy-gitlab
+#- name: ckanext-dcat
+#  repository: https://github.com/ckan/ckanext-dcat
+#  version: master
+#  settings_add:
+#    - ["app:main", ckan.plugins, dcat structured_data]
+#  targets:
+#    - dev
+#    - deploy
+#    - deploy-gitlab
 #- name: ckanext-geoview
 #  repository: https://github.com/ckan/ckanext-geoview
 #  version: v0.0.13
