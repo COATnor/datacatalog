@@ -20,49 +20,57 @@ volumes:
     driver: local
 {% block volumes %}{% endblock %}
 
-services:
-  ckan:
-    container_name: ckan
-    image: registry.gitlab.com/nina-data/nina-ckan-coat/master
-    build:
-      context: .
-    links:
-      - db
-      - solr
-      - redis
-      - datapusher
-    depends_on:
-      - db
-    ports:
-      - "${CKAN_PORT}:5000"
-    environment:
-      # Defaults work with linked containers, change to use own Postgres, SolR, Redis or Datapusher
-      - CKAN_SQLALCHEMY_URL=postgresql://ckan:${POSTGRES_PASSWORD}@db/ckan
-      - CKAN_DATASTORE_WRITE_URL=postgresql://ckan:${POSTGRES_PASSWORD}@db/datastore
-      - CKAN_DATASTORE_READ_URL=postgresql://datastore_ro:${DATASTORE_READONLY_PASSWORD}@db/datastore
-      - CKAN_SOLR_URL=http://solr:8983/solr/ckan
-      - CKAN_REDIS_URL=redis://redis:6379/1
-      - CKAN_DATAPUSHER_URL=http://datapusher:8800
-      - CKAN_SITE_URL=${CKAN_SITE_URL}
-      - CKAN_MAX_UPLOAD_SIZE_MB=${CKAN_MAX_UPLOAD_SIZE_MB}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - DS_RO_PASS=${DATASTORE_READONLY_PASSWORD}
+x-common-ckan:
+  &default-common-ckan
+  image: registry.gitlab.com/nina-data/nina-ckan-coat/master
+  build:
+    context: .
+  links:
+    - db
+    - solr
+    - redis
+    - datapusher
+  depends_on:
+    - db
+  environment:
+    &default-common-env-ckan
+    # Defaults work with linked containers, change to use own Postgres, SolR, Redis or Datapusher
+    CKAN_SQLALCHEMY_URL: postgresql://ckan:${POSTGRES_PASSWORD}@db/ckan
+    CKAN_DATASTORE_WRITE_URL: postgresql://ckan:${POSTGRES_PASSWORD}@db/datastore
+    CKAN_DATASTORE_READ_URL: postgresql://datastore_ro:${DATASTORE_READONLY_PASSWORD}@db/datastore
+    CKAN_SOLR_URL: http://solr:8983/solr/ckan
+    CKAN_REDIS_URL: redis://redis:6379/1
+    CKAN_DATAPUSHER_URL: http://datapusher:8800
+    CKAN_SITE_URL: ${CKAN_SITE_URL}
+    CKAN_MAX_UPLOAD_SIZE_MB: ${CKAN_MAX_UPLOAD_SIZE_MB}
+    POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    DS_RO_PASS: ${DATASTORE_READONLY_PASSWORD}
 {% for ext in extensions if target in ext.targets and ext.settings_set_startup %}
 {% for section, key, value in ext.settings_set_startup %}
-      - {{ value }}={{ "${"+value+"}" }}
+    {{ value }}: {{ "${"+value+"}" }}
 {% endfor %}
 {% endfor %}
-    volumes:
-#      - ckan_config:/etc/ckan
-#      - ckan_home:/usr/lib/ckan
-      - ckan_storage:/var/lib/ckan
+    # docker-compose-wait
+    WAIT_HOSTS_TIMEOUT: 180
+    WAIT_SLEEP_INTERVAL: 10
+  volumes:
+#    - ckan_config:/etc/ckan
+#    - ckan_home:/usr/lib/ckan
+    - ckan_storage:/var/lib/ckan
 {% block ckan_volumes %}{% endblock %}
 {% for ext in extensions if target in ext.targets and ext.local %}
-      - {{ extensions_path }}/{{ ext.repository }}:/usr/lib/ckan/venv/src/{{ ext.name }}
+    - {{ extensions_path }}/{{ ext.repository }}:/usr/lib/ckan/venv/src/{{ ext.name }}
 {% endfor %}
 #    restart: unless-stopped # https://github.com/ckan/ckan/issues/4514
-    stdin_open: true
-    tty: true
+#  stdin_open: true
+#  tty: true
+
+services:
+  ckan:
+    << : *default-common-ckan
+    container_name: ckan
+    ports:
+      - "${CKAN_PORT}:5000"
 
   datapusher:
     container_name: datapusher
@@ -85,7 +93,7 @@ services:
     container_name: solr
     image: registry.gitlab.com/nina-data/ckan/nina-2-8-3/solr
     volumes:
-      - solr_data:/opt/solr/server/solr/ckan
+      - solr_data:/opt/solr/server/solr/ckan/data
     ports:
       - "8983:8983"
 
