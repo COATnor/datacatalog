@@ -21,7 +21,7 @@ populate :
 
 prepare :
 	[ -d ckanext-coat ] || git clone git@gitlab.com:nina-data/ckanext-coat.git
-	[ -d ckanext-coatcustom ] || git clone git@gitlab.com:nina-data/ckanext-coatcustom.git -b metadata_v2
+	[ -d ckanext-coatcustom ] || git clone git@gitlab.com:nina-data/ckanext-coatcustom.git
 	[ -d ckanext-scheming ] || git clone https://github.com/ckan/ckanext-scheming
 	[ -d ckanext-datasetversions ] || git clone https://github.com/frafra/ckanext-datasetversions -b staging
 	sudo chown -R 900 ckanext-*
