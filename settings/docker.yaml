@@ -103,8 +103,8 @@
     - dev
 - name: config
   settings_set:
-    - ["app:main", ckan.site_title, "COAT catalog"]
-    - ["app:main", ckan.site_intro_text, "# Welcome to the COAT catalog"]
+    - ["app:main", ckan.site_title, "COAT Data Portal"]
+    - ["app:main", ckan.site_intro_text, "Climate-ecological Observatory for Arctic Tundra (COAT)"]
     - ["app:main", ckan.site_logo, "images/coat.png"]
     - ["app:main", ckan.datastore.sqlalchemy.pool_pre_ping, true]
     - ["app:main", ckan.favicon, "images/coat.png"]
