@@ -81,6 +81,8 @@
   settings_add:
     - ["app:main", ckan.plugins, coat]
     - ["app:main", ckanext.coat.resource_name_globally_unique, true]
+  settings_set:
+    - ["app:main", ckanext.coat.custom_form, false]
   targets:
     - deploy
 - name: ckanext-coat
@@ -89,6 +91,8 @@
   settings_add:
     - ["app:main", ckan.plugins, coat]
     - ["app:main", ckanext.coat.resource_name_globally_unique, true]
+  settings_set:
+    - ["app:main", ckanext.coat.custom_form, false]
   targets:
     - deploy-gitlab
 - name: ckanext-coat
@@ -97,6 +101,8 @@
   settings_add:
     - ["app:main", ckan.plugins, coat]
     - ["app:main", ckanext.coat.resource_name_globally_unique, true]
+  settings_set:
+    - ["app:main", ckanext.coat.custom_form, false]
   targets:
     - dev
 - name: ckanext-coatcustom
