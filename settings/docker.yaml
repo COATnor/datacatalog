@@ -1,3 +1,24 @@
+- name: ckanext-coatcustom
+  repository: https://$GITLAB_USERNAME:$GITLAB_PASSWORD@gitlab.com/nina-data/ckanext-coatcustom.git
+  version: master
+  settings_add:
+    - ["app:main", ckan.plugins, coatcustom]
+  targets:
+    - deploy
+- name: ckanext-coatcustom
+  repository: https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.com/nina-data/ckanext-coatcustom.git
+  version: master
+  settings_add:
+    - ["app:main", ckan.plugins, coatcustom]
+  targets:
+    - deploy-gitlab
+- name: ckanext-coatcustom
+  local: true
+  repository: ckanext-coatcustom
+  settings_add:
+    - ["app:main", ckan.plugins, coatcustom]
+  targets:
+    - dev
 - name: ckanext-scheming
   repository: https://github.com/ckan/ckanext-scheming
   version: master
@@ -103,27 +124,6 @@
     - ["app:main", ckanext.coat.resource_name_globally_unique, true]
   settings_set:
     - ["app:main", ckanext.coat.custom_form, false]
-  targets:
-    - dev
-- name: ckanext-coatcustom
-  repository: https://$GITLAB_USERNAME:$GITLAB_PASSWORD@gitlab.com/nina-data/ckanext-coatcustom.git
-  version: master
-  settings_add:
-    - ["app:main", ckan.plugins, coatcustom]
-  targets:
-    - deploy
-- name: ckanext-coatcustom
-  repository: https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.com/nina-data/ckanext-coatcustom.git
-  version: master
-  settings_add:
-    - ["app:main", ckan.plugins, coatcustom]
-  targets:
-    - deploy-gitlab
-- name: ckanext-coatcustom
-  local: true
-  repository: ckanext-coatcustom
-  settings_add:
-    - ["app:main", ckan.plugins, coatcustom]
   targets:
     - dev
 - name: config
