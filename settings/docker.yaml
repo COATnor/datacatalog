@@ -34,7 +34,7 @@
     - deploy-gitlab
 - name: ckanext-spatial
   repository: https://github.com/frafra/ckanext-spatial
-  version: no-extras_list
+  version: staging
   settings_add:
     - ["app:main", ckan.plugins, spatial_metadata spatial_query]
   settings_set:
