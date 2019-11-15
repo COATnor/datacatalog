@@ -71,7 +71,7 @@
 #    - ["app:main", ckan.oauth2.register_url, https://YOUR_OAUTH_SERVICE/users/sign_up]
 #    - ["app:main", ckan.oauth2.reset_url, https://YOUR_OAUTH_SERVICE/users/password/new]
 #    - ["app:main", ckan.oauth2.edit_url, https://YOUR_OAUTH_SERVICE/settings]
-    - ["app:main", ckan.oauth2.profile_api_url, https://auth.dataporten.no/userinfo]
+    - ["app:main", ckan.oauth2.profile_api_url, "https://auth.dataporten.no/userinfo"]
     - ["app:main", ckan.oauth2.scope, profile email]
 #    - ["app:main", ckan.oauth2.rememberer_name, auth_tkt]
     - ["app:main", ckan.oauth2.profile_api_user_field, email]
@@ -133,6 +133,9 @@
     - ["app:main", ckan.site_logo, "images/coat.png"]
     - ["app:main", ckan.datastore.sqlalchemy.pool_pre_ping, true]
     - ["app:main", ckan.favicon, "images/coat.png"]
+    - ["app:main", ckan.locale_default, en_ZW]
+  settings_add:
+    - ["app:main", ckan.locale_offered, en_ZW]
   targets:
     - dev
     - deploy
