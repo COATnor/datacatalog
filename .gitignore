@@ -1,7 +1,7 @@
 # Project directories
 output/
 ckanext-*/
-.idea/*
+
 
 
 # vim temporary/swap files
@@ -23,3 +23,10 @@ tramp
 __pycache__/
 *.py[cod]
 *$py.class
+
+# Pycharm
+.idea/*
+templates/ckan-static/i18n/en_ZW/LC_MESSAGES/.idea/
+
+# translation .mo file
+templates/ckan-static/i18n/en_ZW/LC_MESSAGES/ckan.mo
