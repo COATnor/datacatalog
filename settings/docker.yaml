@@ -133,11 +133,18 @@
     - ["app:main", ckan.site_title, "COAT Data Portal"]
     - ["app:main", ckan.site_intro_text, "Climate-ecological Observatory for Arctic Tundra (COAT)"]
     - ["app:main", ckan.site_logo, "images/coat.png"]
-    - ["app:main", ckan.datastore.sqlalchemy.pool_pre_ping, true]
+#    - ["app:main", ckan.datastore.sqlalchemy.pool_pre_ping, true]
     - ["app:main", ckan.favicon, "images/coat.png"]
     - ["app:main", ckan.locale_default, en_ZW]
+    - ["app:main", ckan.datapusher.formats, "csv xls xlsx tsv application/csv application/vnd.ms-excel application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"]
+    - ["app:main", ckan.datapusher.assume_task_stale_after, 3600]
   settings_add:
     - ["app:main", ckan.locale_offered, en_ZW]
+    - ["app:main", ckan.plugins, datapusher]
+    - ["app:main", ckan.plugins, datastore]
+    - ["app:main", ckan.plugins, recline_grid_view]
+    - ["app:main", ckan.plugins, recline_graph_view]
+    - ["app:main", ckan.plugins, recline_map_view]
   targets:
     - dev
     - deploy
