@@ -2,7 +2,7 @@
 
 include tools/pycmd.mk
 
-generate : clean templates/ckan-static/i18n/en_ZW/LC_MESSAGES/ckan.mo
+generate : clean templates/ckan-static/i18n/en/LC_MESSAGES/ckan.mo
 	$(PYCMD) tools/docker.py --settings=settings/docker.yaml \
                                  --templates \
                                      tools/docker/templates/ckan \
@@ -15,7 +15,7 @@ generate : clean templates/ckan-static/i18n/en_ZW/LC_MESSAGES/ckan.mo
 				deploy \
 				deploy-gitlab
 
-templates/ckan-static/i18n/en_ZW/LC_MESSAGES/ckan.mo: templates/ckan-static/i18n/en_ZW/LC_MESSAGES/ckan.po
+templates/ckan-static/i18n/en/LC_MESSAGES/ckan.mo: templates/ckan-static/i18n/en/LC_MESSAGES/ckan.po
 	msgfmt $< -o $@
 
 deploy :

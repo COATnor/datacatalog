@@ -135,9 +135,9 @@
     - ["app:main", ckan.site_logo, "images/coat.png"]
     - ["app:main", ckan.datastore.sqlalchemy.pool_pre_ping, true]
     - ["app:main", ckan.favicon, "images/coat.png"]
-    - ["app:main", ckan.locale_default, en_ZW]
+    - ["app:main", ckan.locale_default, en]
   settings_add:
-    - ["app:main", ckan.locale_offered, en_ZW]
+    - ["app:main", ckan.locale_offered, en]
   targets:
     - dev
     - deploy
