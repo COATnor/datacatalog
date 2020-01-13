@@ -49,7 +49,7 @@
 #  repository: https://github.com/ckan/ckanext-dcat
 #  version: master
   repository: https://github.com/frafra/ckanext-dcat
-  version: next
+  version: staging
   settings_add:
     - ["app:main", ckan.plugins, dcat structured_data]
   targets:
