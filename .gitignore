@@ -29,4 +29,4 @@ __pycache__/
 templates/ckan-static/i18n/en_ZW/LC_MESSAGES/.idea/
 
 # translation .mo file
-templates/ckan-static/i18n/en_ZW/LC_MESSAGES/ckan.mo
+*.mo
