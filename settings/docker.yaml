@@ -46,8 +46,10 @@
     - deploy
     - deploy-gitlab
 - name: ckanext-dcat
-  repository: https://github.com/ckan/ckanext-dcat
-  version: master
+#  repository: https://github.com/ckan/ckanext-dcat
+#  version: master
+  repository: https://github.com/frafra/ckanext-dcat
+  version: next
   settings_add:
     - ["app:main", ckan.plugins, dcat structured_data]
   targets:
