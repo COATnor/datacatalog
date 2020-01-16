@@ -56,6 +56,15 @@
     - dev
     - deploy
     - deploy-gitlab
+- name: ckanext-oaipmh
+  repository: https://github.com/openresearchdata/ckanext-oaipmh
+  version: master
+  settings_add:
+    - ["app:main", ckan.plugins, oaipmh_harvester]
+  targets:
+    - dev
+    - deploy
+    - deploy-gitlab
 #- name: ckanext-geoview
 #  repository: https://github.com/ckan/ckanext-geoview
 #  version: v0.0.13
