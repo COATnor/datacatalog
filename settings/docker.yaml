@@ -56,11 +56,29 @@
     - dev
     - deploy
     - deploy-gitlab
-- name: ckanext-oaipmh
-  repository: https://github.com/openresearchdata/ckanext-oaipmh
+- name: ckanext-harvest
+  repository: https://github.com/ckan/ckanext-harvest/
   version: master
   settings_add:
-    - ["app:main", ckan.plugins, oaipmh_harvester]
+    - ["app:main", ckan.plugins, harvest ckan_harvester]
+  targets:
+    - dev
+    - deploy
+    - deploy-gitlab#-
+- name: ckanext-kata
+  repository: https://github.com/kata-csc/ckanext-kata
+  version: master
+  settings_add:
+    - ["app:main", ckan.plugins, kata]
+  targets:
+    - dev
+    - deploy
+    - deploy-gitlab
+- name: ckanext-oaipmh
+  repository: https://github.com/kata-csc/ckanext-oaipmh
+  version: master
+  settings_add:
+    - ["app:main", ckan.plugins, oaipmh]
   targets:
     - dev
     - deploy
