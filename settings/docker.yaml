@@ -64,7 +64,7 @@
   targets:
     - dev
     - deploy
-    - deploy-gitlab#-
+    - deploy-gitlab
 - name: ckanext-kata
   repository: https://github.com/kata-csc/ckanext-kata
   version: master
