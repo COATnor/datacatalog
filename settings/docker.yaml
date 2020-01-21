@@ -65,8 +65,15 @@
     - dev
     - deploy
     - deploy-gitlab
+- name: ckanext-kata
+  repository: https://github.com/mdlux/ckanext-kata.git
+  version: master
+  targets:
+    - dev
+    - deploy
+    - deploy-gitlab
 - name: ckanext-oaipmh
-  repository: https://github.com/mdlux/ckanext-oaipmh-1
+  repository: https://github.com/mdlux/ckanext-oaipmh
   version: master
   settings_add:
     - ["app:main", ckan.plugins, oaipmh]
