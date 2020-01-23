@@ -29,8 +29,8 @@ prepare :
 	[ -d ckanext-coatcustom ] || git clone git@gitlab.com:nina-data/ckanext-coatcustom.git
 	[ -d ckanext-scheming ] || git clone https://github.com/ckan/ckanext-scheming
 	[ -d ckanext-dcat ] || git clone https://github.com/frafra/ckanext-dcat -b staging
-	[ -d ckanext-kata ] || git clone https://github.com/mdlux/ckanext-kata
-	[ -d ckanext-oaipmh ] || git clone https://github.com/mdlux/ckanext-oaipmh
+	[ -d ckanext-kata ] || git clone https://github.com/mdlux/ckanext-kata nina-version-kata
+	[ -d ckanext-oaipmh ] || git clone https://github.com/mdlux/ckanext-oaipmh nina-version
 	[ -d ckanext-datasetversions ] || git clone https://github.com/frafra/ckanext-datasetversions -b staging
 	sudo chown -R 900 ckanext-*
 	sudo chcon -Rt svirt_sandbox_file_t ckanext-* 2>/dev/null || :
