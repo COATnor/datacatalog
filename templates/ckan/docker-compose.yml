@@ -24,7 +24,8 @@ x-common-ckan:
   &default-common-ckan
   image: registry.gitlab.com/nina-data/nina-ckan-coat/master
   build:
-    context: .
+    context: ../..
+    dockerfile: {{ output_path }}/{{ target }}/Dockerfile
   links:
     - db
     - solr
@@ -62,8 +63,8 @@ x-common-ckan:
 #    - ckan_home:/usr/lib/ckan
     - ckan_storage:/var/lib/ckan
 {% block ckan_volumes %}{% endblock %}
-{% for ext in extensions if target in ext.targets and ext.local %}
-    - {{ extensions_path }}/{{ ext.repository }}:/usr/lib/ckan/venv/src/{{ ext.name }}
+{% for ext in extensions if target in ext.targets and target.startswith('dev') and not ext.dummy %}
+    - {{ extensions_path_abs }}/{{ ext.name }}:/usr/lib/ckan/venv/src/{{ ext.name }}
 {% endfor %}
 #    restart: unless-stopped # https://github.com/ckan/ckan/issues/4514
 #  stdin_open: true

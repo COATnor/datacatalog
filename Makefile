@@ -9,7 +9,7 @@ generate : clean templates/ckan-static/i18n/en_ZW/LC_MESSAGES/ckan.mo
                                      templates/ckan \
                                  --static \
                                     templates/ckan-static/i18n \
-                                 --extensions=. \
+                                 --extensions=ckanext \
                                  --output=output \
 				dev \
 				deploy \
@@ -25,13 +25,9 @@ populate :
 	$(PYCMD) tools/ckan.py --initial=settings/ckan.yaml --server=$(SERVER)
 
 prepare :
-	[ -d ckanext-coat ] || git clone git@gitlab.com:nina-data/ckanext-coat.git
-	[ -d ckanext-coatcustom ] || git clone git@gitlab.com:nina-data/ckanext-coatcustom.git
-	[ -d ckanext-scheming ] || git clone https://github.com/ckan/ckanext-scheming
-	[ -d ckanext-dcat ] || git clone https://github.com/frafra/ckanext-dcat -b staging
-	[ -d ckanext-datasetversions ] || git clone https://github.com/frafra/ckanext-datasetversions -b staging
-	sudo chown -R 900 ckanext-*
-	sudo chcon -Rt svirt_sandbox_file_t ckanext-* 2>/dev/null || :
+	sudo chown -R 900 ckanext/ckanext-*
+	sudo chcon -Rt svirt_sandbox_file_t ckanext/ckanext-* 2>/dev/null || :
+
 
 clean :
 	rm -rf output

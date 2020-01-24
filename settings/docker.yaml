@@ -1,27 +1,10 @@
 - name: ckanext-coatcustom
-  repository: https://$GITLAB_USERNAME:$GITLAB_PASSWORD@gitlab.com/nina-data/ckanext-coatcustom.git
-  version: master
-  settings_add:
-    - ["app:main", ckan.plugins, coatcustom]
-  targets:
-    - deploy
-- name: ckanext-coatcustom
-  repository: https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.com/nina-data/ckanext-coatcustom.git
-  version: master
-  settings_add:
-    - ["app:main", ckan.plugins, coatcustom]
-  targets:
-    - deploy-gitlab
-- name: ckanext-coatcustom
-  local: true
-  repository: ckanext-coatcustom
   settings_add:
     - ["app:main", ckan.plugins, coatcustom]
   targets:
     - dev
+    - deploy
 - name: ckanext-scheming
-  repository: https://github.com/ckan/ckanext-scheming
-  version: master
   settings_add:
     - ["app:main", ckan.plugins, scheming_datasets]
     - ["app:main", ckan.plugins, scheming_organizations]
@@ -33,10 +16,7 @@
   targets:
     - dev
     - deploy
-    - deploy-gitlab
 - name: ckanext-spatial
-  repository: https://github.com/frafra/ckanext-spatial
-  version: staging
   settings_add:
     - ["app:main", ckan.plugins, spatial_metadata spatial_query]
   settings_set:
@@ -44,18 +24,12 @@
   targets:
     - dev
     - deploy
-    - deploy-gitlab
 - name: ckanext-dcat
-#  repository: https://github.com/ckan/ckanext-dcat
-#  version: master
-  repository: https://github.com/frafra/ckanext-dcat
-  version: staging
   settings_add:
     - ["app:main", ckan.plugins, dcat structured_data]
   targets:
     - dev
     - deploy
-    - deploy-gitlab
 #- name: ckanext-geoview
 #  repository: https://github.com/ckan/ckanext-geoview
 #  version: v0.0.13
@@ -67,8 +41,6 @@
 #    - dev
 #    - deploy
 - name: ckanext-oauth2
-  repository: https://github.com/NINAnor/ckanext-oauth2
-  version: feide
   settings_add:
     - ["app:main", ckan.plugins, oauth2]
   settings_set:
@@ -84,45 +56,13 @@
 #    - ["app:main", ckan.oauth2.authorization_header, OAUTH2_HEADER]
   targets:
     - deploy
-    - deploy-gitlab
 - name: ckanext-datasetversions
-  repository: https://github.com/frafra/ckanext-datasetversions.git
-  version: staging
-  settings_add:
-    - ["app:main", ckan.plugins, datasetversions]
-  targets:
-    - deploy
-    - deploy-gitlab
-- name: ckanext-datasetversions
-  repository: ckanext-datasetversions
-  local: true
   settings_add:
     - ["app:main", ckan.plugins, datasetversions]
   targets:
     - dev
-- name: ckanext-coat
-  repository: https://$GITLAB_USERNAME:$GITLAB_PASSWORD@gitlab.com/nina-data/ckanext-coat.git
-  version: master
-  settings_add:
-    - ["app:main", ckan.plugins, coat]
-    - ["app:main", ckanext.coat.resource_name_globally_unique, true]
-  settings_set:
-    - ["app:main", ckanext.coat.custom_form, false]
-  targets:
     - deploy
 - name: ckanext-coat
-  repository: https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.com/nina-data/ckanext-coat.git
-  version: master
-  settings_add:
-    - ["app:main", ckan.plugins, coat]
-    - ["app:main", ckanext.coat.resource_name_globally_unique, true]
-  settings_set:
-    - ["app:main", ckanext.coat.custom_form, false]
-  targets:
-    - deploy-gitlab
-- name: ckanext-coat
-  local: true
-  repository: ckanext-coat
   settings_add:
     - ["app:main", ckan.plugins, coat]
     - ["app:main", ckanext.coat.resource_name_globally_unique, true]
@@ -130,7 +70,9 @@
     - ["app:main", ckanext.coat.custom_form, false]
   targets:
     - dev
+    - deploy
 - name: config
+  dummy: true
   settings_set:
     - ["app:main", ckan.site_title, "COAT Data Portal"]
     - ["app:main", ckan.site_intro_text, "Climate-ecological Observatory for Arctic Tundra (COAT)"]
@@ -143,8 +85,8 @@
   targets:
     - dev
     - deploy
-    - deploy-gitlab
 - name: config-dev
+  dummy: true
   settings_set:
     - [DEFAULT, debug, true]
   targets:
