@@ -12,8 +12,7 @@ generate : clean templates/ckan-static/i18n/en_ZW/LC_MESSAGES/ckan.mo
                                  --extensions=ckanext \
                                  --output=output \
 				dev \
-				deploy \
-				deploy-gitlab
+				deploy
 
 templates/ckan-static/i18n/en_ZW/LC_MESSAGES/ckan.mo: templates/ckan-static/i18n/en_ZW/LC_MESSAGES/ckan.po
 	msgfmt $< -o $@
