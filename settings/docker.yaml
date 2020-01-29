@@ -30,6 +30,22 @@
   targets:
     - dev
     - deploy
+- name: ckanext-harvest
+  settings_add:
+    - ["app:main", ckan.plugins, harvest ckan_harvester]
+  targets:
+    - dev
+    - deploy
+- name: ckanext-kata
+  targets:
+    - dev
+    - deploy
+- name: ckanext-oaipmh
+  settings_add:
+    - ["app:main", ckan.plugins, oaipmh]
+  targets:
+    - dev
+    - deploy
 #- name: ckanext-geoview
 #  repository: https://github.com/ckan/ckanext-geoview
 #  version: v0.0.13
