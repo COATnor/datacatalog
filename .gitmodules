@@ -9,16 +9,16 @@
 	url = git@gitlab.com:nina-data/ckanext-coatcustom.git
 [submodule "ckanext/ckanext-datasetversions"]
 	path = ckanext/ckanext-datasetversions
-	url = https://github.com/frafra/ckanext-datasetversions
+	url = https://github.com/NINAnor/ckanext-datasetversions
 [submodule "ckanext/ckanext-dcat"]
 	path = ckanext/ckanext-dcat
-	url = https://github.com/frafra/ckanext-dcat
+	url = https://github.com/NINAnor/ckanext-dcat
 [submodule "ckanext/ckanext-scheming"]
 	path = ckanext/ckanext-scheming
 	url = https://github.com/ckan/ckanext-scheming
 [submodule "ckanext/ckanext-spatial"]
 	path = ckanext/ckanext-spatial
-	url = https://github.com/frafra/ckanext-spatial
+	url = https://github.com/NINAnor/ckanext-spatial
 	branch = staging
 [submodule "ckanext/ckanext-oauth2"]
 	path = ckanext/ckanext-oauth2
