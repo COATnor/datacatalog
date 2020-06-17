@@ -3563,9 +3563,9 @@ msgid ""
 msgstr ""
 "  <p style=\"text-align: justify\">The monitoring activity in COAT is organized into <a href=\"https://www.coat.no/en/Overview-COAT-modules\">food web modules</a>. "
 "Each of the food web modules includes a subsets of strongly linked species "
-"(or functional groups/species assemblages) that have high climate sensitivity and key functions. "
-"Key functions can be either ecological and/or societal. "
-"Each module is named by one of it’s primary monitoring targets - often the one with the highest management relevance.</p>"
+" (or functional groups/species assemblages) that have high climate sensitivity and key functions. "
+" Key functions can be either ecological and/or societal. "
+" Each module is named by one of it’s primary monitoring targets - often the one with the highest management relevance.</p>"
 
 
 #: ckan/templates/organization/snippets/helper.html:8
