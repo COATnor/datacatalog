@@ -85,7 +85,7 @@ services:
 
   db:
     container_name: db
-    image: registry.gitlab.com/nina-data/ckan/nina-2-8-3/postgresql
+    image: registry.gitlab.com/nina-data/ckan/nina-2-8-4/postgresql
     environment:
       - DS_RO_PASS=${DATASTORE_READONLY_PASSWORD}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -96,7 +96,7 @@ services:
 
   solr:
     container_name: solr
-    image: registry.gitlab.com/nina-data/ckan/nina-2-8-3/solr
+    image: registry.gitlab.com/nina-data/ckan/nina-2-8-4/solr
     volumes:
       - solr_data:/opt/solr/server/solr/ckan/data
     ports:

@@ -1,4 +1,4 @@
-FROM registry.gitlab.com/nina-data/ckan/nina-2-8-3/ckan
+FROM registry.gitlab.com/nina-data/ckan/nina-2-8-4/ckan
 
 USER root
 
