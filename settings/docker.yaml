@@ -43,6 +43,11 @@
 - name: ckanext-oaipmh
   settings_add:
     - ["app:main", ckan.plugins, oaipmh]
+  packages:
+    - python-dev
+    - libldap2-dev
+    - libsasl2-dev
+    - libssl-dev
   targets:
     - dev
     - deploy
