@@ -1,0 +1,4 @@
+*
+!output/*/i18n
+!output/*/ckan-entrypoint-custom*
+!ckanext/ckanext-*/
