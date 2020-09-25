@@ -1,6 +1,7 @@
 - name: ckanext-coatcustom
   settings_add:
     - ["app:main", ckan.plugins, coatcustom]
+    - ["app:main", ckan.rdf.profiles, "nina_dcat_profile=ckanext.coatcustom.nina_dcat_profile:CoatDcatProfile"]
   targets:
     - dev
     - deploy
@@ -51,6 +52,34 @@
   targets:
     - dev
     - deploy
+- name: ckanext-doi
+  settings_add:
+    - ["app:main", ckan.plugins, doi]
+  settings_set:
+    - ["app:main", ckanext.doi.test_mode, True]
+    - ["app:main", ckanext.doi.publisher, "NINA"]
+    - ["app:main", ckanext.doi.site_url, "http://coatdemo.nina.no"]
+    - ["app:main", ckanext.doi.site_title, "coatdemo"]
+  settings_set_startup:
+    - ["app:main", ckanext.doi.prefix, DOI_ACCOUNT_PREFIX_TEST]
+    - ["app:main", ckanext.doi.account_name, DOI_ACCOUNT_NAME_TEST]
+    - ["app:main", ckanext.doi.account_password, DOI_ACCOUNT_PWD_TEST]
+  targets:
+    - dev
+#- name: ckanext-doi
+#  settings_add:
+#    - ["app:main", ckan.plugins, doi]
+#  settings_set:
+#    - ["app:main", ckanext.doi.test_mode, False]
+#    - ["app:main", ckanext.doi.publisher, "NINA"]
+#    - ["app:main", ckanext.doi.site_url, "http://coatdemo.nina.no"]
+#    - ["app:main", ckanext.doi.site_title, "coatdemo"]
+#  settings_set_startup:
+#    - ["app:main", ckanext.doi.prefix, DOI_ACCOUNT_PREFIX_DEPLOY]
+#    - ["app:main", ckanext.doi.account_name, DOI_ACCOUNT_NAME_DEPLOY]
+#    - ["app:main", ckanext.doi.account_password, DOI_ACCOUNT_PWD_DEPLOY]
+#  targets:
+#    - deploy
 #- name: ckanext-geoview
 #  repository: https://github.com/ckan/ckanext-geoview
 #  version: v0.0.13
