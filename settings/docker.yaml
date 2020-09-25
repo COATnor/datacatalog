@@ -1,6 +1,7 @@
 - name: ckanext-coatcustom
   settings_add:
     - ["app:main", ckan.plugins, coatcustom]
+    - ["app:main", ckan.rdf.profiles, "nina_dcat_profile=ckanext.coatcustom.nina_dcat_profile:CoatDcatProfile"]
   targets:
     - dev
     - deploy
