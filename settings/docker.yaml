@@ -70,7 +70,7 @@
   settings_add:
     - ["app:main", ckan.plugins, doi]
   settings_set:
-  - ["app:main", ckanext.doi.test_mode, False]
+    - ["app:main", ckanext.doi.test_mode, False]
     - ["app:main", ckanext.doi.publisher, "NINA"]
     - ["app:main", ckanext.doi.site_url, "http://data.coat.no"]
     - ["app:main", ckanext.doi.site_title, "coat data portal"]
