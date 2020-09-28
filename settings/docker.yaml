@@ -58,9 +58,9 @@
   settings_set:
     - ["app:main", ckanext.doi.test_mode, True]
     - ["app:main", ckanext.doi.publisher, "NINA"]
-    - ["app:main", ckanext.doi.site_url, CKAN_SITE_URL]
     - ["app:main", ckanext.doi.site_title, "COAT"]
   settings_set_startup:
+    #- ["app:main", ckanext.doi.site_url, CKAN_SITE_URL]
     - ["app:main", ckanext.doi.prefix, DOI_ACCOUNT_PREFIX]
     - ["app:main", ckanext.doi.account_name, DOI_ACCOUNT_NAME]
     - ["app:main", ckanext.doi.account_password, DOI_ACCOUNT_PWD]
