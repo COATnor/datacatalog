@@ -115,6 +115,7 @@
     - ["app:main", ckan.site_intro_text, "Climate-ecological Observatory for Arctic Tundra (COAT)"]
     - ["app:main", ckan.site_logo, "images/coat.png"]
     - ["app:main", ckan.datastore.sqlalchemy.pool_pre_ping, true]
+    - ["app:main", ckan.search.show_all_types, "everything"]
     - ["app:main", ckan.favicon, "images/coat.png"]
     - ["app:main", ckan.locale_default, en_ZW]
   settings_add:
