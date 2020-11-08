@@ -67,12 +67,6 @@
   targets:
     - dev
     - deploy
-- name: ckanext-file_uploader_ui
-  settings_add:
-    - ["app:main", ckan.plugins, file_uploader_ui]
-  targets:
-    - dev
-    - deploy
 #- name: ckanext-geoview
 #  repository: https://github.com/ckan/ckanext-geoview
 #  version: v0.0.13

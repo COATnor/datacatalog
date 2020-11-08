@@ -42,6 +42,3 @@
 [submodule "ckanext/ckanext-doi"]
 	path = ckanext/ckanext-doi
 	url = https://github.com/NaturalHistoryMuseum/ckanext-doi.git
-[submodule "ckanext/ckanext-file_uploader_ui"]
-	path = ckanext/ckanext-file_uploader_ui
-	url = https://github.com/OriHoch/ckanext-file_uploader_ui.git
