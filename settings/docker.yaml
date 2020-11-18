@@ -10,7 +10,7 @@
     - ["app:main", ckan.plugins, scheming_datasets]
     - ["app:main", ckan.plugins, scheming_organizations]
   settings_set:
-    - ["app:main", scheming.dataset_schemas, "ckanext.coatcustom:coat_schema.json ckanext.coatcustom:coat_statevariable_schema.json ckanext.coatcustom:coat_protocol_schema.json"]
+    - ["app:main", scheming.dataset_schemas, "ckanext.coatcustom:coat_schema.json ckanext.coatcustom:coat_statevariable_schema.json ckanext.coatcustom:coat_protocol_schema.json ckanext.coatcustom:coat_dmp_schema.json"]
     - ["app:main", scheming.organization_schemas, "ckanext.coatcustom:coat_org_schema.json"]
     - ["app:main", scheming.presets, "ckanext.coatcustom:coat_presets.json"]
     - ["app:main", scheming.dataset_fallback, false]
@@ -126,6 +126,6 @@
 - name: config-dev
   dummy: true
   settings_set:
-    - [DEFAULT, debug, true]
+    - [DEFAULT, debug, false]
   targets:
     - dev
