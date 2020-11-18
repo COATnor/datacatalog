@@ -56,7 +56,6 @@
   settings_add:
     - ["app:main", ckan.plugins, doi]
   settings_set:
-    - ["app:main", ckanext.doi.test_mode, True]
     - ["app:main", ckanext.doi.publisher, "NINA"]
     - ["app:main", ckanext.doi.site_title, "COAT"]
   settings_set_startup:
@@ -66,6 +65,16 @@
     - ["app:main", ckanext.doi.account_password, DOI_ACCOUNT_PWD]
   targets:
     - dev
+    - deploy
+- name: ckanext-doi
+  settings_set:
+    - [ "app:main", ckanext.doi.test_mode, True ]
+  targets:
+    - dev
+- name: ckanext-doi
+  settings_set:
+    - [ "app:main", ckanext.doi.test_mode, False ]
+  targets:
     - deploy
 #- name: ckanext-geoview
 #  repository: https://github.com/ckan/ckanext-geoview
