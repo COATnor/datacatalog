@@ -63,18 +63,9 @@
     - ["app:main", ckanext.doi.prefix, DOI_ACCOUNT_PREFIX]
     - ["app:main", ckanext.doi.account_name, DOI_ACCOUNT_NAME]
     - ["app:main", ckanext.doi.account_password, DOI_ACCOUNT_PWD]
+    - ["app:main", ckanext.doi.test_mode, DOI_TEST_MODE]
   targets:
     - dev
-    - deploy
-- name: ckanext-doi
-  settings_set:
-    - [ "app:main", ckanext.doi.test_mode, True ]
-  targets:
-    - dev
-- name: ckanext-doi
-  settings_set:
-    - [ "app:main", ckanext.doi.test_mode, False ]
-  targets:
     - deploy
 #- name: ckanext-geoview
 #  repository: https://github.com/ckan/ckanext-geoview
