@@ -85,7 +85,7 @@
 #    - ["app:main", ckan.oauth2.reset_url, https://YOUR_OAUTH_SERVICE/users/password/new]
 #    - ["app:main", ckan.oauth2.edit_url, https://YOUR_OAUTH_SERVICE/settings]
     - ["app:main", ckan.oauth2.profile_api_url, "https://auth.dataporten.no/userinfo"]
-    - ["app:main", ckan.oauth2.scope, profile email]
+    - ["app:main", ckan.oauth2.scope, profile userinfo-name userinfo-photo email]
 #    - ["app:main", ckan.oauth2.rememberer_name, auth_tkt]
     - ["app:main", ckan.oauth2.profile_api_user_field, email]
     - ["app:main", ckan.oauth2.profile_api_fullname_field, name]
