@@ -22,7 +22,7 @@ volumes:
 
 x-common-ckan:
   &default-common-ckan
-  image: registry.gitlab.com/nina-data/nina-ckan-coat/master
+  image: registry.gitlab.com/nina-data/nina-ckan-coat/performance
   build:
     context: ../..
     dockerfile: {{ output_path }}/{{ target }}/Dockerfile
