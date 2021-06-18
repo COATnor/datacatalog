@@ -1,4 +1,4 @@
-.PHONY = generate deploy populate prepare clean
+.PHONY = generate deploy compose attach populate prepare clean
 
 include tools/pycmd.mk
 
@@ -19,6 +19,12 @@ templates/ckan-static/i18n/en_ZW/LC_MESSAGES/ckan.mo: templates/ckan-static/i18n
 
 deploy :
 	$(PYCMD) tools/portainer.py $(NAME) $(PROJECT) --server=$(SERVER)
+
+compose :
+	docker-compose -f output/dev/docker-compose.yml up $(OPTS)
+
+attach :
+	docker attach $$(docker container ls -q -f name=^ckan$$)
 
 populate :
 	$(PYCMD) tools/ckan.py --initial=settings/ckan.yaml --server=$(SERVER)
