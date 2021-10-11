@@ -63,9 +63,7 @@ x-common-ckan:
 #    - ckan_home:/usr/lib/ckan
     - ckan_storage:/var/lib/ckan
 {% block ckan_volumes %}{% endblock %}
-{% for ext in extensions if target in ext.targets and target.startswith('dev') and not ext.dummy %}
-    - {{ extensions_path_abs }}/{{ ext.name }}:/usr/lib/ckan/venv/src/{{ ext.name }}
-{% endfor %}
+    - {{ extensions_path_abs }}:/usr/lib/ckan/venv/src/ckanext
 #    restart: unless-stopped # https://github.com/ckan/ckan/issues/4514
 #  stdin_open: true
 #  tty: true
