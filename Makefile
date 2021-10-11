@@ -30,7 +30,7 @@ populate :
 	$(PYCMD) tools/ckan.py --initial=settings/ckan.yaml --server=$(SERVER)
 
 prepare :
-	sudo chmod -R g+w ckanext/ckanext-*
+	chmod -R g+w ckanext/ckanext-*
 	sudo chown -R 900 ckanext/ckanext-*
 	sudo chcon -Rt svirt_sandbox_file_t ckanext/ckanext-* 2>/dev/null || :
 
