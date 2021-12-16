@@ -25,7 +25,6 @@ __pycache__/
 
 # Pycharm
 .idea/*
-templates/ckan-static/i18n/en_ZW/LC_MESSAGES/.idea/
 
 # translation .mo file
 *.mo

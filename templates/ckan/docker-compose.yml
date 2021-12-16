@@ -58,6 +58,8 @@ x-common-ckan:
     # docker-compose-wait
     WAIT_HOSTS_TIMEOUT: 180
     WAIT_SLEEP_INTERVAL: 10
+    # Dev
+    USERSPEC: root
   volumes:
 #    - ckan_config:/etc/ckan
 #    - ckan_home:/usr/lib/ckan
@@ -74,6 +76,9 @@ services:
     container_name: ckan
     ports:
       - "${CKAN_PORT}:5000"
+    stdin_open: true
+    tty: true
+    command: bash -c "source /usr/lib/ckan/venv/bin/activate && python -m pdb /usr/lib/ckan/venv/bin/ckan -c /etc/ckan/production.ini run --host 0.0.0.0 --disable-reloader --passthrough_errors"
 
   datapusher:
     container_name: datapusher

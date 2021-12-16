@@ -117,9 +117,6 @@
     - ["app:main", ckan.datastore.sqlalchemy.pool_pre_ping, true]
     - ["app:main", ckan.search.show_all_types, "everything"]
     - ["app:main", ckan.favicon, "images/coat.png"]
-    - ["app:main", ckan.locale_default, en_ZW]
-  settings_add:
-    - ["app:main", ckan.locale_offered, en_ZW]
   targets:
     - dev
     - deploy
