@@ -18,7 +18,7 @@
 	url = https://github.com/ckan/ckanext-scheming
 [submodule "ckanext/ckanext-spatial"]
 	path = ckanext/ckanext-spatial
-	url = https://github.com/NINAnor/ckanext-spatial
+	url = https://github.com/ckan/ckanext-spatial
 	branch = staging
 [submodule "ckanext/ckanext-oauth2"]
 	path = ckanext/ckanext-oauth2
