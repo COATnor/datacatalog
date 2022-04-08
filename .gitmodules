@@ -1,6 +1,3 @@
-[submodule "tools"]
-	path = tools
-	url = git@gitlab.com:nina-data/tools.git
 [submodule "ckanext/ckanext-coat"]
 	path = ckanext/ckanext-coat
 	url = git@gitlab.com:nina-data/ckanext-coat.git
@@ -12,22 +9,17 @@
 	url = https://github.com/NINAnor/ckanext-datasetversions
 [submodule "ckanext/ckanext-dcat"]
 	path = ckanext/ckanext-dcat
-	url = https://github.com/NINAnor/ckanext-dcat
+	url = https://github.com/ckan/ckanext-dcat
 [submodule "ckanext/ckanext-scheming"]
 	path = ckanext/ckanext-scheming
 	url = https://github.com/ckan/ckanext-scheming
 [submodule "ckanext/ckanext-spatial"]
 	path = ckanext/ckanext-spatial
 	url = https://github.com/ckan/ckanext-spatial
-	branch = staging
 [submodule "ckanext/ckanext-oauth2"]
 	path = ckanext/ckanext-oauth2
 	url = https://github.com/NINAnor/ckanext-oauth2
 	branch = feide
-[submodule "ckanext/oaipmh"]
-	path = ckanext/oaipmh
-	url = https://github.com/NINAnor/ckanext-oaipmh
-	branch = nina-version
 [submodule "ckanext/ckanext-kata"]
 	path = ckanext/ckanext-kata
 	url = https://github.com/NINAnor/ckanext-kata.git
