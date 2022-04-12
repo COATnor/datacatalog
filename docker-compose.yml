@@ -45,7 +45,8 @@ x-common-ckan:
     USERSPEC: root
   volumes:
     - ckan_storage:/var/lib/ckan
-    - ./ckanext:/usr/lib/ckan/venv/src/ckanext
+    - ./ckanext:/usr/lib/ckan/venv/src/ckanext:ro
+    - ./custom/coat-entrypoint.sh:/coat-entrypoint.sh:ro
 
 services:
   ckan:

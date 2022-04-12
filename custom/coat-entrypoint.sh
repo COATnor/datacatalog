@@ -107,6 +107,9 @@ conf_set ckanext.coat.resource_name_globally_unique true
 conf_set ckanext.coat.custom_form false
 
 : ${USERSPEC:=root}
-chroot --userspec=$USERSPEC / ckan -c "${CONFIG}" search-index rebuild # workaround
+if [ "${ENV:=}" == "prod" ]
+then
+    chroot --userspec=$USERSPEC / ckan -c "${CONFIG}" search-index rebuild # workaround
+fi
 
 exec "$@"
