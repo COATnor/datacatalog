@@ -18,7 +18,7 @@ function conf_set_list() {
 #ckan
 conf_set ckan.site_title "COAT Data Portal"
 conf_set ckan.site_description "En katalog som inneholder alle prosjektene i NINA"
-conf_set ckan.site_logo "images/coat.png"
+conf_set ckan.site_logo "/images/coat.png"
 conf_set ckan.site_intro_text "Climate-ecological Observatory for Arctic Tundra (COAT)"
 conf_set ckan.site_about "
 # About
@@ -48,7 +48,7 @@ procedures can be found in the: [Data Management Plan](/dmp).
 "
 conf_set ckan.datastore.sqlalchemy.pool_pre_ping true
 conf_set ckan.search.show_all_types everything
-conf_set ckan.favicon "images/coat.png"
+conf_set ckan.favicon "/images/coat.png"
 
 #ckanext-coatcustom
 conf_set_list ckan.plugins coatcustom
