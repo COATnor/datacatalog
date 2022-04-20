@@ -1,0 +1,8 @@
+services:
+  test:
+    image: nina-ckan-coat:test
+    depends_on:
+      ckan:
+        condition: service_healthy
+    environment:
+      CKAN_URL: http://ckan:5000

@@ -27,6 +27,12 @@ Dependencies:
 
 Uncomment `pdb` section in `docker-compose.yml` and start CKAN.
 
+### Testing
+
+```bash
+docker compose -f docker-compose.yml -f tests/docker-compose.yml run test
+```
+
 ## Deployment
 
 1. Copy `testing.env` to `.env`

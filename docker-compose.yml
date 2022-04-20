@@ -10,10 +10,12 @@ x-common-ckan:
   &default-common-ckan
   image: nina-ckan-coat:dev
   depends_on:
-    - db
-    - solr
-    - redis
-    - datapusher
+    db:
+      condition: service_healthy
+    solr:
+      condition: service_healthy
+    redis:
+      condition: service_healthy
   environment:
     &default-common-env-ckan
     # Defaults work with linked containers, change to use own Postgres, SolR, Redis or Datapusher
@@ -91,3 +93,5 @@ services:
   redis:
     container_name: redis
     image: redis:6
+    healthcheck:
+      test: ["CMD", "redis-cli", "-e", "QUIT"]

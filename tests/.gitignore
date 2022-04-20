@@ -1,0 +1,11 @@
+# Python
+__pycache__
+__pypackages__
+
+# PDM
+.pdm.toml
+
+# Seleniumbase
+archived_logs/
+latest_logs/
+geckodriver.log

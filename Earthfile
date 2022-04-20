@@ -74,3 +74,15 @@ container:
     CMD ["ckan","-c","/etc/ckan/production.ini", "run", "--host", "0.0.0.0"]
     ARG CONTAINER_IMAGE=nina-ckan-coat:dev
     SAVE IMAGE --push $CONTAINER_IMAGE
+
+test:
+    DO +INSTALL --pkgs="firefox xvfb"
+    DO +INSTALL_PY --pkgs="pdm"
+    ENV DISPLAY=:99
+    COPY tests/pdm.lock tests/pyproject.toml .
+    RUN pdm install --no-self && pdm run seleniumbase install geckodriver
+    COPY tests/base.py .
+    ENTRYPOINT []
+    CMD pdm run pytest --browser firefox base.py
+    ARG CONTAINER_IMAGE=nina-ckan-coat:test
+    SAVE IMAGE --push $CONTAINER_IMAGE
