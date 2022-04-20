@@ -1,7 +1,5 @@
-# Project directories
-output/
-
-
+# project
+.env
 
 # vim temporary/swap files
 *~

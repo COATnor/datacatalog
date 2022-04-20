@@ -35,7 +35,7 @@ docker compose -f docker-compose.yml -f tests/docker-compose.yml run test
 
 ## Deployment
 
-1. Copy `testing.env` to `.env`
+1. Copy `template.env` to `.env`
 2. Set `MODE` to `prod`
 3. Set `DOI_*` variables to production values
 4. Set `CKAN_OAUTH2_*` variables
