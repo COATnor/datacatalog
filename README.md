@@ -20,17 +20,20 @@ Dependencies:
 
 - Build: `earthly +container`
 - Copy `testing.env` to `.env` and set `DOI_*` test variables
-- Run: `docker compose run ckan`
+- Run: `docker compose --profile prod up -d`
 - Stop: `docker compose down`
 
 ### Debugging
 
-Uncomment `pdb` section in `docker-compose.yml` and start CKAN.
+```bash
+docker compose --profile debug run --rm -it ckan-debug
+```
 
 ### Testing
 
 ```bash
-docker compose -f docker-compose.yml -f tests/docker-compose.yml run test
+earthly +test
+docker compose --profile test run --rm test
 ```
 
 ## Deployment
