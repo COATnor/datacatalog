@@ -6,8 +6,28 @@ volumes:
   pg_data:
     driver: local
 
+x-common-ckan-env:
+  &common-ckan-env
+  # Defaults work with linked containers, change to use own Postgres, SolR, Redis or Datapusher
+  CKAN_SQLALCHEMY_URL: postgresql://ckan:${POSTGRES_PASSWORD}@db/ckan
+  CKAN_DATASTORE_WRITE_URL: postgresql://ckan:${POSTGRES_PASSWORD}@db/datastore
+  CKAN_DATASTORE_READ_URL: postgresql://datastore_ro:${DATASTORE_READONLY_PASSWORD}@db/datastore
+  CKAN_SOLR_URL: http://solr:8983/solr/ckan
+  CKAN_REDIS_URL: redis://redis:6379/1
+  CKAN_DATAPUSHER_URL: http://datapusher:8800
+  CKAN_SITE_URL: ${CKAN_SITE_URL}
+  CKAN_MAX_UPLOAD_SIZE_MB: ${CKAN_MAX_UPLOAD_SIZE_MB}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  DS_RO_PASS: ${DATASTORE_READONLY_PASSWORD}
+  # DOI
+  DOI_PREFIX: ${DOI_PREFIX}
+  DOI_ACCOUNT_NAME: ${DOI_ACCOUNT_NAME}
+  DOI_ACCOUNT_PWD: ${DOI_ACCOUNT_PWD}
+  # Dev
+  USERSPEC: root
+
 x-common-ckan:
-  &default-common-ckan
+  &common-ckan
   image: nina-ckan-coat:dev
   depends_on:
     db:
@@ -16,72 +36,62 @@ x-common-ckan:
       condition: service_healthy
     redis:
       condition: service_healthy
-  environment:
-    &default-common-env-ckan
-    # Defaults work with linked containers, change to use own Postgres, SolR, Redis or Datapusher
-    CKAN_SQLALCHEMY_URL: postgresql://ckan:${POSTGRES_PASSWORD}@db/ckan
-    CKAN_DATASTORE_WRITE_URL: postgresql://ckan:${POSTGRES_PASSWORD}@db/datastore
-    CKAN_DATASTORE_READ_URL: postgresql://datastore_ro:${DATASTORE_READONLY_PASSWORD}@db/datastore
-    CKAN_SOLR_URL: http://solr:8983/solr/ckan
-    CKAN_REDIS_URL: redis://redis:6379/1
-    CKAN_DATAPUSHER_URL: http://datapusher:8800
-    CKAN_SITE_URL: ${CKAN_SITE_URL}
-    CKAN_MAX_UPLOAD_SIZE_MB: ${CKAN_MAX_UPLOAD_SIZE_MB}
-    POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    DS_RO_PASS: ${DATASTORE_READONLY_PASSWORD}
-    CKAN_OAUTH2_AUTHORIZATION_ENDPOINT: ${CKAN_OAUTH2_AUTHORIZATION_ENDPOINT}
-    CKAN_OAUTH2_TOKEN_ENDPOINT: ${CKAN_OAUTH2_TOKEN_ENDPOINT}
-    CKAN_OAUTH2_CLIENT_ID: ${CKAN_OAUTH2_CLIENT_ID}
-    CKAN_OAUTH2_CLIENT_SECRET: ${CKAN_OAUTH2_CLIENT_SECRET}
-    # DOI
-    DOI_PREFIX: ${DOI_PREFIX}
-    DOI_ACCOUNT_NAME: ${DOI_ACCOUNT_NAME}
-    DOI_ACCOUNT_PWD: ${DOI_ACCOUNT_PWD}
-    DOI_TEST_MODE: ${DOI_TEST_MODE}
-    # docker-compose-wait
-    WAIT_HOSTS_TIMEOUT: 180
-    WAIT_SLEEP_INTERVAL: 10
-    # Dev
-    USERSPEC: root
   volumes:
-    - ckan_storage:/var/lib/ckan
-    - ./ckanext:/usr/lib/ckan/venv/src/ckanext:ro
-    - ./custom/coat-entrypoint.sh:/coat-entrypoint.sh:ro
+    #- ckan_storage:/var/lib/ckan
+    - ./coat-public/data:/var/lib/ckan
   ports:
     - "${CKAN_PORT}:5000"
   healthcheck:
     test: ["CMD", "wget", "-qO", "/dev/null", "localhost:5000/dataset/"]
 
+x-common-ckan-prod:
+  &common-ckan-prod
+  << : *common-ckan
+  environment:
+    << : *common-ckan-env
+    CKAN_SITE_URL: ${CKAN_SITE_URL}
+    CKAN_OAUTH2_AUTHORIZATION_ENDPOINT: ${CKAN_OAUTH2_AUTHORIZATION_ENDPOINT}
+    CKAN_OAUTH2_TOKEN_ENDPOINT: ${CKAN_OAUTH2_TOKEN_ENDPOINT}
+    CKAN_OAUTH2_CLIENT_ID: ${CKAN_OAUTH2_CLIENT_ID}
+    CKAN_OAUTH2_CLIENT_SECRET: ${CKAN_OAUTH2_CLIENT_SECRET}
+    DOI_TEST_MODE: false
+    ENV: prod
+
+x-common-ckan-dev:
+  &common-ckan-dev
+  << : *common-ckan
+  volumes:
+    #- ckan_storage:/var/lib/ckan
+    - ./coat-public/data:/var/lib/ckan
+    - ./ckanext:/usr/lib/ckan/venv/src/ckanext:ro
+  environment:
+    &common-ckan-env-dev
+    << : *common-ckan-env
+    DOI_TEST_MODE: true
+    ENV: dev
+
 services:
-  ckan:
-    << : *default-common-ckan
+  ckan-prod:
+    << : *common-ckan-prod
     profiles:
       - prod
-    environment:
-      << : *default-common-env-ckan
-      ENV: prod
-      CKAN_SITE_URL: http://localhost:5000
 
-  ckan-test:
-    << : *default-common-ckan
-    hostname: ckan
+  ckan-dev:
+    << : *common-ckan-dev
     profiles:
-      - test
-    environment:
-      << : *default-common-env-ckan
-      ENV: prod
-      CKAN_SITE_URL: http://ckan:5000
-
-  ckan-debug:
-    << : *default-common-ckan
-    profiles:
-      - debug
-    environment:
-      << : *default-common-env-ckan
-      ENV: debug
+      - dev
     command: 'python -m pdb /usr/lib/ckan/venv/bin/ckan --config /etc/ckan/production.ini run --host 0.0.0.0 --passthrough-errors'
     tty: true
     stdin_open: true
+
+  ckan-test:
+    << : *common-ckan-dev
+    profiles:
+      - test
+    hostname: ckan
+    environment:
+      << : *common-ckan-env-dev
+      CKAN_SITE_URL: http://ckan:5000
 
   test:
     profiles:

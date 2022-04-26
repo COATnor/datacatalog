@@ -16,18 +16,12 @@ Dependencies:
   - Earthly
   - Docker
 
-## Development
+## Development/debugging
 
 - Build: `earthly +container`
 - Copy `testing.env` to `.env` and set `DOI_*` test variables
-- Run: `docker compose --profile prod up -d`
-- Stop: `docker compose down`
-
-### Debugging
-
-```bash
-docker compose --profile debug run --rm -it ckan-debug
-```
+- Run: `docker compose --profile dev run --rm --service-ports ckan-dev`
+- Type `c` and press `ENTER` when `pdb` prompt appears
 
 ### Testing
 
@@ -39,10 +33,8 @@ docker compose --profile test run --rm test
 ## Deployment
 
 1. Copy `template.env` to `.env`
-2. Set `MODE` to `prod`
-3. Set `DOI_*` variables to production values
-4. Set `CKAN_OAUTH2_*` variables
-5. Remove `./ckanext` as mount point
+2. Set `DOI_*` variables
+3. Set `CKAN_OAUTH2_*` variables
 
 ## Common commands
 
