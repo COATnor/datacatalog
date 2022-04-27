@@ -27,7 +27,6 @@ Dependencies:
 
 ```bash
 earthly +test
-docker compose --profile test run --rm test
 ```
 
 ## Deployment

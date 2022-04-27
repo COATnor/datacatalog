@@ -69,13 +69,12 @@ container:
     END
     COPY +language/ckan.mo $CKAN_VENV/src/ckan/ckan/i18n/en
     COPY custom/coat-entrypoint.sh .
-    RUN chmod +x coat-entrypoint.sh # earthly < v0.6.14
     ENTRYPOINT ["/coat-entrypoint.sh"]
     CMD ["ckan","-c","/etc/ckan/production.ini", "run", "--host", "0.0.0.0"]
     ARG CONTAINER_IMAGE=nina-ckan-coat:dev
     SAVE IMAGE --push $CONTAINER_IMAGE
 
-test:
+container-test:
     DO +INSTALL --pkgs="firefox xvfb"
     DO +INSTALL_PY --pkgs="pdm"
     ENV DISPLAY=:99
@@ -86,3 +85,10 @@ test:
     CMD pdm run pytest --browser firefox base.py
     ARG CONTAINER_IMAGE=nina-ckan-coat:test
     SAVE IMAGE --push $CONTAINER_IMAGE
+
+test: # https://github.com/earthly/earthly/issues/1144
+    LOCALLY
+    RUN earthly +container
+    RUN earthly +container-test
+    RUN docker compose --profile test run --rm test ;\
+        docker compose --profile test down -v
