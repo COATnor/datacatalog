@@ -64,6 +64,7 @@ x-common-ckan-dev:
     #- ckan_storage:/var/lib/ckan
     - ./coat-public/data:/var/lib/ckan
     - ./ckanext:/usr/lib/ckan/venv/src/ckanext:ro
+    - ./custom/coat-entrypoint.sh:/coat-entrypoint.sh:ro
   environment:
     &common-ckan-env-dev
     << : *common-ckan-env
