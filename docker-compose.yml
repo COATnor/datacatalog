@@ -107,8 +107,6 @@ services:
   datapusher:
     container_name: datapusher
     image: clementmouchet/datapusher
-    ports:
-      - "8800:8800"
 
   db:
     container_name: db
