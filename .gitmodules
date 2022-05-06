@@ -12,7 +12,7 @@
 	url = https://github.com/ckan/ckanext-dcat
 [submodule "ckanext/ckanext-scheming"]
 	path = ckanext/ckanext-scheming
-	url = https://github.com/ckan/ckanext-scheming
+	url = https://github.com/frafra/ckanext-scheming
 [submodule "ckanext/ckanext-spatial"]
 	path = ckanext/ckanext-spatial
 	url = https://github.com/ckan/ckanext-spatial
