@@ -15,7 +15,6 @@ x-common-ckan-env:
   CKAN_SOLR_URL: http://solr:8983/solr/ckan
   CKAN_REDIS_URL: redis://redis:6379/1
   CKAN_DATAPUSHER_URL: http://datapusher:8800
-  CKAN_SITE_URL: ${CKAN_SITE_URL}
   CKAN_MAX_UPLOAD_SIZE_MB: ${CKAN_MAX_UPLOAD_SIZE_MB}
   POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
   DS_RO_PASS: ${DATASTORE_READONLY_PASSWORD}
@@ -49,7 +48,6 @@ x-common-ckan-prod:
   << : *common-ckan
   environment:
     << : *common-ckan-env
-    CKAN_SITE_URL: ${CKAN_SITE_URL}
     CKAN_OAUTH2_AUTHORIZATION_ENDPOINT: ${CKAN_OAUTH2_AUTHORIZATION_ENDPOINT}
     CKAN_OAUTH2_TOKEN_ENDPOINT: ${CKAN_OAUTH2_TOKEN_ENDPOINT}
     CKAN_OAUTH2_CLIENT_ID: ${CKAN_OAUTH2_CLIENT_ID}
@@ -65,6 +63,7 @@ x-common-ckan-dev:
     - ./coat-public/data:/var/lib/ckan
     - ./ckanext:/usr/lib/ckan/venv/src/ckanext:ro
     - ./custom/coat-entrypoint.sh:/coat-entrypoint.sh:ro
+  entrypoint: ["bash", "coat-entrypoint-dev.sh"]
   environment:
     &common-ckan-env-dev
     << : *common-ckan-env
@@ -81,7 +80,7 @@ services:
     << : *common-ckan-dev
     profiles:
       - dev
-    command: 'python -m pdb /usr/lib/ckan/venv/bin/ckan --config /etc/ckan/production.ini run --host 0.0.0.0 --passthrough-errors'
+    command: 'python -m pdb -c continue /usr/lib/ckan/venv/bin/ckan --config /etc/ckan/production.ini run --host 0.0.0.0 --passthrough-errors'
     tty: true
     stdin_open: true
 
@@ -89,6 +88,7 @@ services:
     << : *common-ckan-dev
     profiles:
       - test
+    command: 'ckan --config /etc/ckan/production.ini run --host 0.0.0.0'
     hostname: ckan
     environment:
       << : *common-ckan-env-dev

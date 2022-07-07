@@ -21,12 +21,13 @@ Dependencies:
 - Build: `earthly +container`
 - Copy `testing.env` to `.env` and set `DOI_*` test variables
 - Run: `docker compose --profile dev run --rm --service-ports ckan-dev`
-- Type `c` and press `ENTER` when `pdb` prompt appears
 
 ### Testing
 
 ```bash
-earthly +test
+earthly +container-test
+docker compose --profile test down -v
+docker compose --profile test run --rm ckan-test
 ```
 
 ## Deployment

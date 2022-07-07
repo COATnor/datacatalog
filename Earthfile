@@ -67,8 +67,9 @@ container:
         COPY ckanext/ckanext-${extension} $CKAN_VENV/src/ckanext/ckanext-${extension}
         RUN ckan-pip3 install --no-deps -e $CKAN_VENV/src/ckanext/ckanext-${extension}
     END
+    RUN ckan-pip3 install flask_debugtoolbar
     COPY +language/ckan.mo $CKAN_VENV/src/ckan/ckan/i18n/en
-    COPY custom/coat-entrypoint.sh .
+    COPY custom/coat-entrypoint.sh custom/coat-entrypoint-dev.sh .
     ENTRYPOINT ["/coat-entrypoint.sh"]
     CMD ["ckan","-c","/etc/ckan/production.ini", "run", "--host", "0.0.0.0"]
     ARG CONTAINER_IMAGE=nina-ckan-coat:dev
@@ -85,10 +86,3 @@ container-test:
     CMD pdm run pytest --browser firefox base.py
     ARG CONTAINER_IMAGE=nina-ckan-coat:test
     SAVE IMAGE --push $CONTAINER_IMAGE
-
-test: # https://github.com/earthly/earthly/issues/1144
-    LOCALLY
-    RUN earthly +container
-    RUN earthly +container-test
-    RUN docker compose --profile test run --rm test ;\
-        docker compose --profile test down -v
