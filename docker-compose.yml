@@ -9,6 +9,7 @@ volumes:
 x-common-ckan-env:
   &common-ckan-env
   # Defaults work with linked containers, change to use own Postgres, SolR, Redis or Datapusher
+  CKAN_SITE_URL: ${CKAN_SITE_URL}
   CKAN_SQLALCHEMY_URL: postgresql://ckan:${POSTGRES_PASSWORD}@db/ckan
   CKAN_DATASTORE_WRITE_URL: postgresql://ckan:${POSTGRES_PASSWORD}@db/datastore
   CKAN_DATASTORE_READ_URL: postgresql://datastore_ro:${DATASTORE_READONLY_PASSWORD}@db/datastore
@@ -22,8 +23,6 @@ x-common-ckan-env:
   DOI_PREFIX: ${DOI_PREFIX}
   DOI_ACCOUNT_NAME: ${DOI_ACCOUNT_NAME}
   DOI_ACCOUNT_PWD: ${DOI_ACCOUNT_PWD}
-  # Dev
-  USERSPEC: root
 
 x-common-ckan:
   &common-ckan
@@ -54,6 +53,7 @@ x-common-ckan-prod:
     CKAN_OAUTH2_CLIENT_SECRET: ${CKAN_OAUTH2_CLIENT_SECRET}
     DOI_TEST_MODE: false
     ENV: prod
+    USERSPEC: root
 
 x-common-ckan-dev:
   &common-ckan-dev
@@ -83,6 +83,9 @@ services:
     command: 'python -m pdb -c continue /usr/lib/ckan/venv/bin/ckan --config /etc/ckan/production.ini run --host 0.0.0.0 --passthrough-errors'
     tty: true
     stdin_open: true
+    environment:
+      << : *common-ckan-env-dev
+      WERKZEUG_DEBUG_PIN: 5000
 
   ckan-test:
     << : *common-ckan-dev
