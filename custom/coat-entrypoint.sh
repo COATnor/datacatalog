@@ -108,5 +108,6 @@ conf_set ckanext.coat.custom_form false
 
 : ${USERSPEC:=root}
 chroot --userspec=$USERSPEC / ckan -c "${CONFIG}" search-index rebuild # workaround
+chroot --userspec=$USERSPEC / ckan -c "${CONFIG}" doi initdb
 
 exec "$@"
