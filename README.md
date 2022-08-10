@@ -27,7 +27,7 @@ Dependencies:
 ```bash
 earthly +container-test
 docker compose --profile test down -v
-docker compose --profile test run --rm ckan-test
+docker compose --profile test run --rm test
 ```
 
 ## Deployment
