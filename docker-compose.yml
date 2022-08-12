@@ -35,8 +35,8 @@ x-common-ckan:
     redis:
       condition: service_healthy
   volumes:
-    #- ckan_storage:/var/lib/ckan
-    - ./coat-public/data:/var/lib/ckan
+    - &common-ckan-volume
+      ckan_storage:/var/lib/ckan
   ports:
     - "${CKAN_PORT}:5000"
   healthcheck:
@@ -59,8 +59,7 @@ x-common-ckan-dev:
   &common-ckan-dev
   << : *common-ckan
   volumes:
-    #- ckan_storage:/var/lib/ckan
-    - ./coat-public/data:/var/lib/ckan
+    - *common-ckan-volume
     - ./ckanext:/usr/lib/ckan/venv/src/ckanext:ro
     - ./custom/coat-entrypoint.sh:/coat-entrypoint.sh:ro
   entrypoint: ["bash", "coat-entrypoint-dev.sh"]
