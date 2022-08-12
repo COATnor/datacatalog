@@ -3570,8 +3570,8 @@ msgstr ""
 
 #: ckan/templates/organization/snippets/helper.html:8
 msgid ""
-" CKAN Organizations are used to create, manage and publish collections of"
-" datasets. Users can have different roles within an Organization, "
+" CKAN Modules are used to create, manage and publish collections of"
+" datasets. Users can have different roles within a Module, "
 "depending on their level of authorisation to create, edit and publish. "
 msgstr ""
 "  <p style=\"text-align: justify\">The monitoring activity in COAT is organized into <a href=\"https://www.coat.no/en/Overview-COAT-modules\">food web modules</a>. "
