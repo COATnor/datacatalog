@@ -17,34 +17,28 @@ function conf_set_list() {
 
 #ckan
 conf_set ckan.site_title "COAT Data Portal"
-conf_set ckan.site_description "En katalog som inneholder alle prosjektene i NINA"
+conf_set ckan.site_description "Climate-ecological Observatory for Arctic Tundra (COAT)"
 conf_set ckan.site_logo "/images/coat.png"
 conf_set ckan.site_intro_text "Climate-ecological Observatory for Arctic Tundra (COAT)"
 conf_set ckan.site_about "
 # About
 
-COAT (Climate-ecological Observatory for Arctic Tundra, www.coat.no) is an
-adaptive, ecosystem based, observation system for Arctic tundra in Norway.
+**COAT** (*Climate-ecological Observatory for Arctic Tundra*, [www.coat.no](https://www.coat.no)) is an adaptive, ecosystem based, observation system for Arctic tundra in Norway.
 
-The COAT Data Portal hosts ecological and climatic primary monitoring data from
-COATs monitoring sites in high-arctic (Svalbard) and low-arctic (Varanger)
-tundra, as well as certain prioritized data from outside these regions.
-In addition, the COAT Data Portal contains a number of secondary (derived) data
-sets, termed COAT state variables, which are calculated from primary data
-originating either from within COAT or requested from other data repositories.
-The state variables are the primary input to the quantitative analysis and
-predictive modelling performed in COAT.
+The COAT Data Portal hosts ecological and climatic primary monitoring data from COATs monitoring sites in high-arctic (Svalbard) and low-arctic (Varanger) tundra, as well as certain prioritized data from outside these regions.
+In addition, the COAT Data Portal contains a number of secondary (derived) datasets, termed COAT state variables, which are calculated from primary data originating either from within COAT or requested from other data repositories.
+The state variables are the primary input to the quantitative analysis and predictive modelling performed in COAT.
 
-In COAT we aim to publish all research data unless limited by either privacy or
-license restrictions. This means that the majority of COAT data are distributed
-under the Creative Commons Public License (CC BY 4.0).
-Our commitment to data access includes the provision of metadata to enable data
-users to assess the content and significance of the data they download, as well
-as codes necessary to produce the summary analyses, tables and plots that in
-time will be provided on the COAT web site.
+## Data policy and licenses
 
-detailed description of the Data Portal and COAT's Data Management Policy and
-procedures can be found in the: [Data Management Plan](/dmp).
+In COAT, we aim to publish all research data unless limited by either privacy or license restrictions. This means that the majority of COAT data are distributed under the Creative Commons Public License (CC BY 4.0).
+Our commitment to data access includes the provision of metadata to enable data users to assess the content and significance of the data they download, as well as codes necessary to produce the summary analyses, tables and plots that in time will be provided on the COAT website.
+
+A detailed description of the Data Portal and COAT's Data Management Policy and procedures can be found in the: [Data Management Plan](/dmp).
+
+## Documentation
+
+[coatnor.github.io](https://coatnor.github.io/) contains more details about the COAT Data portal and its usage.
 "
 conf_set ckan.datastore.sqlalchemy.pool_pre_ping true
 conf_set ckan.search.show_all_types everything
