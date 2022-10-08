@@ -28,11 +28,8 @@ language:
 requirements-auto:
     DO +INSTALL --pkgs="bsdmainutils"
     COPY --dir scripts .
-    FOR ext IN dcat kata oaipmh oauth2 spatial
+    FOR ext IN dcat kata oaipmh oauth2 spatial harvest
         COPY ckanext/ckanext-${ext}/requirements.txt ckanext-${ext}.txt
-    END
-    FOR ext IN harvest
-        COPY ckanext/ckanext-${ext}/pip-requirements.txt ckanext-${ext}.txt
     END
     FOR ext IN doi scheming
         COPY ckanext/ckanext-${ext}/setup.py ckanext-${ext}.py
