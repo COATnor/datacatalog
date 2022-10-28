@@ -26,8 +26,8 @@
 	branch = nina-version-kata
 [submodule "ckanext/ckanext-oaipmh"]
 	path = ckanext/ckanext-oaipmh
-	url = https://github.com/NINAnor/ckanext-oaipmh
-	branch = nina-version
+	url = https://github.com/EUDAT-B2FIND/ckanext-oaipmh-server.git
+	branch = master
 [submodule "ckanext/ckanext-harvest"]
 	path = ckanext/ckanext-harvest
 	url = https://github.com/ckan/ckanext-harvest/
