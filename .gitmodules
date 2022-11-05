@@ -20,14 +20,6 @@
 	path = ckanext/ckanext-oauth2
 	url = https://github.com/NINAnor/ckanext-oauth2
 	branch = feide
-[submodule "ckanext/ckanext-kata"]
-	path = ckanext/ckanext-kata
-	url = https://github.com/NINAnor/ckanext-kata.git
-	branch = nina-version-kata
-[submodule "ckanext/ckanext-oaipmh"]
-	path = ckanext/ckanext-oaipmh
-	url = https://github.com/NINAnor/ckanext-oaipmh
-	branch = nina-version
 [submodule "ckanext/ckanext-harvest"]
 	path = ckanext/ckanext-harvest
 	url = https://github.com/ckan/ckanext-harvest/

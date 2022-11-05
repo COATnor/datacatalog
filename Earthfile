@@ -28,7 +28,7 @@ language:
 requirements-auto:
     DO +INSTALL --pkgs="bsdmainutils"
     COPY --dir scripts .
-    FOR ext IN dcat kata oaipmh oauth2 spatial harvest
+    FOR ext IN dcat oauth2 spatial harvest
         COPY ckanext/ckanext-${ext}/requirements.txt ckanext-${ext}.txt
     END
     FOR ext IN doi scheming
@@ -48,8 +48,6 @@ requirements:
     SAVE ARTIFACT requirements.txt
 
 build:
-    # ckanext-oaipmh
-    DO +INSTALL --pkgs="python-dev libldap2-dev libsasl2-dev libssl-dev"
     COPY +requirements/requirements.txt .
     DO +INSTALL_PY --pkgs="wheel"
     RUN --mount=type=cache,target=/root/.cache/pip \
@@ -60,7 +58,7 @@ container:
     DO +INSTALL --pkgs="crudini"
     COPY --dir +build/wheels .
     RUN ckan-pip3 install wheels/*.whl
-    FOR extension IN coat coatcustom datasetversions dcat doi harvest kata oaipmh oauth2 scheming spatial
+    FOR extension IN coat coatcustom datasetversions dcat doi harvest oauth2 scheming spatial
         COPY ckanext/ckanext-${extension} $CKAN_VENV/src/ckanext/ckanext-${extension}
         RUN ckan-pip3 install --no-deps -e $CKAN_VENV/src/ckanext/ckanext-${extension}
     END

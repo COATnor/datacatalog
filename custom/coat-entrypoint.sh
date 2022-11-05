@@ -69,8 +69,6 @@ conf_set_list ckan.plugins dcat structured_data
 #ckanext-harvest
 conf_set_list ckan.plugins harvest ckan_harvester
 
-#ckanext-oaipmm
-conf_set_list ckan.plugins oaipmh
 
 #ckanext-doi
 conf_set_list ckan.plugins doi
