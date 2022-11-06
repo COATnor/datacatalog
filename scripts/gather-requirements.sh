@@ -20,6 +20,9 @@ do
         grep -v '\W*#' "$file" | annotate "$file"
     elif [ "$ext" == "py" ]
     then
-        "${__dir}"/setup-to-requirements.py "$file" | annotate "$file"
+        "${__dir}"/setup-py-to-requirements.py "$file" | annotate "$file"
+    elif [ "$ext" == "cfg" ]
+    then
+        "${__dir}"/setup-cfg-to-requirements.py "$file" | annotate "$file"
     fi
 done | sort | column -t

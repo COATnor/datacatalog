@@ -34,6 +34,9 @@ requirements-auto:
     FOR ext IN doi scheming
         COPY ckanext/ckanext-${ext}/setup.py ckanext-${ext}.py
     END
+    FOR ext IN iso19115 metaexport
+        COPY ckanext/ckanext-${ext}/setup.cfg ckanext-${ext}.cfg
+    END
     RUN scripts/gather-requirements.sh ckanext-* > requirements.in
     RUN sed -i -r -f scripts/fix_requirements.sed requirements.in
     SAVE ARTIFACT requirements.in
@@ -58,7 +61,7 @@ container:
     DO +INSTALL --pkgs="crudini"
     COPY --dir +build/wheels .
     RUN ckan-pip3 install wheels/*.whl
-    FOR extension IN coat coatcustom datasetversions dcat doi harvest oauth2 scheming spatial
+    FOR extension IN coat coatcustom datasetversions dcat doi harvest iso19115 metaexport oauth2 scheming spatial
         COPY ckanext/ckanext-${extension} $CKAN_VENV/src/ckanext/ckanext-${extension}
         RUN ckan-pip3 install --no-deps -e $CKAN_VENV/src/ckanext/ckanext-${extension}
     END

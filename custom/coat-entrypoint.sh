@@ -69,6 +69,11 @@ conf_set_list ckan.plugins dcat structured_data
 #ckanext-harvest
 conf_set_list ckan.plugins harvest ckan_harvester
 
+#ckanext-metaexport
+conf_set_list ckan.plugins metaexport
+
+#ckanext-iso19115
+conf_set_list ckan.plugins iso19115
 
 #ckanext-doi
 conf_set_list ckan.plugins doi
