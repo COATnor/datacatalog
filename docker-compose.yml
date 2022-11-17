@@ -72,6 +72,7 @@ x-common-ckan-dev:
     - ./ckanext/ckanext-scheming/ckanext:/usr/lib/ckan/venv/src/ckanext/ckanext-scheming/ckanext:ro
     - ./ckanext/ckanext-spatial/ckanext:/usr/lib/ckan/venv/src/ckanext/ckanext-spatial/ckanext:ro
     - ./custom/coat-entrypoint.sh:/coat-entrypoint.sh:ro
+    - ./custom/coat-entrypoint-dev.sh:/coat-entrypoint-dev.sh:ro
   entrypoint: ["bash", "coat-entrypoint-dev.sh"]
   environment:
     &common-ckan-env-dev
