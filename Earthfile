@@ -63,10 +63,13 @@ container:
         RUN ckan-pip3 install --no-deps -e $CKAN_VENV/src/ckanext/ckanext-${extension}
     END
     RUN ckan-pip3 install flask_debugtoolbar
+    DO +INSTALL_PY --pkgs="gunicorn"
     COPY +language/ckan.mo $CKAN_VENV/src/ckan/ckan/i18n/en/LC_MESSAGES/ckan.mo
     COPY custom/coat-entrypoint.sh custom/coat-entrypoint-dev.sh .
+    ENV CKAN_INI=/etc/ckan/production.ini
+    RUN mkdir -p /var/lib/ckan/webassets/.webassets-cache
     ENTRYPOINT ["/coat-entrypoint.sh"]
-    CMD ["ckan","-c","/etc/ckan/production.ini", "run", "--host", "0.0.0.0"]
+    CMD ["gunicorn", "--chdir", "/usr/lib/ckan/venv/src/ckan", "wsgi:application", "-b", "0.0.0.0:5000"]
     ARG CONTAINER_IMAGE=nina-ckan-coat:dev
     SAVE IMAGE --push $CONTAINER_IMAGE
 
