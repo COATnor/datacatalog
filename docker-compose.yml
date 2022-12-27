@@ -23,6 +23,8 @@ x-common-ckan-env:
   DOI_PREFIX: ${DOI_PREFIX}
   DOI_ACCOUNT_NAME: ${DOI_ACCOUNT_NAME}
   DOI_ACCOUNT_PWD: ${DOI_ACCOUNT_PWD}
+  # Misc
+  USERSPEC: ckan
 
 x-common-ckan:
   &common-ckan
@@ -52,7 +54,6 @@ x-common-ckan-prod:
     CKAN_OAUTH2_CLIENT_SECRET: ${CKAN_OAUTH2_CLIENT_SECRET}
     DOI_TEST_MODE: false
     ENV: prod
-    USERSPEC: root
 
 x-common-ckan-dev:
   &common-ckan-dev
@@ -89,7 +90,7 @@ services:
     << : *common-ckan-dev
     profiles:
       - dev
-    command: 'python -m pdb -c continue /usr/lib/ckan/venv/bin/ckan --config /etc/ckan/production.ini run --host 0.0.0.0 --passthrough-errors'
+    command: 'python -m pdb -c continue /usr/lib/ckan/venv/bin/ckan run --host 0.0.0.0 --passthrough-errors'
     tty: true
     stdin_open: true
     ports:
@@ -102,7 +103,7 @@ services:
     << : *common-ckan-dev
     profiles:
       - test
-    command: 'ckan --config /etc/ckan/production.ini run --host 0.0.0.0'
+    command: 'ckan run --host 0.0.0.0'
     environment:
       << : *common-ckan-env-dev
       CKAN_SITE_URL: http://ckan:5000
@@ -116,6 +117,8 @@ services:
         condition: service_healthy
     environment:
       CKAN_SITE_URL: http://ckan:5000
+    volumes:
+      - ./tests/latest_logs:/app/latest_logs
 
   datapusher:
     container_name: datapusher

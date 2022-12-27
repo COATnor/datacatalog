@@ -2,9 +2,10 @@ VERSION 0.6
 FROM registry.gitlab.com/nina-data/ckan/nina-2-9-py3/ckan
 
 USER root
-ENV DEBIAN_FRONTEND=noninteractive
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
+
+RUN rm /etc/apt/apt.conf.d/docker-clean
 
 INSTALL:
     COMMAND
@@ -57,13 +58,14 @@ build:
 container:
     DO +INSTALL --pkgs="crudini"
     COPY --dir +build/wheels .
-    RUN ckan-pip3 install wheels/*.whl
+    DO +INSTALL_PY --pkgs="wheels/*.whl"
     FOR extension IN coat coatcustom datasetversions dcat doi harvest oauth2 scheming spatial
         COPY ckanext/ckanext-${extension} $CKAN_VENV/src/ckanext/ckanext-${extension}
-        RUN ckan-pip3 install --no-deps -e $CKAN_VENV/src/ckanext/ckanext-${extension}
+        DO +INSTALL_PY --pkgs="--no-deps -e $CKAN_VENV/src/ckanext/ckanext-${extension}"
     END
-    RUN ckan-pip3 install flask_debugtoolbar
     DO +INSTALL_PY --pkgs="gunicorn"
+    # https://github.com/pallets-eco/flask-debugtoolbar/issues/195
+    DO +INSTALL_PY --pkgs="packaging git+https://github.com/pallets-eco/flask-debugtoolbar.git@02c99a7b64d317e21189d627ec0a6eada58e3744"
     COPY +language/ckan.mo $CKAN_VENV/src/ckan/ckan/i18n/en/LC_MESSAGES/ckan.mo
     COPY custom/coat-entrypoint.sh custom/coat-entrypoint-dev.sh .
     ENV CKAN_INI=/etc/ckan/production.ini
@@ -77,6 +79,7 @@ container-test:
     DO +INSTALL --pkgs="firefox xvfb"
     DO +INSTALL_PY --pkgs="pdm"
     ENV DISPLAY=:99
+    WORKDIR /app
     COPY tests/pdm.lock tests/pyproject.toml .
     RUN pdm install --no-self && pdm run seleniumbase install geckodriver
     COPY tests/base.py .
