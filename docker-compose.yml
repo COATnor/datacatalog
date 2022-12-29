@@ -93,8 +93,6 @@ services:
     command: 'python -m pdb -c continue /usr/lib/ckan/venv/bin/ckan run --host 0.0.0.0 --passthrough-errors'
     tty: true
     stdin_open: true
-    ports:
-      - "${CKAN_PORT}:5000"
     environment:
       << : *common-ckan-env-dev
       WERKZEUG_DEBUG_PIN: 5000
@@ -125,32 +123,23 @@ services:
     image: clementmouchet/datapusher
 
   pycsw:
-    profiles:
-      - prod
     image: ghcr.io/coatnor/coat2pycsw:main
     environment:
       COAT_URL: http://ckan:5000/
       PYCSW_URL: http://localhost/pycsw/csw.py
-    depends_on:
-      ckan-prod:
-        condition: service_healthy
     healthcheck:
       test: ["CMD", "wget", "-qO", "/dev/null", "localhost:8000/pycsw/csw.py"]
 
+  bulk-download:
+    image: ghcr.io/coatnor/coat-bulk-download:main
+    environment:
+      COAT_URL: http://ckan:5000/
+      COAT_PUBLIC_URL: http://127.0.0.1:${CKAN_PORT}/
+
   nginx:
-    profiles:
-      - prod
-    image: registry.gitlab.com/nina-data/ckan/ckan-2.9/nginx
     build:
       context: nginx
       dockerfile: Dockerfile
-    depends_on:
-      ckan-prod:
-        condition: service_healthy
-      pycsw:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-sSf", "-o", "/dev/null", "http://localhost"]
     ports:
       - "${CKAN_PORT}:80"
 
