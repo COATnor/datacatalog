@@ -78,12 +78,15 @@ container:
 container-test:
     DO +INSTALL --pkgs="firefox xvfb"
     DO +INSTALL_PY --pkgs="pdm"
+    RUN wget -q https://raw.githubusercontent.com/eficode/wait-for/v2.2.3/wait-for -O /wait-for && chmod +x /wait-for
+    ENV COAT_URL="http://localhost:5000/"
+    ENV TIMEOUT=300
     ENV DISPLAY=:99
     WORKDIR /app
     COPY tests/pdm.lock tests/pyproject.toml .
     RUN pdm install --no-self && pdm run seleniumbase install geckodriver
     COPY tests/base.py .
-    ENTRYPOINT []
-    CMD pdm run pytest --browser firefox base.py
+    ENTRYPOINT ["/bin/bash", "-xeu", "-c", "exec /wait-for --timeout $TIMEOUT $COAT_URL -- $0 $@"]
+    CMD ["pdm", "run", "pytest", "--browser", "firefox", "base.py"]
     ARG CONTAINER_IMAGE=nina-ckan-coat:test
     SAVE IMAGE --push $CONTAINER_IMAGE

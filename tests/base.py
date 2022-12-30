@@ -6,7 +6,7 @@ from functools import wraps
 import os
 
 
-BASE = os.environ.get("CKAN_SITE_URL", "http://localhost:5000")
+BASE = os.environ.get("COAT_URL", "http://localhost:5000")
 
 
 def sanity_check(method):

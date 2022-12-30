@@ -31,12 +31,12 @@ x-common-ckan:
   image: nina-ckan-coat:dev
   hostname: ckan
   depends_on:
-    db:
-      condition: service_healthy
-    solr:
-      condition: service_healthy
-    redis:
-      condition: service_healthy
+    - db
+    - solr
+    - redis
+    - nginx
+    - pycsw
+    - bulk-download
   volumes:
     - &common-ckan-volume
       ckan_storage:/var/lib/ckan
@@ -111,10 +111,9 @@ services:
       - test
     image: nina-ckan-coat:test
     depends_on:
-      ckan-test:
-        condition: service_healthy
+      - ckan-test
     environment:
-      CKAN_SITE_URL: http://ckan:5000
+      COAT_URL: http://nginx
     volumes:
       - ./tests/latest_logs:/app/latest_logs
 
