@@ -26,3 +26,9 @@
 [submodule "ckanext/ckanext-doi"]
 	path = ckanext/ckanext-doi
 	url = https://github.com/NINAnor/ckanext-doi.git
+[submodule "pycsw"]
+	path = services/pycsw
+	url = git@github.com:COATnor/coat2pycsw.git
+[submodule "bulk-download"]
+	path = services/bulk-download
+	url = git@github.com:COATnor/coat-bulk-download.git

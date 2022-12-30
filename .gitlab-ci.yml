@@ -20,6 +20,7 @@ ckan:
     - export FORCE_COLOR=1
     - /usr/local/bin/earthly bootstrap
     - git config --global url."https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/".insteadOf "git@gitlab.com:"
+    - git config --global url."https://github.com/".insteadOf "git@github.com:"
     - git submodule sync --recursive
     - git submodule update --init --recursive
     - earthly --ci --push --build-arg CONTAINER_IMAGE=$CONTAINER_IMAGE +container
@@ -29,5 +30,5 @@ nginx:
   variables:
     CONTAINER_IMAGE: $CI_REGISTRY_IMAGE/nginx:$CI_COMMIT_BRANCH-$CI_COMMIT_SHA
   script:
-    - docker build -t $CONTAINER_IMAGE nginx/
+    - docker build -t $CONTAINER_IMAGE services/nginx/
     - docker push $CONTAINER_IMAGE
