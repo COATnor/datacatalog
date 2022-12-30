@@ -4,14 +4,13 @@ set -eu
 
 /ckan-entrypoint.sh
 
-CONFIG="${CKAN_CONFIG}/production.ini"
-function conf_set() { crudini --set "$CONFIG" app:main "$@"; }
-function conf_get() { crudini --get "$CONFIG" app:main "$@"; }
+function conf_set() { crudini --set "$CKAN_INI" app:main "$@"; }
+function conf_get() { crudini --get "$CKAN_INI" app:main "$@"; }
 function conf_set_list() {
     param="$1"
     shift
     for var in "$@"; do
-        crudini --set --list --list-sep=' ' "$CONFIG" app:main "$param" "$var"
+        crudini --set --list --list-sep=' ' "$CKAN_INI" app:main "$param" "$var"
     done
 }
 
@@ -101,7 +100,7 @@ conf_set ckanext.coat.custom_form false
 : ${USERSPEC:=root}
 chroot --userspec=$USERSPEC / mkdir -p /var/lib/ckan/webassets/.webassets-cache
 chown -R $USERSPEC /var/lib/ckan/webassets/.webassets-cache
-chroot --userspec=$USERSPEC / ckan -c "${CONFIG}" search-index rebuild # workaround
-chroot --userspec=$USERSPEC / ckan -c "${CONFIG}" doi initdb
+chroot --userspec=$USERSPEC / ckan search-index rebuild # workaround
+chroot --userspec=$USERSPEC / ckan doi initdb
 
 exec "$@"
