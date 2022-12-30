@@ -6,7 +6,7 @@
 	url = git@gitlab.com:nina-data/ckanext-coatcustom.git
 [submodule "ckanext/ckanext-datasetversions"]
 	path = ckanext/ckanext-datasetversions
-	url = https://github.com/NINAnor/ckanext-datasetversions
+	url = git@github.com:aptivate/ckanext-datasetversions.git
 [submodule "ckanext/ckanext-dcat"]
 	path = ckanext/ckanext-dcat
 	url = https://github.com/ckan/ckanext-dcat
@@ -25,7 +25,7 @@
 	url = https://github.com/ckan/ckanext-harvest/
 [submodule "ckanext/ckanext-doi"]
 	path = ckanext/ckanext-doi
-	url = https://github.com/NINAnor/ckanext-doi.git
+	url = https://github.com/NaturalHistoryMuseum/ckanext-doi.git
 [submodule "pycsw"]
 	path = services/pycsw
 	url = git@github.com:COATnor/coat2pycsw.git

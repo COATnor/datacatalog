@@ -46,3 +46,10 @@ docker compose exec ckan ckan -c /etc/ckan/production.ini sysadmin add $USER
 ## Security
 
 Do not store secrets in Bash history: check if `HISTCONTROL` is set to `ignorespace` or `ignoreboth` in your `.bashrc` file.
+
+## Non-upstreamed changed
+
+- ckanext-oauth2
+  - PR for Python 3/CKAN 2.9 is stale: https://github.com/conwetlab/ckanext-oauth2/pull/42
+- ckanext-scheming
+  - A custom patch is used to skip validation on the parent datasets; the discussion is still ongoing: https://github.com/ckan/ckanext-scheming/issues/331
