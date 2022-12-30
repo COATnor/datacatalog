@@ -5,7 +5,9 @@
 ## Description
 
 [NINA](https://www.nina.no/) [CKAN](https://ckan.org/) catalogue for the [COAT](https://www.coat.no/) project.
-It is a customized distribution of CKAN which includes the [ckanext-coat extension](https://gitlab.com/nina-data/ckanext-coat).
+It is a customized distribution of CKAN which includes, amongst the others, [ckanext-coat](https://gitlab.com/nina-data/ckanext-coat) and [ckanext-coatcustom](https://gitlab.com/nina-data/ckanext-coatcustom). It also relies on some additional services to provide greater interoperability.
+
+CKAN does not provide Docker images based on the Dockerfile provided by the official `ckan/ckan` repository, so the Docker images are built by the synchronized [nina-data/ckan](https://gitlab.com/nina-data/ckan) project.
 
 ## Requirements
 
