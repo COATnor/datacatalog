@@ -1,5 +1,5 @@
 VERSION 0.6
-FROM registry.gitlab.com/nina-data/ckan/nina-2-9-py3/ckan
+FROM registry.gitlab.com/nina-data/ckan/nina-ckan-2-9-7/ckan
 
 USER root
 ENV LC_ALL=C.UTF-8
