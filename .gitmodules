@@ -7,9 +7,6 @@
 [submodule "ckanext/ckanext-datasetversions"]
 	path = ckanext/ckanext-datasetversions
 	url = git@github.com:aptivate/ckanext-datasetversions.git
-[submodule "ckanext/ckanext-dcat"]
-	path = ckanext/ckanext-dcat
-	url = https://github.com/ckan/ckanext-dcat
 [submodule "ckanext/ckanext-scheming"]
 	path = ckanext/ckanext-scheming
 	url = https://github.com/frafra/ckanext-scheming

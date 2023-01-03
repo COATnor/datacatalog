@@ -17,8 +17,14 @@ INSTALL:
 
 INSTALL_PY:
     COMMAND
-    ARG pkgs
-    RUN --mount=type=cache,target=/root/.cache/pip ckan-pip3 install $pkgs
+    ARG args
+    RUN --mount=type=cache,target=/root/.cache/pip ckan-pip3 install $args
+
+INSTALL_PIPX:
+    COMMAND
+    ARG args
+    DO +INSTALL --pkgs="pipx"
+    RUN --mount=type=cache,target=/root/.cache/pip pipx install $args
 
 language:
     DO +INSTALL --pkgs="gettext"
@@ -29,7 +35,7 @@ language:
 requirements-auto:
     DO +INSTALL --pkgs="bsdmainutils"
     COPY --dir scripts .
-    FOR ext IN dcat oauth2 spatial harvest
+    FOR ext IN oauth2 spatial harvest
         COPY ckanext/ckanext-${ext}/requirements.txt ckanext-${ext}.txt
     END
     FOR ext IN doi scheming
@@ -40,7 +46,7 @@ requirements-auto:
     SAVE ARTIFACT requirements.in
 
 requirements:
-    DO +INSTALL_PY --pkgs="pip-tools"
+    DO +INSTALL_PIPX --args="pip-tools"
     COPY +requirements-auto/requirements.in .
     RUN pip-compile --no-annotate --no-header \
             --output-file=requirements.txt \
@@ -50,7 +56,7 @@ requirements:
 
 build:
     COPY +requirements/requirements.txt .
-    DO +INSTALL_PY --pkgs="wheel"
+    DO +INSTALL_PY --args="wheel"
     RUN --mount=type=cache,target=/root/.cache/pip \
         ckan-pip3 wheel -r requirements.txt -w wheels
     SAVE ARTIFACT wheels
@@ -58,14 +64,14 @@ build:
 container:
     DO +INSTALL --pkgs="crudini"
     COPY --dir +build/wheels .
-    DO +INSTALL_PY --pkgs="wheels/*.whl"
-    FOR extension IN coat coatcustom datasetversions dcat doi harvest oauth2 scheming spatial
+    DO +INSTALL_PY --args="wheels/*.whl"
+    FOR extension IN coat coatcustom datasetversions doi harvest oauth2 scheming spatial
         COPY ckanext/ckanext-${extension} $CKAN_VENV/src/ckanext/ckanext-${extension}
-        DO +INSTALL_PY --pkgs="--no-deps -e $CKAN_VENV/src/ckanext/ckanext-${extension}"
+        DO +INSTALL_PY --args="--no-deps -e $CKAN_VENV/src/ckanext/ckanext-${extension}"
     END
     DO +INSTALL_PY --pkgs="gunicorn"
     # https://github.com/pallets-eco/flask-debugtoolbar/issues/195
-    DO +INSTALL_PY --pkgs="packaging git+https://github.com/pallets-eco/flask-debugtoolbar.git@02c99a7b64d317e21189d627ec0a6eada58e3744"
+    DO +INSTALL_PY --args="packaging git+https://github.com/pallets-eco/flask-debugtoolbar.git@02c99a7b64d317e21189d627ec0a6eada58e3744"
     COPY +language/ckan.mo $CKAN_VENV/src/ckan/ckan/i18n/en/LC_MESSAGES/ckan.mo
     COPY custom/coat-entrypoint.sh custom/coat-entrypoint-dev.sh .
     ENV CKAN_INI=/etc/ckan/production.ini
@@ -77,7 +83,7 @@ container:
 
 container-test:
     DO +INSTALL --pkgs="firefox xvfb"
-    DO +INSTALL_PY --pkgs="pdm"
+    DO +INSTALL_PIPX --args="pdm"
     RUN wget -q https://raw.githubusercontent.com/eficode/wait-for/v2.2.3/wait-for -O /wait-for && chmod +x /wait-for
     ENV COAT_URL="http://localhost:5000/"
     ENV TIMEOUT=300

@@ -45,7 +45,6 @@ conf_set ckan.favicon "/images/coat.png"
 
 #ckanext-coatcustom
 conf_set_list ckan.plugins coatcustom
-conf_set_list ckanext.dcat.rdf.profiles euro_dcat_ap coat_dcat_profile
 
 #ckanext-scheming
 conf_set_list ckan.plugins scheming_datasets scheming_organizations
@@ -61,9 +60,6 @@ conf_set scheming.dataset_fallback false
 #ckanext-spatial
 conf_set_list ckan.plugins spatial_metadata spatial_query
 conf_set ckanext.spatial.search_backend solr
-
-#ckanext-dcat
-conf_set_list ckan.plugins dcat structured_data
 
 #ckanext-harvest
 conf_set_list ckan.plugins harvest ckan_harvester
