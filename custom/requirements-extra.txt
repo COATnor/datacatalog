@@ -1,0 +1,7 @@
+# gunicorn
+gunicorn==20.1.0
+
+# flask-debugtoolbar
+packaging==22.0
+# https://github.com/pallets-eco/flask-debugtoolbar/issues/195
+git+https://github.com/pallets-eco/flask-debugtoolbar.git@02c99a7b64d317e21189d627ec0a6eada58e3744

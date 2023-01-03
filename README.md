@@ -20,6 +20,7 @@ Dependencies:
 
 ## Development/debugging
 
+- Update dependencies (optional): `earthly +requirements`
 - Build: `earthly +container`
 - Copy `testing.env` to `.env` and set `DOI_*` test variables
 - Run: `docker compose --profile dev run --rm --service-ports ckan-dev`

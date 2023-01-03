@@ -15,16 +15,20 @@ INSTALL:
         apt-get -q -y update && \
         DEBIAN_FRONTEND=noninteractive apt-get -yq install $pkgs
 
-INSTALL_PY:
+RUN_PIP_CACHED:
     COMMAND
     ARG args
-    RUN --mount=type=cache,target=/root/.cache/pip ckan-pip3 install $args
+    RUN --mount=type=cache,target=/root/.cache/pip $args
 
-INSTALL_PIPX:
+INSTALL_CKAN_PIP:
     COMMAND
     ARG args
-    DO +INSTALL --pkgs="pipx"
-    RUN --mount=type=cache,target=/root/.cache/pip pipx install $args
+    DO +RUN_PIP_CACHED --args="ckan-pip3 install $args"
+
+INSTALL_PIP:
+    COMMAND
+    ARG args
+    DO +RUN_PIP_CACHED --args="python3 -m pip install $args"
 
 language:
     DO +INSTALL --pkgs="gettext"
@@ -32,7 +36,7 @@ language:
     RUN msgfmt ckan.po -o ckan.mo
     SAVE ARTIFACT ckan.mo
 
-requirements-auto:
+requirements:
     DO +INSTALL --pkgs="bsdmainutils"
     COPY --dir scripts .
     FOR ext IN oauth2 spatial harvest
@@ -41,37 +45,29 @@ requirements-auto:
     FOR ext IN doi scheming
         COPY ckanext/ckanext-${ext}/setup.py ckanext-${ext}.py
     END
-    RUN scripts/gather-requirements.sh ckanext-* > requirements.in
-    RUN sed -i -r -f scripts/fix_requirements.sed requirements.in
-    SAVE ARTIFACT requirements.in
-
-requirements:
-    DO +INSTALL_PIPX --args="pip-tools"
-    COPY +requirements-auto/requirements.in .
-    RUN pip-compile --no-annotate --no-header \
+    COPY custom/requirements-extra.txt .
+    RUN scripts/gather-requirements.sh ckanext-* requirements-extra.txt > requirements.in
+    DO +INSTALL_PIP --args="pip-tools"
+    RUN pip-compile --no-header \
             --output-file=requirements.txt \
             requirements.in \
             $CKAN_VENV/src/ckan/requirements.txt
-    SAVE ARTIFACT requirements.txt
+    SAVE ARTIFACT requirements.txt AS LOCAL custom/requirements.txt
 
 build:
-    COPY +requirements/requirements.txt .
-    DO +INSTALL_PY --args="wheel"
-    RUN --mount=type=cache,target=/root/.cache/pip \
-        ckan-pip3 wheel -r requirements.txt -w wheels
+    COPY custom/requirements.txt .
+    DO +INSTALL_CKAN_PIP --args="wheel"
+    DO +RUN_PIP_CACHED --args="ckan-pip3 wheel -r requirements.txt -w wheels"
     SAVE ARTIFACT wheels
 
 container:
     DO +INSTALL --pkgs="crudini"
     COPY --dir +build/wheels .
-    DO +INSTALL_PY --args="wheels/*.whl"
+    DO +INSTALL_CKAN_PIP --args="wheels/*.whl"
     FOR extension IN coat coatcustom datasetversions doi harvest oauth2 scheming spatial
         COPY ckanext/ckanext-${extension} $CKAN_VENV/src/ckanext/ckanext-${extension}
-        DO +INSTALL_PY --args="--no-deps -e $CKAN_VENV/src/ckanext/ckanext-${extension}"
+        DO +INSTALL_CKAN_PIP --args="--no-deps -e $CKAN_VENV/src/ckanext/ckanext-${extension}"
     END
-    DO +INSTALL_PY --pkgs="gunicorn"
-    # https://github.com/pallets-eco/flask-debugtoolbar/issues/195
-    DO +INSTALL_PY --args="packaging git+https://github.com/pallets-eco/flask-debugtoolbar.git@02c99a7b64d317e21189d627ec0a6eada58e3744"
     COPY +language/ckan.mo $CKAN_VENV/src/ckan/ckan/i18n/en/LC_MESSAGES/ckan.mo
     COPY custom/coat-entrypoint.sh custom/coat-entrypoint-dev.sh .
     ENV CKAN_INI=/etc/ckan/production.ini
@@ -83,7 +79,7 @@ container:
 
 container-test:
     DO +INSTALL --pkgs="firefox xvfb"
-    DO +INSTALL_PIPX --args="pdm"
+    DO +INSTALL_PIP --args="pdm"
     RUN wget -q https://raw.githubusercontent.com/eficode/wait-for/v2.2.3/wait-for -O /wait-for && chmod +x /wait-for
     ENV COAT_URL="http://localhost:5000/"
     ENV TIMEOUT=300
