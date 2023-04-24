@@ -42,6 +42,7 @@ A detailed description of the Data Portal and COAT's Data Management Policy and 
 conf_set ckan.datastore.sqlalchemy.pool_pre_ping true
 conf_set ckan.search.show_all_types everything
 conf_set ckan.favicon "/images/coat.png"
+conf_set ckan.auth.create_default_api_keys true
 
 #ckanext-coatcustom
 conf_set_list ckan.plugins coatcustom
