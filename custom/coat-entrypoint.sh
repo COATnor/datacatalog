@@ -80,7 +80,7 @@ if [ "${ENV:=}" == "prod" ]
 then
     conf_set_list ckan.plugins oauth2
     conf_set ckan.oauth2.profile_api_url "https://auth.dataporten.no/userinfo"
-    conf_set_list ckan.oauth2.scope profile userinfo-name userinfo-photo email
+    conf_set_list ckan.oauth2.scope userinfo-photo userinfo-name email
     conf_set ckan.oauth2.profile_api_user_field email
     conf_set ckan.oauth2.profile_api_fullname_field name
     conf_set ckan.oauth2.profile_api_mail_field email
