@@ -145,6 +145,13 @@ services:
     build:
       context: services/nginx
       dockerfile: Dockerfile
+    depends_on:
+      - varnish
+
+  varnish:
+    build:
+      context: services/varnish
+      dockerfile: Dockerfile
     ports:
       - "${CKAN_PORT}:80"
 

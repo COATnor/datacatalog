@@ -32,3 +32,11 @@ nginx:
   script:
     - docker build -t $CONTAINER_IMAGE services/nginx/
     - docker push $CONTAINER_IMAGE
+
+varnish:
+  stage: container
+  variables:
+    CONTAINER_IMAGE: $CI_REGISTRY_IMAGE/varnish:$CI_COMMIT_BRANCH-$CI_COMMIT_SHA
+  script:
+    - docker build -t $CONTAINER_IMAGE services/varnish/
+    - docker push $CONTAINER_IMAGE
