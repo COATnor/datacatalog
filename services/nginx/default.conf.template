@@ -35,6 +35,11 @@ server {
         proxy_pass $upstream;
     }
 
+    location ~ ^/dataset/.+/geojson$ {
+        set $upstream http://bulk-download:8000;
+        proxy_pass $upstream;
+    }
+
     location / {
         set $upstream http://ckan:5000;
         proxy_pass $upstream;
