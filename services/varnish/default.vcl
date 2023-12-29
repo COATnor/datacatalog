@@ -12,6 +12,8 @@ sub vcl_recv {
 }
 
 sub vcl_backend_response {
-    # Provides Content-Lenght header, needed by GDAL vsicurl
-    set beresp.do_stream = false;
+    if (!(bereq.url ~ "^/dataset/.+/zip$")) {
+        # Provides Content-Lenght header, needed by GDAL vsicurl
+        set beresp.do_stream = false;
+    }
 }
