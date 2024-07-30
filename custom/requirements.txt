@@ -2,7 +2,7 @@ alembic==1.0.0
     # via -r /usr/lib/ckan/venv/src/ckan/requirements.txt
 argparse==1.4.0
     # via -r requirements.in
-attrs==22.2.0
+attrs==23.2.0
     # via jsonschema
 babel==2.7.0
     # via
@@ -12,7 +12,7 @@ beaker==1.11.0
     # via -r /usr/lib/ckan/venv/src/ckan/requirements.txt
 bleach==3.1.4
     # via -r /usr/lib/ckan/venv/src/ckan/requirements.txt
-blinker==1.5
+blinker==1.8.2
     # via flask-debugtoolbar
 certifi==2021.5.30
     # via
@@ -22,7 +22,7 @@ chardet==4.0.0
     # via
     #   -r /usr/lib/ckan/venv/src/ckan/requirements.txt
     #   requests
-ckanapi==4.7
+ckanapi==4.8
     # via -r requirements.in
 ckantoolkit==0.0.7
     # via -r requirements.in
@@ -65,11 +65,11 @@ idna==2.10
     # via
     #   -r /usr/lib/ckan/venv/src/ckan/requirements.txt
     #   requests
-idutils==1.1.13
+idutils==1.2.1
     # via datacite
-importlib-metadata==6.0.0
+importlib-metadata==8.0.0
     # via markdown
-isbnlib==3.10.12
+isbnlib==3.10.14
     # via idutils
 itsdangerous==1.1.0
     # via
@@ -124,13 +124,13 @@ pyjwt==1.7.1
     # via
     #   -r /usr/lib/ckan/venv/src/ckan/requirements.txt
     #   -r requirements.in
-pyparsing==3.0.9
+pyparsing==3.1.2
     # via -r requirements.in
 pyproj==2.6.1
     # via
     #   -r requirements.in
     #   owslib
-pyrsistent==0.19.3
+pyrsistent==0.20.0
     # via jsonschema
 pysolr==3.6.0
     # via -r /usr/lib/ckan/venv/src/ckan/requirements.txt
@@ -146,7 +146,7 @@ python-editor==1.0.4
     #   alembic
 python-magic==0.4.15
     # via -r /usr/lib/ckan/venv/src/ckan/requirements.txt
-python-slugify==7.0.0
+python-slugify==8.0.4
     # via ckanapi
 pytz==2016.7
     # via
@@ -195,7 +195,9 @@ shutilwhich==1.1.0
     #   -r /usr/lib/ckan/venv/src/ckan/requirements.txt
     #   fanstatic
 simplejson==3.10.0
-    # via -r /usr/lib/ckan/venv/src/ckan/requirements.txt
+    # via
+    #   -r /usr/lib/ckan/venv/src/ckan/requirements.txt
+    #   ckanapi
 six==1.16.0
     # via
     #   -r /usr/lib/ckan/venv/src/ckan/requirements.txt
@@ -247,7 +249,7 @@ werkzeug[watchdog]==1.0.0
     #   flask-debugtoolbar
 xmltodict==0.12.0
     # via -r requirements.in
-zipp==3.11.0
+zipp==3.19.2
     # via importlib-metadata
 zope-interface==4.3.2
     # via
