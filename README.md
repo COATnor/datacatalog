@@ -20,10 +20,12 @@ Dependencies:
 
 ## Development/debugging
 - Fetch Submodules `git submodule update --recursive`
-- Update dependencies (optional): `earthly +requirements`
-- Build: `earthly +container`
+- Build: `docker compose --profile dev build`
 - Copy `template.env` to `.env` and set `DOI_*` test variables
 - Run: `docker compose --profile dev run --rm --service-ports ckan-dev`
+
+## Update Dependencies
+- Update dependencies (optional): `earthly +requirements`
 
 ### Testing
 
