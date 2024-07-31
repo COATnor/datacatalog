@@ -15,15 +15,12 @@ ckan:
     CONTAINER_IMAGE: $CI_REGISTRY_IMAGE/ckan:$CI_COMMIT_BRANCH-$CI_COMMIT_SHA
   script:
     - apk update && apk add git
-    - wget https://github.com/earthly/earthly/releases/download/v0.6.12/earthly-linux-amd64 -O /usr/local/bin/earthly
-    - chmod +x /usr/local/bin/earthly
-    - export FORCE_COLOR=1
-    - /usr/local/bin/earthly bootstrap
     - git config --global url."https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/".insteadOf "git@gitlab.com:"
     - git config --global url."https://github.com/".insteadOf "git@github.com:"
     - git submodule sync --recursive
     - git submodule update --init --recursive
-    - earthly --ci --push --build-arg CONTAINER_IMAGE=$CONTAINER_IMAGE +container
+    - docker build -t $CONTAINER_IMAGE .
+    - docker push $CONTAINER_IMAGE
 
 nginx:
   stage: container

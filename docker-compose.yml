@@ -28,7 +28,7 @@ x-common-ckan-env:
 
 x-common-ckan:
   &common-ckan
-  image: nina-ckan-coat:dev
+  build: .
   hostname: ckan
   depends_on:
     - db

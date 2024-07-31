@@ -54,29 +54,6 @@ requirements:
             $CKAN_VENV/src/ckan/requirements.txt
     SAVE ARTIFACT requirements.txt AS LOCAL custom/requirements.txt
 
-build:
-    COPY custom/requirements.txt .
-    DO +INSTALL_CKAN_PIP --args="wheel"
-    DO +RUN_PIP_CACHED --args="ckan-pip3 wheel -r requirements.txt -w wheels"
-    SAVE ARTIFACT wheels
-
-container:
-    DO +INSTALL --pkgs="crudini"
-    COPY --dir +build/wheels .
-    DO +INSTALL_CKAN_PIP --args="wheels/*.whl"
-    FOR extension IN coat coatcustom datasetversions doi harvest oauth2 scheming spatial
-        COPY ckanext/ckanext-${extension} $CKAN_VENV/src/ckanext/ckanext-${extension}
-        DO +INSTALL_CKAN_PIP --args="--no-deps -e $CKAN_VENV/src/ckanext/ckanext-${extension}"
-    END
-    COPY +language/ckan.mo $CKAN_VENV/src/ckan/ckan/i18n/en/LC_MESSAGES/ckan.mo
-    COPY custom/coat-entrypoint.sh custom/coat-entrypoint-dev.sh .
-    ENV CKAN_INI=/etc/ckan/production.ini
-    RUN mkdir -p /var/lib/ckan/webassets/.webassets-cache
-    ENTRYPOINT ["/coat-entrypoint.sh"]
-    CMD ["gunicorn", "--chdir", "/usr/lib/ckan/venv/src/ckan", "wsgi:application", "-b", "0.0.0.0:5000"]
-    ARG CONTAINER_IMAGE=nina-ckan-coat:dev
-    SAVE IMAGE --push $CONTAINER_IMAGE
-
 container-test:
     DO +INSTALL --pkgs="firefox xvfb"
     DO +INSTALL_PIP --args="pdm"
