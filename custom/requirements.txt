@@ -255,4 +255,4 @@ zope-interface==4.3.2
     #   repoze-who
 
 # The following packages are considered to be unsafe in a requirements file:
-# setuptools
+setuptools==69.0.2
