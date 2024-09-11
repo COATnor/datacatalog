@@ -12,6 +12,9 @@ sub vcl_recv {
 }
 
 sub vcl_backend_response {
+    if (bereq.url ~ "^/pycsw/") {
+        return (pass);
+    }
     if (!(bereq.url ~ "^/dataset/.+/zip$")) {
         # Provides Content-Lenght header, needed by GDAL vsicurl
         set beresp.do_stream = false;
