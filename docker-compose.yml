@@ -113,7 +113,7 @@ services:
     depends_on:
       - ckan-test
     environment:
-      COAT_URL: http://nginx
+      COAT_URL: http://varnish
     volumes:
       - ./tests/latest_logs:/app/latest_logs
 
