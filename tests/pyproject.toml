@@ -1,13 +1,13 @@
 [project]
-name = ""
-version = ""
+name = "coat-tester"
+version = "0.1.0"
 description = ""
 authors = [
     {name = "Francesco Frassinelli", email = "francesco.frassinelli@nina.no"},
 ]
 dependencies = [
     "seleniumbase>=2.4.26",
-    "parametrized>=0.1",
+    "parameterized>=0.1",
 ]
 requires-python = ">=3.8"
 license = {text = "GPLv3"}

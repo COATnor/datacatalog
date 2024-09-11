@@ -3,7 +3,7 @@ __pycache__
 __pypackages__
 
 # PDM
-.pdm.toml
+.pdm-python
 
 # Seleniumbase
 archived_logs/
