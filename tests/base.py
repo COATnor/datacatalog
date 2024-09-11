@@ -34,3 +34,9 @@ class CKANTest(BaseCase):
     def test_dataset_list(self, label):
         self.open(BASE)
         self.click_link(label)
+
+
+class PyCSW(BaseCase):
+    @sanity_check
+    def test_homepage(self):
+        self.open(BASE + "/pycsw/csw.py")
