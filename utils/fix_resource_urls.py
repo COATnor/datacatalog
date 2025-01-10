@@ -2,6 +2,9 @@ import os
 import re
 import requests
 import argparse
+import logging
+from logging import Logger
+
 from tqdm import tqdm
 
 from ckanapi import RemoteCKAN
@@ -86,7 +89,7 @@ def extract_resource_id(url):
         print(f"Error extracting resource ID: {e}")
         return None
 
-def find_resources(response: dict, resource_name: str, invalid_resource: dict) -> list:
+def find_resources(response: dict, resource_name: str, invalid_resource: dict, logger: Logger) -> list:
     """
     Extracts and constructs a list of `Resource` objects from a CKAN API response.
 
@@ -108,17 +111,6 @@ def find_resources(response: dict, resource_name: str, invalid_resource: dict) -
           the resource ID from a URL.
         - The `Resource` class is expected to have a constructor with attributes for `id`, `name`, 
           `url`, `predecessor`, and `head`.
-
-    Example:
-        >>> response = {
-        ...     "results": [
-        ...         {"id": "1234", "name": "example.txt", "url": "http://example.com/resource/5678"},
-        ...         {"id": "5678", "name": "example2.txt", "url": "http://example.com/resource/5678"}
-        ...     ]
-        ... }
-        >>> resources = find_resources(response, "example.txt")
-        >>> for resource in resources:
-        ...     print(resource)
     """
     resources = []
     if response.get('results'):
@@ -126,7 +118,6 @@ def find_resources(response: dict, resource_name: str, invalid_resource: dict) -
             # extracting the ID of the resource which is pointed to
             prev_resource_id = extract_resource_id(result['url'])  # this will return None for the faulty url/resource
             # if the resource id "points" to itself, then it's the head 
-            # because that is how the urls work in ckan
             r = Resource(
                 resource_id= result['id'], 
                 resource_name=result['name'],
@@ -148,7 +139,7 @@ def find_resources(response: dict, resource_name: str, invalid_resource: dict) -
             resources.append(invalid_resource)
         return resources
     else:
-        print(f"No resources found for {resource_name}")
+        logger.error(f"No resources found for {resource_name}")
         return []
 
 def find_faulty_and_last_resource(resources: list) -> tuple:
@@ -171,16 +162,6 @@ def find_faulty_and_last_resource(resources: list) -> tuple:
         tuple: A tuple containing two `Resource` objects:
                - `faulty_res`: The faulty resource with a fixed `predecessor` pointer.
                - `last_res`: The last resource with a fixed `successor` pointer.
-
-    Example:
-        >>> resources = [
-        ...     Resource("1234", "example1.txt", "http://example.com/resource/1234", predecessor=None, head=True),
-        ...     Resource("5678", "example2.txt", "http://example.com/resource/5678", predecessor="1234", head=False),
-        ...     Resource("9999", "example3.txt", "http://example.com/resource/9999", predecessor=None, head=False)
-        ... ]
-        >>> faulty_res, last_res = find_faulty_and_last_resource(resources)
-        >>> print(faulty_res)
-        >>> print(last_res)
     """
     # finding the successors of each resource
     predecessor_map = {res.predecessor: res for res in resources if res.predecessor is not None}
@@ -227,10 +208,26 @@ def create_correct_url(response, faulty_res: Resource) -> str:
     return new_url
 
 
-def get_invalid_resources(ckan: RemoteCKAN, dataset_id: str) -> list:
+def get_invalid_resources(ckan: RemoteCKAN, dataset_id: str, logger: Logger) -> list:
+    """
+    Identifies invalid resources in a CKAN dataset.
+
+    Parameters:
+        ckan (RemoteCKAN): An authenticated CKAN client used to interact with the CKAN instance.
+        dataset_id (str): The unique identifier of the dataset to check for invalid resources.
+        logger (Logger): A logger instance for logging messages.
+
+    Returns:
+        list: A list of invalid resources, each represented as a `Resource` object.
+
+    Notes:
+        - A resource is considered invalid if its URL cannot be validated with a HEAD request.
+        - Logs the dataset name, ID, and the number of invalid resources if any are found.
+    """
     invalid_resources = []
     dataset = ckan.action.package_show(id=dataset_id)
     for resource in dataset.get("resources", []):
+        # to find the faulty resources, check if the url is valid
         resource_url = resource.get("url", "")
         try:
             r = requests.head(resource_url)
@@ -245,53 +242,100 @@ def get_invalid_resources(ckan: RemoteCKAN, dataset_id: str) -> list:
     
 
     if len(invalid_resources) > 0:
-        print(f"Dataset {dataset['name']}")
-        print(f"Dataset id: {dataset_id}")
-        print(f"Found {len(invalid_resources)} invalid resources")
+        logger.info(f"Dataset: {dataset['name']}")
+        logger.info(f"Dataset id: {dataset_id}")
+        logger.info(f"Found {len(invalid_resources)} invalid resources")
         return invalid_resources
     else:
         return []
         
 
-def update_resources(ckan, invalid_resources):
-    for invalid_resource in tqdm(invalid_resources[:3], desc="Updating resources"):
+def update_resources(ckan: RemoteCKAN, invalid_resources: list, logger: Logger):
+    """
+    Updates the URLs of invalid resources in a CKAN dataset.
+
+    This function iterates over a list of invalid resources, finds the associated 
+    faulty and last valid resource, generates a corrected URL, and updates the resource
+    in CKAN if the URL is valid.
+
+    Parameters:
+        ckan (RemoteCKAN): An authenticated CKAN client used to interact with the CKAN instance.
+        invalid_resources (List): A list of invalid resources to be updated. Each resource is 
+                                  expected to have details such as `resource_name`.
+        logger (Logger): A logger instance to log messages during the process.
+    
+    Notes:
+        - Uses `requests.head` to validate the corrected URL.
+        - Logs errors for resources that cannot be fixed or updated.
+    """
+    for invalid_resource in tqdm(invalid_resources, desc="Updating resources"):
         resource_name = invalid_resource.resource_name.lower()
         response = ckan.action.resource_search(query=f"name:{resource_name}")
-        resources = find_resources(response, resource_name, invalid_resource)
+        resources = find_resources(response, resource_name, invalid_resource, logger)
         faulty_res, last_res = find_faulty_and_last_resource(resources)
         
         if faulty_res is None or last_res is None:
-            print(f"Could not find faulty or last resource for {resource_name}")
+            logger.error(f"Could not find faulty or last resource for {resource_name} ({invalid_resource.resource_id})")
             continue
         response = ckan.action.resource_show(id=faulty_res.predecessor)  
         fixed_url = create_correct_url(response, faulty_res)
         
-        # use 302, because that's the http response when it's correct
         r = requests.head(fixed_url)
-        if r.status_code == 302:
-            updated_resource = {
-                "id": faulty_res.resource_id,
-                "url": fixed_url
-            }
-            _ = ckan.action.resource_patch(
-                **updated_resource
-            )
-        else:
-            print(f"Resource {resource_name} could not be fixed")
+        try:
+            if r.status_code == 302 or r.status_code == 200:
+                updated_resource = {
+                    "id": faulty_res.resource_id,
+                    "url": fixed_url
+                }
+                _ = ckan.action.resource_patch(
+                    **updated_resource
+                )
+                logger.info(f"Resource {resource_name} ({invalid_resource.resource_id}) updated successfully.")
+                logger.info(f"New url: {fixed_url}")
+            else:
+                logger.error(f"Resource {resource_name} ({invalid_resource.resource_id})could not be fixed new url.")
+                logger.error(f"New url: {fixed_url}")
+                logger.error(f"Status code: {r.status_code}")
+        except Exception as e:
+            logger.error(f"Not able to update resource {resource_name}: {e}")
+            logger.error(f"New url: {fixed_url}")
+            continue
 
 def main():
     load_dotenv()
+    logging.basicConfig(
+        level=logging.INFO, 
+        format='[%(levelname)s] %(asctime)s - %(message)s',
+        handlers=[
+            logging.FileHandler("utils/fix_resources.log", mode='w'),
+            logging.StreamHandler()
+        ]
+    )
+
+
+    logger = logging.getLogger()
     ckan_site_url = os.getenv("CKAN_SITE_URL")
-    token = os.getenv("CKAN_USER_API_TOKEN")
-    ckan = RemoteCKAN(ckan_site_url, apikey=token)
+    api_key = os.getenv("CKAN_USER_API_KEY")
+    ckan = RemoteCKAN(ckan_site_url, apikey=api_key)
+    
+    if ckan_site_url == "https://data.coat.no":
+        logger.warning("You are running this script on the production server.")
     
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset_id", help="The dataset ID to fix")
     args = parser.parse_args()
-    #dataset_id = ''
-    invalid_resources = get_invalid_resources(ckan=ckan, dataset_id=args.dataset_id)
-    update_resources(ckan=ckan, invalid_resources=invalid_resources)
-    
+
+    dataset = ckan.action.package_show(id=args.dataset_id)
+    if dataset.get("private"):
+        invalid_resources = get_invalid_resources(ckan=ckan, dataset_id=args.dataset_id, logger=logger)
+        if invalid_resources:
+            update_resources(ckan=ckan, invalid_resources=invalid_resources, logger=logger)
+        else:
+            logger.warning(f"No invalid resources found for dataset {args.dataset_id}")
+    else:
+        logger.error(f"Dataset is not private ({args.dataset_id})")
+        
+        
 
 if __name__ == "__main__":
     main()
