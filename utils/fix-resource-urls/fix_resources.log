@@ -1,9 +1,0 @@
-[INFO] 2025-01-10 12:45:32,235 - Dataset: v_air_temperature_snowbed_v5
-[INFO] 2025-01-10 12:45:32,235 - Dataset id: e0e93d16-96dd-425a-a0f0-57888524e1a0
-[INFO] 2025-01-10 12:45:32,235 - Found 3 invalid resources
-[INFO] 2025-01-10 12:45:42,232 - Resource v_air_temperature_snowbed_metadata_2022.txt (7d94aeee-8490-4ecd-94f3-7c9c83bfadab) updated successfully.
-[INFO] 2025-01-10 12:45:42,232 - New url: https://data.coat.no/dataset/ac8716f2-1c25-40f9-b8a2-c9b5d13cfaff/resource/6bf68433-aaf2-48de-acda-48c5bb19d935/download/v_air_temperature_snowbed_metadata_2022.txt
-[INFO] 2025-01-10 12:45:52,305 - Resource v_air_temperature_snowbed_2021.txt (0ee8e06d-e0cd-47f1-b65f-5a28ae492b3d) updated successfully.
-[INFO] 2025-01-10 12:45:52,305 - New url: https://data.coat.no/dataset/ac8716f2-1c25-40f9-b8a2-c9b5d13cfaff/resource/fd9a5b2e-f610-4c6b-af8a-ff26eb2643ae/download/v_air_temperature_snowbed_2021.txt
-[INFO] 2025-01-10 12:46:02,312 - Resource v_air_temperature_snowbed_2022.txt (80c41ae8-2ba1-43d4-80ac-434179a1fe8d) updated successfully.
-[INFO] 2025-01-10 12:46:02,312 - New url: https://data.coat.no/dataset/ac8716f2-1c25-40f9-b8a2-c9b5d13cfaff/resource/a317fca3-a6a4-4e9d-9fd9-46b46633a54a/download/v_air_temperature_snowbed_2022.txt
