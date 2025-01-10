@@ -302,20 +302,22 @@ def update_resources(ckan: RemoteCKAN, invalid_resources: list, logger: Logger):
             continue
 
 def main():
-    load_dotenv()
+    load_dotenv(dotenv_path="utils/fix-resource-urls/.env")
+    ckan_site_url = os.getenv("CKAN_SITE_URL")
+    api_key = os.getenv("CKAN_USER_API_KEY")
+    log_file_path = os.getenv("LOG_FILE_PATH", "fix_resources.log")  # Default if not provided
+    log_level = os.getenv("LOG_LEVEL", "INFO").upper()
+    
     logging.basicConfig(
         level=logging.INFO, 
         format='[%(levelname)s] %(asctime)s - %(message)s',
         handlers=[
-            logging.FileHandler("utils/fix_resources.log", mode='w'),
+            logging.FileHandler("utils/fix-resource-urls/fix_resources.log", mode='w'),
             logging.StreamHandler()
         ]
     )
-
-
     logger = logging.getLogger()
-    ckan_site_url = os.getenv("CKAN_SITE_URL")
-    api_key = os.getenv("CKAN_USER_API_KEY")
+
     ckan = RemoteCKAN(ckan_site_url, apikey=api_key)
     
     if ckan_site_url == "https://data.coat.no":
