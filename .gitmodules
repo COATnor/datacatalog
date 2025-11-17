@@ -1,21 +1,21 @@
 [submodule "ckanext/ckanext-coat"]
 	path = ckanext/ckanext-coat
-	url = git@gitlab.com:nina-data/ckanext-coat.git
+	url = git@github.com:COATnor/ckanext-coat.git
 [submodule "ckanext/ckanext-coatcustom"]
 	path = ckanext/ckanext-coatcustom
-	url = git@gitlab.com:nina-data/ckanext-coatcustom.git
+	url = git@github.com:COATnor/ckanext-coatcustom.git
 [submodule "ckanext/ckanext-datasetversions"]
 	path = ckanext/ckanext-datasetversions
 	url = git@github.com:aptivate/ckanext-datasetversions.git
 [submodule "ckanext/ckanext-scheming"]
 	path = ckanext/ckanext-scheming
-	url = https://github.com/frafra/ckanext-scheming
+	url = git@github.com:COATnor/ckanext-scheming.git
 [submodule "ckanext/ckanext-spatial"]
 	path = ckanext/ckanext-spatial
 	url = https://github.com/ckan/ckanext-spatial
 [submodule "ckanext/ckanext-oauth2"]
 	path = ckanext/ckanext-oauth2
-	url = https://github.com/NINAnor/ckanext-oauth2
+	url = git@github.com:COATnor/ckanext-oauth2.git
 	branch = feide
 [submodule "ckanext/ckanext-harvest"]
 	path = ckanext/ckanext-harvest
