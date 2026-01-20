@@ -39,3 +39,40 @@ copy (
 )
 to 'taxonomy.json' (array)
 ;
+
+create macro initcap(str) AS (
+    list_aggr(
+        list_transform(
+            string_split(str, ' '),
+            x -> upper(x[1]) || lower(x[2:])
+        ),
+        'string_agg', ' '
+    )
+);
+
+copy (
+    with parsed as (
+        select
+            row_number() over () as row_id,
+            nullif(sn_region, 'NA') as region,
+            nullif(sn_sub_region, 'NA') as sub_region,
+            nullif(sn_locality, 'NA') as locality,
+            nullif(sn_section, 'NA') as section,
+            cast(nullif(E_dd_wgs84, 'NA') as double) as longitude,
+            cast(nullif(N_dd_wgs84, 'NA') as double) as latitude
+        from read_xlsx('localities.xlsx', sheet='variable spelling data portal', all_varchar=true)
+    )
+    select
+        concat_ws(
+            ' - ',
+            initcap(replace(region, '_', ' ')),
+            initcap(replace(sub_region, '_', ' ')),
+            initcap(replace(locality, '_', ' ')),
+            initcap(replace(section, '_', ' '))
+        ) as label,
+        last_value(latitude ignore nulls) over (order by row_id) as lat,
+        last_value(longitude ignore nulls) over (order by row_id) as lon
+    from parsed
+)
+to 'localities.json' (array)
+;
