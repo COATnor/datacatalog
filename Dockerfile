@@ -1,10 +1,6 @@
-FROM registry.gitlab.com/nina-data/ckan/nina-ckan-2-9-7/ckan AS base
-
-USER root
-ENV LC_ALL=C.UTF-8
-ENV LANG=C.UTF-8
-
-RUN rm /etc/apt/apt.conf.d/docker-clean && \
+FROM ghcr.io/astral-sh/uv:python3.9-trixie AS base
+RUN --mount=type=cache,sharing=locked,target=/var/cache/apt \
+    rm /etc/apt/apt.conf.d/docker-clean && \
     apt-get update
 
 FROM base AS language
@@ -15,27 +11,31 @@ RUN msgfmt ckan.po -o /ckan.mo
 
 FROM base
 RUN --mount=type=cache,sharing=locked,target=/var/cache/apt \
-    apt-get install -qy --no-install-recommends crudini
+    apt-get install -qy --no-install-recommends \
+        postgresql-client
+WORKDIR /usr/lib/ckan/
 
-COPY custom/requirements.txt .
-RUN --mount=type=cache,target=/root/.cache/pip \
-    ckan-pip3 install -r requirements.txt
+COPY ckanext/ ckanext/
+COPY dummy/ dummy/
+COPY pyproject.toml uv.lock ./
 
-COPY ckanext/ $CKAN_VENV/src/ckanext/
-RUN --mount=type=cache,target=/root/.cache/pip \
-    ckan-pip3 install --no-deps -e $CKAN_VENV/src/ckanext/ckanext-coat && \
-    ckan-pip3 install --no-deps -e $CKAN_VENV/src/ckanext/ckanext-coatcustom && \
-    ckan-pip3 install --no-deps -e $CKAN_VENV/src/ckanext/ckanext-datasetversions && \
-    ckan-pip3 install --no-deps -e $CKAN_VENV/src/ckanext/ckanext-doi && \
-    ckan-pip3 install --no-deps -e $CKAN_VENV/src/ckanext/ckanext-harvest && \
-    ckan-pip3 install --no-deps -e $CKAN_VENV/src/ckanext/ckanext-oauth2 && \
-    ckan-pip3 install --no-deps -e $CKAN_VENV/src/ckanext/ckanext-scheming && \
-    ckan-pip3 install --no-deps -e $CKAN_VENV/src/ckanext/ckanext-spatial && \
-    :
+RUN --mount=type=cache,sharing=locked,target=/root/.cache/uv \
+    uv sync --locked
 
-COPY --from=language /ckan.mo $CKAN_VENV/src/ckan/ckan/i18n/en/LC_MESSAGES/ckan.mo
-COPY custom/coat-entrypoint.sh custom/coat-entrypoint-dev.sh ./
-ENV CKAN_INI=/etc/ckan/production.ini
-RUN mkdir -p /var/lib/ckan/webassets/.webassets-cache
+
+COPY custom/coat-entrypoint.sh custom/coat-entrypoint-dev.sh custom/ckan-entrypoint.sh /
+COPY wsgi.py .
+
+ENV CKAN_HOME=/usr/lib/ckan
+ENV CKAN_VENV=$CKAN_HOME/.venv
+ENV CKAN_CONFIG=$CKAN_VENV/lib/python3.9/site-packages/ckan/config
+ENV CKAN_INI=$CKAN_CONFIG/production.ini
+ENV CKAN_STORAGE_PATH=/var/lib/ckan
+
+COPY --from=language /ckan.mo $CKAN_VENV/lib/python3.9/site-packages/ckan/i18n/en/LC_MESSAGES/ckan.mo
+RUN mkdir -p $CKAN_STORAGE_PATH/webassets/.webassets-cache
+
+ENV PATH="$CKAN_VENV/bin:$PATH"
+
 ENTRYPOINT ["/coat-entrypoint.sh"]
-CMD ["gunicorn", "--chdir", "/usr/lib/ckan/venv/src/ckan", "wsgi:application", "-b", "0.0.0.0:5000"]
+CMD ["gunicorn", "wsgi:application", "-b", "0.0.0.0:5000"]

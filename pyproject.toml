@@ -1,0 +1,49 @@
+[project]
+name = "nina-ckan-coat"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.9,<3.10"
+dependencies = [
+    "ckan_dummy",
+    "ckanext-coat",
+    "ckanext-coatcustom",
+    "ckanext-datasetversions",
+    "ckanext-doi",
+    "ckanext-harvest",
+    "ckanext-oauth2",
+    "ckanext-scheming",
+    "ckanext-spatial",
+    "crudini>=0.9.6",
+    "gunicorn>=23.0.0",
+]
+
+[tool.uv.sources]
+ckan_dummy = { path = "./dummy/ckan" }
+ckanext-coat = { path = "./ckanext/ckanext-coat", editable = true }
+ckanext-coatcustom = { path = "./ckanext/ckanext-coatcustom", editable = true }
+ckanext-datasetversions = { path = "./ckanext/ckanext-datasetversions", editable = true }
+ckanext-doi = { path = "./ckanext/ckanext-doi", editable = true }
+ckanext-harvest = { path = "./ckanext/ckanext-harvest", editable = true }
+ckanext-oauth2 = { path = "./ckanext/ckanext-oauth2", editable = true }
+ckanext-scheming = { path = "./ckanext/ckanext-scheming", editable = true }
+ckanext-spatial = { path = "./ckanext/ckanext-spatial", editable = true }
+
+[tool.uv]
+no-build-isolation-package = [
+    "ckan",
+    "zope-interface",
+    "pyproj",
+]
+override-dependencies = [
+    "certifi>=2026",
+    "pyproj>3.0.0,<3.1.0",
+]
+
+[dependency-groups]
+dev = [
+    "flask-debugtoolbar>=0.14.1",
+]
+
+[tool.setuptools]
+packages = []
