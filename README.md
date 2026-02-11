@@ -82,7 +82,7 @@ cp template.env .env
 
 # Build and run in development mode
 docker compose --profile dev build
-docker compose --profile dev run --rm --service-ports ckan-dev
+docker compose --profile dev run --rm ckan-dev
 ```
 
 The development server supports:
@@ -126,6 +126,7 @@ docker compose --profile prod up -d
 ```bash
 # Run integration tests with Docker Compose
 docker compose --profile test down -v  # Clean up previous runs
+docker compose --profile test build
 docker compose --profile test run --rm test
 ```
 

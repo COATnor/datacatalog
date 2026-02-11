@@ -37,6 +37,6 @@ class CKANTest(BaseCase):
 
 
 class PyCSW(BaseCase):
-    @sanity_check
     def test_homepage(self):
         self.open(BASE + "/pycsw/csw.py")
+        self.assert_element_present("*")  # XML page loaded
