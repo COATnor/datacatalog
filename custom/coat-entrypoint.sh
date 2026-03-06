@@ -94,10 +94,7 @@ conf_set_list ckan.plugins coat
 conf_set ckanext.coat.resource_name_globally_unique true
 conf_set ckanext.coat.custom_form false
 
-: ${USERSPEC:=root}
-chroot --userspec=$USERSPEC / mkdir -p /var/lib/ckan/webassets/.webassets-cache
-chown -R $USERSPEC /var/lib/ckan/webassets/.webassets-cache
-chroot --userspec=$USERSPEC / ckan search-index rebuild # workaround
-chroot --userspec=$USERSPEC / ckan doi initdb
+ckan search-index rebuild # workaround
+ckan doi initdb
 
 exec "$@"
