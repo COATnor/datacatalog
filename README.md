@@ -123,17 +123,22 @@ docker compose --profile prod up -d
 
 ## Testing
 
+There are two test suites, both run inside Docker against a live `ckan-test` instance:
+
+| Suite | File | Description |
+|-------|------|-------------|
+| API integration | `tests/test_api.py` | CKAN API tests (package lifecycle, versioning, embargo, …) |
+| E2E browser | `tests/base.py` | SeleniumBase browser automation |
+
+### Run tests
+
 ```bash
-# Run integration tests with Docker Compose
-docker compose --profile test down -v  # Clean up previous runs
 docker compose --profile test build
+docker compose --profile test run --rm test-api
 docker compose --profile test run --rm test
 ```
 
-Tests use SeleniumBase for browser automation and include:
-- Homepage accessibility
-- Dataset listing pages
-- PyCSW endpoint validation
+> **Note:** `docker compose --profile test down -v` between runs clears the database for a clean state.
 
 ## Common Commands
 

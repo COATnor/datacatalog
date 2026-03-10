@@ -10,9 +10,10 @@ WORKDIR /app
 COPY pyproject.toml uv.lock ./
 
 RUN --mount=type=cache,sharing=locked,target=/root/.cache/uv \
-    uv sync --locked
+    uv sync --locked --link-mode=copy
 
-COPY base.py .
+COPY base.py test_api.py ./
 
 ENV PATH="/usr/lib/chromium:$PATH"
-ENTRYPOINT ["uv", "run", "pytest", "base.py", "-v", "--headless"]
+ENTRYPOINT ["uv", "run", "pytest"]
+CMD ["base.py", "-v", "--headless"]

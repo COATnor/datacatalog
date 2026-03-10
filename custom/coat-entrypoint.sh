@@ -60,7 +60,7 @@ conf_set scheming.dataset_fallback false
 
 #ckanext-spatial
 conf_set_list ckan.plugins spatial_metadata spatial_query
-conf_set ckanext.spatial.search_backend solr
+conf_set ckanext.spatial.search_backend solr-bbox
 
 #ckanext-harvest
 conf_set_list ckan.plugins harvest ckan_harvester

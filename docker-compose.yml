@@ -105,7 +105,7 @@ services:
     << : *common-ckan-dev
     profiles:
       - test
-    command: 'ckan run --host 0.0.0.0'
+    command: 'ckan run --host 0.0.0.0 --disable-reloader'
     environment:
       << : *common-ckan-env-dev
       CKAN_SITE_URL: http://varnish
@@ -122,6 +122,18 @@ services:
       COAT_URL: http://varnish
     volumes:
       - ./tests/latest_logs:/app/latest_logs
+
+  test-api:
+    profiles:
+      - test
+    build:
+      context: tests
+      dockerfile: Dockerfile
+    depends_on:
+      - ckan-test
+    environment:
+      COAT_URL: http://varnish
+    command: ["test_api.py", "-v", "--headless"]
 
   #datapusher:
   #  container_name: datapusher

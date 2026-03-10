@@ -8,6 +8,8 @@ authors = [
 dependencies = [
     "seleniumbase>=2.4.26",
     "parameterized>=0.1",
+    "requests>=2.28",
+    "tenacity>=8.0",
 ]
 requires-python = ">=3.8"
 license = {text = "GPLv3"}
