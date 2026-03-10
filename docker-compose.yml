@@ -64,17 +64,17 @@ x-common-ckan-dev:
   << : *common-ckan
   volumes:
     - *common-ckan-volume
-    - ./ckanext/ckanext-coat/ckanext:/usr/lib/ckan/.venv/src/ckanext/ckanext-coat/ckanext:ro
-    - ./ckanext/ckanext-coatcustom/ckanext:/usr/lib/ckan/.venv/src/ckanext/ckanext-coatcustom/ckanext:ro
-    - ./ckanext/ckanext-datasetversions/ckanext:/usr/lib/ckan/.venv/src/ckanext/ckanext-datasetversions/ckanext:ro
-    - ./ckanext/ckanext-dcat/ckanext:/usr/lib/ckan/.venv/src/ckanext/ckanext-dcat/ckanext:ro
-    - ./ckanext/ckanext-doi/ckanext:/usr/lib/ckan/.venv/src/ckanext/ckanext-doi/ckanext:ro
-    - ./ckanext/ckanext-harvest/ckanext:/usr/lib/ckan/.venv/src/ckanext/ckanext-harvest/ckanext:ro
-    - ./ckanext/ckanext-iso19115/ckanext:/usr/lib/ckan/.venv/src/ckanext/ckanext-iso19115/ckanext:ro
-    - ./ckanext/ckanext-metaexport/ckanext:/usr/lib/ckan/.venv/src/ckanext/ckanext-metaexport/ckanext:ro
-    - ./ckanext/ckanext-oauth2/ckanext:/usr/lib/ckan/.venv/src/ckanext/ckanext-oauth2/ckanext:ro
-    - ./ckanext/ckanext-scheming/ckanext:/usr/lib/ckan/.venv/src/ckanext/ckanext-scheming/ckanext:ro
-    - ./ckanext/ckanext-spatial/ckanext:/usr/lib/ckan/.venv/src/ckanext/ckanext-spatial/ckanext:ro
+    - ./ckanext/ckanext-coat/ckanext:/usr/lib/ckan/ckanext/ckanext-coat/ckanext:ro
+    - ./ckanext/ckanext-coatcustom/ckanext:/usr/lib/ckan/ckanext/ckanext-coatcustom/ckanext:ro
+    - ./ckanext/ckanext-datasetversions/ckanext:/usr/lib/ckan/ckanext/ckanext-datasetversions/ckanext:ro
+    - ./ckanext/ckanext-dcat/ckanext:/usr/lib/ckan/ckanext/ckanext-dcat/ckanext:ro
+    - ./ckanext/ckanext-doi/ckanext:/usr/lib/ckan/ckanext/ckanext-doi/ckanext:ro
+    - ./ckanext/ckanext-harvest/ckanext:/usr/lib/ckan/ckanext/ckanext-harvest/ckanext:ro
+    - ./ckanext/ckanext-iso19115/ckanext:/usr/lib/ckan/ckanext/ckanext-iso19115/ckanext:ro
+    - ./ckanext/ckanext-metaexport/ckanext:/usr/lib/ckan/ckanext/ckanext-metaexport/ckanext:ro
+    - ./ckanext/ckanext-oauth2/ckanext:/usr/lib/ckan/ckanext/ckanext-oauth2/ckanext:ro
+    - ./ckanext/ckanext-scheming/ckanext:/usr/lib/ckan/ckanext/ckanext-scheming/ckanext:ro
+    - ./ckanext/ckanext-spatial/ckanext:/usr/lib/ckan/ckanext/ckanext-spatial/ckanext:ro
     - ./custom/coat-entrypoint.sh:/coat-entrypoint.sh:ro
     - ./custom/coat-entrypoint-dev.sh:/coat-entrypoint-dev.sh:ro
   entrypoint: ["bash", "/coat-entrypoint-dev.sh"]
@@ -108,7 +108,6 @@ services:
     command: 'ckan run --host 0.0.0.0 --disable-reloader'
     environment:
       << : *common-ckan-env-dev
-      CKAN_SITE_URL: http://varnish
 
   test:
     profiles:
@@ -117,7 +116,8 @@ services:
       context: tests
       dockerfile: Dockerfile
     depends_on:
-      - ckan-test
+      ckan-test:
+        condition: service_healthy
     environment:
       COAT_URL: http://varnish
     volumes:
@@ -130,9 +130,12 @@ services:
       context: tests
       dockerfile: Dockerfile
     depends_on:
-      - ckan-test
+      ckan-test:
+        condition: service_healthy
     environment:
       COAT_URL: http://varnish
+    volumes:
+      - ./tests/test_api.py:/app/test_api.py:ro
     command: ["test_api.py", "-v", "--headless"]
 
   #datapusher:
