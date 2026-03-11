@@ -51,9 +51,6 @@ flowchart TB
 | `ckanext-doi` | DOI minting and DataCite integration |
 | `ckanext-oauth2` | OAuth2 authentication (Dataporten) |
 | `ckanext-datasetversions` | Dataset version management |
-| `ckanext-dcat` | DCAT RDF serialization |
-| `ckanext-iso19115` | ISO 19115 metadata support |
-| `ckanext-metaexport` | Metadata export utilities |
 
 ## Requirements
 
