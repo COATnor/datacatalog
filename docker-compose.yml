@@ -83,6 +83,7 @@ x-common-ckan-dev:
     << : *common-ckan-env
     DOI_TEST_MODE: true
     ENV: dev
+    CKAN_ADMIN_PASSWORD: ${CKAN_ADMIN_PASSWORD:-}
 
 services:
   ckan-prod:

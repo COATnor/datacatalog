@@ -89,6 +89,8 @@ The development server supports:
 - Hot reloading for CKAN extensions (via volume mounts)
 - Interactive debugging with `pdb`
 - DOI test mode enabled by default
+- A fixed sysadmin user created automatically on startup when `CKAN_ADMIN_PASSWORD` is set in `.env`:
+  - **Username:** `admin`  **Password:** value of `CKAN_ADMIN_PASSWORD` (default: `admin`)
 
 ### Production Deployment
 
@@ -139,6 +141,8 @@ docker compose --profile test run --rm test
 ```
 
 > **Note:** `docker compose --profile test down -v` between runs clears the database for a clean state.
+
+The `ckan-test` instance also creates the fixed sysadmin on startup (when `CKAN_ADMIN_PASSWORD` is set), so you can inspect test data in the web portal at `http://127.0.0.1:5000` while tests are running.
 
 ## Common Commands
 
