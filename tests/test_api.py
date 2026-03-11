@@ -22,6 +22,7 @@ _RUN_ID = uuid.uuid4().hex[:8]
 TEST_USER_NAME = f"test_apiuser_{_RUN_ID}"
 TEST_USER_EMAIL = f"apiuser_{_RUN_ID}@test.coat.no"
 TEST_USER_PASSWORD = "TestPassword123!"
+TEST_USER_FULLNAME = "Test API User"
 
 # Required COAT schema fields for every dataset
 PKG_DEFAULTS = {
@@ -32,6 +33,16 @@ PKG_DEFAULTS = {
     "state": "active",
 }
 
+# Required COAT schema fields for every state variable
+SV_DEFAULTS = {
+    "type": "state-variable",
+    "notes": "Test state variable.",
+    "state": "active",
+    "license_id": "CC-BY_4.0",
+    "temporal_start": "2020-01-01",
+    "temporal_end": "2024-12-31",
+}
+
 
 def uid():
     return uuid.uuid4().hex[:8]
@@ -39,6 +50,19 @@ def uid():
 
 def extras(pkg):
     return {e["key"]: e["value"] for e in pkg.get("extras", [])}
+
+
+def make_user(fullname=None):
+    """Create a fresh CKAN user (requires create_user_via_api = true)."""
+    tag = uid()
+    kwargs = dict(
+        name=f"test_user_{tag}",
+        email=f"user_{tag}@test.coat.no",
+        password=TEST_USER_PASSWORD,
+    )
+    if fullname:
+        kwargs["fullname"] = fullname
+    return CKANClient(BASE).action("user_create", **kwargs)
 
 
 # ---------------------------------------------------------------------------
@@ -82,8 +106,25 @@ class CKANClient:
             **overrides,
         })
 
+    def create_sv(self, org_id, *dataset_names, **overrides):
+        """Create a state variable and return the package_show result.
+
+        dataset_names are joined as the 'datasets' field. Extra keyword
+        arguments are passed through to package_create.
+        """
+        sv = self.action("package_create", **{
+            **SV_DEFAULTS,
+            "title": overrides.pop("title", f"Test SV {uid()}"),
+            "owner_org": org_id,
+            "private": True,
+            "datasets": ",".join(dataset_names),
+            **overrides,
+        })
+        # after_show computes resource_citations; package_create does not trigger it
+        return self.action("package_show", id=sv["id"])
+
     def update_package(self, pkg_id, **overrides):
-        """Fetch current state, merge overrides, and update (CKAN does a full replace)."""
+        """Fetch current state, apply overrides, and update (CKAN does a full replace)."""
         pkg = self.action("package_show", id=pkg_id)
         pkg.update(overrides)
         return self.action("package_update", **pkg)
@@ -113,6 +154,7 @@ def client():
             name=TEST_USER_NAME,
             email=TEST_USER_EMAIL,
             password=TEST_USER_PASSWORD,
+            fullname=TEST_USER_FULLNAME,
         )
         api_key = user.get("apikey")
     except CKANAPIError as exc:
@@ -154,7 +196,7 @@ def pkg(client, org):
 
 @pytest.fixture
 def pub(client, pkg):
-    """Fresh public package for each test (pkg published)."""
+    """Published (public) package for each test."""
     return client.publish(pkg["id"])
 
 
@@ -217,8 +259,7 @@ class TestPackageLifecycle:
 class TestDraftBehavior:
     def test_draft_forced_private(self, client, org):
         pkg = client.create_package(org["id"], author=TEST_USER_NAME, state="draft")
-        updated = client.update_package(pkg["id"], private=False, state="draft")
-        assert updated["private"] is True
+        assert client.update_package(pkg["id"], private=False, state="draft")["private"] is True
 
 
 # ---------------------------------------------------------------------------
@@ -290,8 +331,8 @@ class TestVersioning:
 class TestSearch:
     def test_search_returns_results(self, client, org):
         tag = uid()
-        pkg = client.create_package(org["id"], author=TEST_USER_NAME, title=f"Searchable {tag}")
-        client.publish(pkg["id"])
+        client.publish(client.create_package(org["id"], author=TEST_USER_NAME,
+                                             title=f"Searchable {tag}")["id"])
         assert client.action("package_search", q=tag)["count"] >= 1
 
 
@@ -315,3 +356,108 @@ class TestAnonymousAccess:
             "author": TEST_USER_NAME,
         })
         assert not resp.json()["success"]
+
+
+# ---------------------------------------------------------------------------
+# State variable — citations
+# ---------------------------------------------------------------------------
+
+class TestStateVariableCitation:
+    def test_citation_populated(self, client, org, pkg):
+        """resource_citations resolves the author's fullname and contains the SV name."""
+        sv = client.create_sv(org["id"], pkg["name"])
+        citation = sv.get("resource_citations", "")
+        assert citation, "resource_citations is empty"
+        assert sv["name"] in citation
+        assert TEST_USER_FULLNAME in citation, (
+            f"Expected {TEST_USER_FULLNAME!r} in citation, got: {citation!r}"
+        )
+
+    def test_citation_no_fullname_fallback(self, client, org):
+        """Author without a fullname falls back to username — no raw email in citation."""
+        user = make_user()
+        pkg = client.create_package(org["id"], author=user["name"])
+        sv = client.create_sv(org["id"], pkg["name"])
+        citation = sv.get("resource_citations", "")
+        assert citation, "resource_citations is empty"
+        assert "@" not in citation, f"Citation leaks raw email: {citation!r}"
+        assert user["name"] in citation
+
+    def test_citation_multiple_authors_et_al(self, client, org):
+        """Two datasets with different authors produce 'First Author et al.'"""
+        user2 = make_user(fullname=f"Second Author {uid()}")
+        pkg1 = client.create_package(org["id"], author=TEST_USER_NAME)
+        pkg2 = client.create_package(org["id"], author=user2["name"])
+        sv = client.create_sv(org["id"], pkg1["name"], pkg2["name"])
+        citation = sv.get("resource_citations", "")
+        assert "et al." in citation, f"Expected 'et al.' in citation, got: {citation!r}"
+        first_author = citation.split(" et al.")[0]
+        assert first_author in {TEST_USER_FULLNAME, user2["fullname"]}
+
+
+# ---------------------------------------------------------------------------
+# State variable — external datasets
+# ---------------------------------------------------------------------------
+
+class TestStateVariableExternalDatasets:
+    def test_external_datasets_stored_and_returned(self, client, org, pkg):
+        """external_datasets entries are stored and returned on package_show."""
+        url = "https://example.com/external-dataset"
+        sv = client.create_sv(org["id"], pkg["name"], external_datasets=[{"url": url}])
+        ext = sv.get("external_datasets")
+        assert isinstance(ext, list) and len(ext) == 1 and ext[0]["url"] == url, (
+            f"Expected [{{url: {url!r}}}], got: {ext!r}"
+        )
+
+    def test_external_datasets_optional(self, client, org, pkg):
+        """State variable can be created without external_datasets."""
+        assert not client.create_sv(org["id"], pkg["name"]).get("external_datasets")
+
+
+# ---------------------------------------------------------------------------
+# State variable — create-only merge and manual overrides
+# ---------------------------------------------------------------------------
+
+class TestStateVariableMergeFields:
+    def test_fields_merged_on_create(self, client, org, pkg):
+        """author and publisher are auto-merged from linked datasets on creation."""
+        sv = client.create_sv(org["id"], pkg["name"])
+        assert TEST_USER_NAME in sv.get("author", ""), (
+            f"Expected author to contain {TEST_USER_NAME!r}, got: {sv.get('author')!r}"
+        )
+        assert "NINA" in sv.get("publisher", ""), (
+            f"Expected publisher to contain 'NINA', got: {sv.get('publisher')!r}"
+        )
+
+    def test_manual_override_preserved_on_update(self, client, org, pkg):
+        """Manually set author/publisher on update are not overwritten by merge."""
+        sv = client.create_sv(org["id"], pkg["name"])
+        updated = client.update_package(sv["id"],
+                                        author="custom_author",
+                                        publisher="Custom Publisher")
+        shown = client.action("package_show", id=updated["id"])
+        assert shown.get("author") == "custom_author"
+        assert shown.get("publisher") == "Custom Publisher"
+
+
+# ---------------------------------------------------------------------------
+# State variable — scientific_name manual editing
+# ---------------------------------------------------------------------------
+
+class TestStateVariableScientificName:
+    def test_scientific_name_merged_on_create(self, client, org):
+        """scientific_name is auto-merged from the linked dataset on SV creation."""
+        species = "Lemmus lemmus"
+        pkg = client.create_package(org["id"], author=TEST_USER_NAME, scientific_name=species)
+        sv = client.create_sv(org["id"], pkg["name"])
+        assert species in sv.get("scientific_name", ""), (
+            f"Expected {species!r} in scientific_name, got: {sv.get('scientific_name')!r}"
+        )
+
+    def test_scientific_name_manual_override_preserved(self, client, org):
+        """Manually set scientific_name on update is not overwritten by merge."""
+        pkg = client.create_package(org["id"], author=TEST_USER_NAME,
+                                    scientific_name="Rangifer tarandus")
+        sv = client.create_sv(org["id"], pkg["name"])
+        updated = client.update_package(sv["id"], scientific_name="Lemmus lemmus")
+        assert client.action("package_show", id=updated["id"])["scientific_name"] == "Lemmus lemmus"
