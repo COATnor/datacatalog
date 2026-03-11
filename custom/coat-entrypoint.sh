@@ -15,6 +15,7 @@ function conf_set_list() {
 }
 
 #ckan
+conf_set ckan.homepage_style 3
 conf_set ckan.site_title "COAT Data Portal"
 conf_set ckan.site_description "Climate-ecological Observatory for Arctic Tundra (COAT)"
 conf_set ckan.site_logo "/images/coat.png"
@@ -41,14 +42,15 @@ A detailed description of the Data Portal and COAT's Data Management Policy and 
 "
 conf_set ckan.datastore.sqlalchemy.pool_pre_ping true
 conf_set ckan.search.show_all_types everything
+conf_set ckan.search.solr_allowed_query_parsers "edismax collapse"
 conf_set ckan.favicon "/images/coat.png"
-conf_set ckan.auth.create_default_api_keys true
+conf_set beaker.session.validate_key "$BEAKER_SESSION_SECRET"
 
 #ckanext-coatcustom
 conf_set_list ckan.plugins coatcustom
 
 #ckanext-scheming
-conf_set_list ckan.plugins scheming_datasets scheming_organizations
+conf_set_list ckan.plugins scheming_datasets scheming_organizations scheming_nerf_index
 conf_set_list scheming.dataset_schemas \
     ckanext.coatcustom:coat_schema.json \
     ckanext.coatcustom:coat_statevariable_schema.json \
@@ -61,10 +63,9 @@ conf_set scheming.dataset_fallback false
 #ckanext-spatial
 conf_set_list ckan.plugins spatial_metadata spatial_query
 conf_set ckanext.spatial.search_backend solr-bbox
-
-#ckanext-harvest
-conf_set_list ckan.plugins harvest ckan_harvester
-
+conf_set ckanext.spatial.common_map.type custom
+conf_set ckanext.spatial.common_map.custom_url "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+conf_set ckanext.spatial.common_map.attribution "&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors"
 
 #ckanext-doi
 conf_set_list ckan.plugins doi
@@ -84,6 +85,7 @@ then
     conf_set ckan.oauth2.profile_api_user_field email
     conf_set ckan.oauth2.profile_api_fullname_field name
     conf_set ckan.oauth2.profile_api_mail_field email
+    ckan db upgrade -p oauth2
 fi
 
 #ckanext-datasetversions
