@@ -5,6 +5,8 @@ volumes:
     driver: local
   pg_data:
     driver: local
+  tokens:
+    driver: local
 
 x-common-ckan-env:
   &common-ckan-env
@@ -15,8 +17,8 @@ x-common-ckan-env:
   CKAN_DATASTORE_READ_URL: postgresql://datastore_ro:${DATASTORE_READONLY_PASSWORD}@db/datastore
   CKAN_SOLR_URL: http://solr:8983/solr/ckan
   CKAN_REDIS_URL: redis://redis:6379/1
-  CKAN_DATAPUSHER_URL: http://datapusher:8800
   CKAN_MAX_UPLOAD_SIZE_MB: ${CKAN_MAX_UPLOAD_SIZE_MB}
+  BEAKER_SESSION_SECRET: ${BEAKER_SESSION_SECRET}
   POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
   DS_RO_PASS: ${DATASTORE_READONLY_PASSWORD}
   # DOI
@@ -35,12 +37,18 @@ x-common-ckan:
       aliases:
         - ckan
   depends_on:
-    - db
-    - solr
-    - redis
-    - varnish
-    - pycsw
-    - bulk-download
+    db:
+      condition: service_healthy
+    solr:
+      condition: service_healthy
+    redis:
+      condition: service_healthy
+    varnish:
+      condition: service_started
+    pycsw:
+      condition: service_started
+    bulk-download:
+      condition: service_started
   volumes:
     - &common-ckan-volume
       ckan_storage:/var/lib/ckan
@@ -68,12 +76,12 @@ x-common-ckan-dev:
     - ./ckanext/ckanext-coatcustom/ckanext:/usr/lib/ckan/ckanext/ckanext-coatcustom/ckanext:ro
     - ./ckanext/ckanext-datasetversions/ckanext:/usr/lib/ckan/ckanext/ckanext-datasetversions/ckanext:ro
     - ./ckanext/ckanext-doi/ckanext:/usr/lib/ckan/ckanext/ckanext-doi/ckanext:ro
-    - ./ckanext/ckanext-harvest/ckanext:/usr/lib/ckan/ckanext/ckanext-harvest/ckanext:ro
     - ./ckanext/ckanext-oauth2/ckanext:/usr/lib/ckan/ckanext/ckanext-oauth2/ckanext:ro
     - ./ckanext/ckanext-scheming/ckanext:/usr/lib/ckan/ckanext/ckanext-scheming/ckanext:ro
     - ./ckanext/ckanext-spatial/ckanext:/usr/lib/ckan/ckanext/ckanext-spatial/ckanext:ro
     - ./custom/coat-entrypoint.sh:/coat-entrypoint.sh:ro
     - ./custom/coat-entrypoint-dev.sh:/coat-entrypoint-dev.sh:ro
+    - tokens:/tokens
   entrypoint: ["bash", "/coat-entrypoint-dev.sh"]
   environment:
     &common-ckan-env-dev
@@ -134,11 +142,8 @@ services:
       COAT_URL: http://varnish
     volumes:
       - ./tests/test_api.py:/app/test_api.py:ro
+      - tokens:/tokens:ro
     command: ["test_api.py", "-v", "--headless"]
-
-  #datapusher:
-  #  container_name: datapusher
-  #  image: clementmouchet/datapusher
 
   pycsw:
     build:
@@ -184,14 +189,27 @@ services:
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "ckan"]
 
-  solr:
-    image: ckan/ckan-solr:2.9-solr8
+  solr-init:
+    image: busybox
+    user: root
     volumes:
-      - solr_data:/opt/solr/server/solr/ckan/data
+      - solr_data:/var/solr/data
+    command: ["chown", "-R", "8983:8983", "/var/solr/data"]
+
+  solr:
+    image: ckan/ckan-solr:2.10-solr9-spatial
+    depends_on:
+      solr-init:
+        condition: service_completed_successfully
+    volumes:
+      - solr_data:/var/solr/data
     ports:
       - "8983:8983"
     healthcheck:
-      test: ["CMD", "wget", "-qO", "/dev/null", "localhost:8983/solr/"]
+      test: ["CMD", "wget", "-qO", "/dev/null", "localhost:8983/solr/ckan/admin/ping"]
+      start_period: 60s
+      interval: 10s
+      retries: 6
 
   redis:
     image: redis:6

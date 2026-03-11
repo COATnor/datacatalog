@@ -47,7 +47,6 @@ flowchart TB
 | `ckanext-coatcustom` | COAT-specific schemas, spatial search, DOI citations |
 | `ckanext-scheming` | Customizable dataset schemas |
 | `ckanext-spatial` | Spatial metadata and search |
-| `ckanext-harvest` | Data harvesting from external catalogs |
 | `ckanext-doi` | DOI minting and DataCite integration |
 | `ckanext-oauth2` | OAuth2 authentication (Dataporten) |
 | `ckanext-datasetversions` | Dataset version management |

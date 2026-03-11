@@ -142,12 +142,44 @@ def _wait_for_ckan():
     requests.get(f"{BASE}/api/3/action/status_show", timeout=5).raise_for_status()
 
 
+def _read_file(path):
+    """Return stripped file content, or None if the file is missing/empty."""
+    try:
+        content = open(path).read().strip()
+        return content or None
+    except OSError:
+        return None
+
+
 @pytest.fixture(scope="session")
 def client():
     """Authenticated CKAN client, created once for the entire test session."""
     _wait_for_ckan()
     anon = CKANClient(BASE)
     api_key = None
+
+    # --- CKAN 2.10+ path: api keys removed; use sysadmin token ---
+    sysadmin_key = os.environ.get("CKAN_API_KEY") or _read_file("/tokens/api_token")
+    if sysadmin_key:
+        admin_client = CKANClient(BASE, sysadmin_key)
+        try:
+            admin_client.action(
+                "user_create",
+                name=TEST_USER_NAME,
+                email=TEST_USER_EMAIL,
+                password=TEST_USER_PASSWORD,
+                fullname=TEST_USER_FULLNAME,
+            )
+        except CKANAPIError:
+            pass  # user already exists from a previous run
+        token_data = admin_client.action(
+            "api_token_create",
+            user=TEST_USER_NAME,
+            name="integration_test",
+        )
+        return CKANClient(BASE, token_data["token"])
+
+    # --- CKAN 2.9 fallback: anonymous user_create returned apikey ---
     try:
         user = anon.action(
             "user_create",

@@ -6,20 +6,14 @@
 	url = git@github.com:COATnor/ckanext-coatcustom.git
 [submodule "ckanext/ckanext-datasetversions"]
 	path = ckanext/ckanext-datasetversions
-	url = git@github.com:aptivate/ckanext-datasetversions.git
+	url = https://github.com/COATnor/ckanext-datasetversions.git
+	branch = coat
 [submodule "ckanext/ckanext-scheming"]
 	path = ckanext/ckanext-scheming
 	url = git@github.com:COATnor/ckanext-scheming.git
 [submodule "ckanext/ckanext-spatial"]
 	path = ckanext/ckanext-spatial
 	url = https://github.com/ckan/ckanext-spatial
-[submodule "ckanext/ckanext-oauth2"]
-	path = ckanext/ckanext-oauth2
-	url = git@github.com:COATnor/ckanext-oauth2.git
-	branch = feide
-[submodule "ckanext/ckanext-harvest"]
-	path = ckanext/ckanext-harvest
-	url = https://github.com/ckan/ckanext-harvest/
 [submodule "ckanext/ckanext-doi"]
 	path = ckanext/ckanext-doi
 	url = https://github.com/NaturalHistoryMuseum/ckanext-doi.git
@@ -29,3 +23,7 @@
 [submodule "bulk-download"]
 	path = services/bulk-download
 	url = git@github.com:COATnor/coat-bulk-download.git
+[submodule "ckanext/ckanext-oauth2"]
+	path = ckanext/ckanext-oauth2
+	url = https://github.com/COATnor/ckanext-oauth2.git
+	branch = coat
