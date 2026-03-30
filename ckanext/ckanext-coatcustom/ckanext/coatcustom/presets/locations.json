@@ -1,0 +1,467 @@
+[
+    {
+        "label": "Svalbard",
+        "lat": 78.2783838659642,
+        "lon": 16.1761980317877
+    },
+    {
+        "label": "Svalbard - Kongsfjorden",
+        "lat": 79.061159,
+        "lon": 12.00434
+    },
+    {
+        "label": "Svalbard - Kongsfjorden - Blomstrandoya",
+        "lat": 78.975803,
+        "lon": 12.10577
+    },
+    {
+        "label": "Svalbard - Kongsfjorden - Broggerhalvoya",
+        "lat": 78.914647,
+        "lon": 11.735704
+    },
+    {
+        "label": "Svalbard - Kongsfjorden - Broggerhalvoya - Simlestupet",
+        "lat": 78.9012,
+        "lon": 11.50776
+    },
+    {
+        "label": "Svalbard - Kongsfjorden - Broggerhalvoya - Leinstranda",
+        "lat": 78.87639,
+        "lon": 11.61046
+    },
+    {
+        "label": "Svalbard - Kongsfjorden - Broggerhalvoya - Stuphallet",
+        "lat": 78.96125,
+        "lon": 11.64025
+    },
+    {
+        "label": "Svalbard - Kongsfjorden - Kaffioyra",
+        "lat": 78.628325,
+        "lon": 11.976978
+    },
+    {
+        "label": "Svalbard - Kongsfjorden - Ossiansarsfjellet",
+        "lat": 78.942761,
+        "lon": 12.476667
+    },
+    {
+        "label": "Svalbard - Kongsfjorden - Sarsoyra",
+        "lat": 78.756613,
+        "lon": 11.647155
+    },
+    {
+        "label": "Svalbard - Nordenskioldland",
+        "lat": 78.013984,
+        "lon": 15.116477
+    },
+    {
+        "label": "Svalbard - Nordenskioldland - Adventdalen",
+        "lat": 78.179487,
+        "lon": 16.250824
+    },
+    {
+        "label": "Svalbard - Nordenskioldland - Adventdalen - Endalen",
+        "lat": 78.179487,
+        "lon": 16.250824
+    },
+    {
+        "label": "Svalbard - Nordenskioldland - Adventdalen - Janssonhaugen",
+        "lat": 78.179487,
+        "lon": 16.250824
+    },
+    {
+        "label": "Svalbard - Nordenskioldland - Adventdalen - Bjorndalen",
+        "lat": 78.179487,
+        "lon": 16.250824
+    },
+    {
+        "label": "Svalbard - Nordenskioldland - Adventdalen - Hanaskogdalen",
+        "lat": 78.179487,
+        "lon": 16.250824
+    },
+    {
+        "label": "Svalbard - Nordenskioldland - Adventdalen - Malardalen",
+        "lat": 78.179487,
+        "lon": 16.250824
+    },
+    {
+        "label": "Svalbard - Nordenskioldland - Adventdalen - Todalen",
+        "lat": 78.179487,
+        "lon": 16.250824
+    },
+    {
+        "label": "Svalbard - Nordenskioldland - Adventdalen - Bolterdalen",
+        "lat": 78.179487,
+        "lon": 16.250824
+    },
+    {
+        "label": "Svalbard - Nordenskioldland - Adventdalen - Hiorthhamn",
+        "lat": 78.179487,
+        "lon": 16.250824
+    },
+    {
+        "label": "Svalbard - Nordenskioldland - Adventdalen - Longyeardalen",
+        "lat": 78.179487,
+        "lon": 16.250824
+    },
+    {
+        "label": "Svalbard - Nordenskioldland - Alkhornet",
+        "lat": 78.215766,
+        "lon": 13.741739
+    },
+    {
+        "label": "Svalbard - Nordenskioldland - Colesdalen",
+        "lat": 78.080511,
+        "lon": 15.202606
+    },
+    {
+        "label": "Svalbard - Nordenskioldland - Reindalen",
+        "lat": 77.950241,
+        "lon": 15.765129
+    },
+    {
+        "label": "Svalbard - Nordenskioldland - Sassendalen",
+        "lat": 78.26552,
+        "lon": 17.211454
+    },
+    {
+        "label": "Svalbard - Nordenskioldland - Sassendalen - Gjelhallet",
+        "lat": 78.26552,
+        "lon": 17.211454
+    },
+    {
+        "label": "Svalbard - Nordenskioldland - Sassendalen - Noisdalen",
+        "lat": 78.26552,
+        "lon": 17.211454
+    },
+    {
+        "label": "Svalbard - Nordenskioldland - Sassendalen - Eskerdalen",
+        "lat": 78.26552,
+        "lon": 17.211454
+    },
+    {
+        "label": "Svalbard - Nordenskioldland - Degeerdalen",
+        "lat": 78.26552,
+        "lon": 17.211454
+    },
+    {
+        "label": "Svalbard - Nordenskioldland - Degeerdalen - Diabas",
+        "lat": 78.26552,
+        "lon": 17.211454
+    },
+    {
+        "label": "Svalbard - Nordenskioldland - Semmeldalen",
+        "lat": 77.966604,
+        "lon": 15.416838
+    },
+    {
+        "label": "Varanger",
+        "lat": 70.3953416195281,
+        "lon": 29.5298900097758
+    },
+    {
+        "label": "Varanger - Siskkit Corgas Ja Lagesduottar",
+        "lat": 70.60438,
+        "lon": 27.514059
+    },
+    {
+        "label": "Varanger - Siskkit Corgas Ja Lagesduottar - Bekkarfjord",
+        "lat": 70.705655,
+        "lon": 27.476085
+    },
+    {
+        "label": "Varanger - Siskkit Corgas Ja Lagesduottar - Ifjordfjellet",
+        "lat": 70.4223373563218,
+        "lon": 27.4692352873563
+    },
+    {
+        "label": "Varanger - Siskkit Corgas Ja Lagesduottar - Ifjordfjellet - Eastordalen",
+        "lat": 70.4223373563218,
+        "lon": 27.4692352873563
+    },
+    {
+        "label": "Varanger - Siskkit Corgas Ja Lagesduottar - Ifjordfjellet - Storelva",
+        "lat": 70.4223373563218,
+        "lon": 27.4692352873563
+    },
+    {
+        "label": "Varanger - Siskkit Corgas Ja Lagesduottar - Ifjordfjellet - Iesjohka",
+        "lat": 70.4223373563218,
+        "lon": 27.4692352873563
+    },
+    {
+        "label": "Varanger - Siskkit Corgas Ja Lagesduottar - Ifjordfjellet - Giksjohka",
+        "lat": 70.4223373563218,
+        "lon": 27.4692352873563
+    },
+    {
+        "label": "Varanger - Siskkit Corgas Ja Lagesduottar - Ifjordfjellet - Gurrojohka",
+        "lat": 70.4223373563218,
+        "lon": 27.4692352873563
+    },
+    {
+        "label": "Varanger - Siskkit Corgas Ja Lagesduottar - Ifjordfjellet - Suolojavri",
+        "lat": 70.4223373563218,
+        "lon": 27.4692352873563
+    },
+    {
+        "label": "Varanger - Siskkit Corgas Ja Lagesduottar - Gaissane",
+        "lat": 70.4223373563218,
+        "lon": 27.4692352873563
+    },
+    {
+        "label": "Varanger - Olggut Corgas Oarje Deatnu",
+        "lat": 70.907408,
+        "lon": 27.85705
+    },
+    {
+        "label": "Varanger - Olggut Corgas Oarje Deatnu - Nordkynn",
+        "lat": 70.9333935,
+        "lon": 27.74431
+    },
+    {
+        "label": "Varanger - Bahcaveaijji",
+        "lat": 69.78709,
+        "lon": 29.185076
+    },
+    {
+        "label": "Varanger - Bahcaveaijji - Bugoyfjord",
+        "lat": 69.8928547721286,
+        "lon": 29.3306369580431
+    },
+    {
+        "label": "Varanger - Bahcaveaijji - Kirkenes",
+        "lat": 69.7638799989991,
+        "lon": 29.350363333001
+    },
+    {
+        "label": "Varanger - Rakkonjarga",
+        "lat": 70.6554221712975,
+        "lon": 28.8749670228275
+    },
+    {
+        "label": "Varanger - Rakkonjarga - Austertana",
+        "lat": 70.4353799165786,
+        "lon": 28.5673587353134
+    },
+    {
+        "label": "Varanger - Rakkonjarga - Luftjok",
+        "lat": 70.2533351723497,
+        "lon": 28.3815452755338
+    },
+    {
+        "label": "Varanger - Rakkonjarga - Polmak",
+        "lat": 70.0319954500505,
+        "lon": 27.9812148162841
+    },
+    {
+        "label": "Varanger - Rakkonjarga - Polmak - Polmak Finland",
+        "lat": 70.0319954500505,
+        "lon": 27.9812148162841
+    },
+    {
+        "label": "Varanger - Rakkonjarga - Polmak - Polmak Norway",
+        "lat": 70.0319954500505,
+        "lon": 27.9812148162841
+    },
+    {
+        "label": "Varanger - Rakkonjarga - Stjernevann",
+        "lat": 70.5416391666667,
+        "lon": 29.211285
+    },
+    {
+        "label": "Varanger - Varjjatnjarga",
+        "lat": 70.3657455303959,
+        "lon": 29.7042036634186
+    },
+    {
+        "label": "Varanger - Varjjatnjarga - Bergebydalen",
+        "lat": 70.236493,
+        "lon": 29.016312
+    },
+    {
+        "label": "Varanger - Varjjatnjarga - Komagdalen",
+        "lat": 70.3353523330029,
+        "lon": 30.0043184621013
+    },
+    {
+        "label": "Varanger - Varjjatnjarga - Komagdalen - Komagdalen Ovre",
+        "lat": 70.3353523330029,
+        "lon": 30.0043184621013
+    },
+    {
+        "label": "Varanger - Varjjatnjarga - Komagdalen - Komagdalen Midtre",
+        "lat": 70.3353523330029,
+        "lon": 30.0043184621013
+    },
+    {
+        "label": "Varanger - Varjjatnjarga - Komagdalen - Komagdalen Nedre",
+        "lat": 70.3353523330029,
+        "lon": 30.0043184621013
+    },
+    {
+        "label": "Varanger - Varjjatnjarga - Komagdalen - Sandfjorddalen",
+        "lat": 70.3353523330029,
+        "lon": 30.0043184621013
+    },
+    {
+        "label": "Varanger - Varjjatnjarga - Komagdalen - Kjoltindan",
+        "lat": 70.3353523330029,
+        "lon": 30.0043184621013
+    },
+    {
+        "label": "Varanger - Varjjatnjarga - Komagdalen - Gargas",
+        "lat": 70.3353523330029,
+        "lon": 30.0043184621013
+    },
+    {
+        "label": "Varanger - Varjjatnjarga - Komagdalen - Ryggfjellet",
+        "lat": 70.3353523330029,
+        "lon": 30.0043184621013
+    },
+    {
+        "label": "Varanger - Varjjatnjarga - Komagdalen - Hubejohka",
+        "lat": 70.3353523330029,
+        "lon": 30.0043184621013
+    },
+    {
+        "label": "Varanger - Varjjatnjarga - Komagdalen - Ruossachokka",
+        "lat": 70.3353523330029,
+        "lon": 30.0043184621013
+    },
+    {
+        "label": "Varanger - Varjjatnjarga - Komagdalen - Royskattfjellet",
+        "lat": 70.3353523330029,
+        "lon": 30.0043184621013
+    },
+    {
+        "label": "Varanger - Varjjatnjarga - Vestre Jakobselv",
+        "lat": 70.2914128728099,
+        "lon": 29.0756827124289
+    },
+    {
+        "label": "Varanger - Varjjatnjarga - Vestre Jakobselv - Torvhaugdalen",
+        "lat": 70.2914128728099,
+        "lon": 29.0756827124289
+    },
+    {
+        "label": "Varanger - Varjjatnjarga - Vestre Jakobselv - Bearalveaijohka",
+        "lat": 70.2914128728099,
+        "lon": 29.0756827124289
+    },
+    {
+        "label": "Varanger - Varjjatnjarga - Vestre Jakobselv - Jakobselv",
+        "lat": 70.2914128728099,
+        "lon": 29.0756827124289
+    },
+    {
+        "label": "Varanger - Varjjatnjarga - Vestre Jakobselv - Reinhaugen",
+        "lat": 70.2914128728099,
+        "lon": 29.0756827124289
+    },
+    {
+        "label": "Varanger - Varjjatnjarga - Vestre Jakobselv - Skoarrajohka",
+        "lat": 70.2914128728099,
+        "lon": 29.0756827124289
+    },
+    {
+        "label": "Varanger - Varjjatnjarga - Vestre Jakobselv - Tranemyra",
+        "lat": 70.2914128728099,
+        "lon": 29.0756827124289
+    },
+    {
+        "label": "Varanger - Varjjatnjarga - Vestre Jakobselv - Gaasevannan",
+        "lat": 70.2914128728099,
+        "lon": 29.0756827124289
+    },
+    {
+        "label": "Varanger - Olggut Corgas Oarje Deatnu - Boftsa",
+        "lat": 70.3701,
+        "lon": 28.178
+    },
+    {
+        "label": "Varanger - Olggut Corgas Oarje Deatnu - Skjaernes",
+        "lat": 70.442,
+        "lon": 27.8498
+    },
+    {
+        "label": "Varanger - Olggut Corgas Oarje Deatnu - Tana",
+        "lat": 70.0799934386925,
+        "lon": 27.7096679608677
+    },
+    {
+        "label": "Troms - Aaroy",
+        "lat": 69.6688,
+        "lon": 20.3628
+    },
+    {
+        "label": "Troms - Aaroy Kontinent",
+        "lat": 69.6326,
+        "lon": 20.3125
+    },
+    {
+        "label": "Troms - Daafjord",
+        "lat": 70.0398,
+        "lon": 19.2603
+    },
+    {
+        "label": "Troms - Daavoy",
+        "lat": 70.0679,
+        "lon": 19.374
+    },
+    {
+        "label": "Troms - Karlsoy",
+        "lat": 70.0021,
+        "lon": 19.9404
+    },
+    {
+        "label": "Troms - Reinoy",
+        "lat": 69.9999,
+        "lon": 19.8017
+    },
+    {
+        "label": "Troms - Rekvik",
+        "lat": 69.7375,
+        "lon": 18.3615
+    },
+    {
+        "label": "Troms - Skogsfjord",
+        "lat": 69.9542,
+        "lon": 19.2375
+    },
+    {
+        "label": "Troms - Skulsfjord",
+        "lat": 69.8141,
+        "lon": 18.786
+    },
+    {
+        "label": "Troms - Kvaloysletta",
+        "lat": 69.6924,
+        "lon": 18.8209
+    },
+    {
+        "label": "Troms - Tromvik",
+        "lat": 69.7744,
+        "lon": 18.4404
+    },
+    {
+        "label": "Troms - Tussoy",
+        "lat": 69.6537,
+        "lon": 18.14
+    },
+    {
+        "label": "Troms - Tussoy Kontinent",
+        "lat": 69.6079,
+        "lon": 18.0939
+    },
+    {
+        "label": "Troms - Vengsoy",
+        "lat": 69.8347,
+        "lon": 18.5737
+    },
+    {
+        "label": "Finnmark",
+        "lat": 69.8347,
+        "lon": 18.5737
+    }
+]

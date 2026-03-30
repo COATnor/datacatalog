@@ -1,0 +1,301 @@
+{
+  "scheming_version": 1,
+  "dataset_type": "state-variable",
+  "about": "COAT state variable schema",
+  "about_url": "http://github.com/ckan/ckanext-scheming",
+  "dataset_fields": [
+    {
+      "field_name": "title",
+      "label": "Title",
+      "preset": "title",
+      "form_placeholder": "eg. A descriptive title"
+    },
+    {
+      "field_name": "name",
+      "label": "URL",
+      "preset": "dataset_slug",
+      "form_placeholder": "eg. my-dataset"
+    },
+    {
+      "field_name": "doi",
+      "label": "DOI",
+      "validators": "ignore_missing unicode_safe",
+      "form_snippet": null
+    },
+    {
+      "field_name": "version",
+      "label": "Version",
+      "validators": "ignore_missing unicode_safe package_version_validator",
+      "form_snippet": null
+    },
+    {
+      "field_name": "owner_org",
+      "required": true,
+      "label": "Module",
+      "preset": "dataset_organization"
+    },
+    {
+      "field_name": "datasets",
+      "required": true,
+      "label": "Associated data",
+      "preset": "tag_string_autocomplete",
+      "validators": "list_to_tag_string",
+      "display_snippet": "tag_string.html",
+      "form_attrs": {
+        "data-module": "autocomplete",
+        "data-module-tags": "true",
+        "data-module-createtags": "false",
+        "data-module-source": "/scheming/api/util/dataset/autocomplete?dataset_type=dataset&incomplete=?",
+        "class": ""
+      }
+    },
+    {
+      "field_name": "external_datasets",
+      "label": "External datasets",
+      "repeating_label": "External dataset",
+      "repeating_subfields": [
+        {
+          "field_name": "url",
+          "label": "URL",
+          "validators": "ignore_missing unicode_safe",
+          "display_snippet": "link.html",
+          "form_placeholder": "https://example.com/dataset"
+        }
+      ],
+      "help_text": "URLs to external datasets not hosted on the COAT portal (e.g. MET Norway datasets)."
+    },
+    {
+      "field_name": "private",
+      "label": "Visibility",
+      "required": true,
+      "validators": "bool_to_str required_custom str_to_bool",
+      "create_validators": "bool_to_str required_custom str_to_bool private_on_creation",
+      "edit_validators": "bool_to_str required_custom str_to_bool",
+      "form_snippet": "visibility.html",
+      "display_snippet": "visibility.html",
+      "help_text": "Public datasets are immutable and they are available to everybody in case embargo is not set or is expired (otherwise just medatada are shown). Private dataset are available to members and editors of the module only."
+    },
+    {
+      "field_name": "state",
+      "required": true,
+      "validators": "required_custom",
+      "label": "State",
+      "help_text": "Select the current state of the dataset. 'Active' indicates the dataset is finalized and publicly accessible (depending on visibility settings). 'Draft' indicates the dataset is still being prepared and not ready for publication.",
+      "preset": "select",
+      "choices": [
+        {
+          "value": "active",
+          "label": "Active"
+        },
+        {
+          "value": "draft",
+          "label": "Draft"
+        }
+      ]
+    },
+    {
+      "field_name": "notes",
+      "required": true,
+      "validators": "required_custom",
+      "label": "Description",
+      "form_snippet": "markdown.html",
+      "form_placeholder": "Short description of the dataset, including relevant information about the content, data type, sampling method and frequency (or data source). Add any detail helping to understand the dataset's characteristics. Add a bulleted list of data file types included as resources to this dataset (ie: yearly txt with transect data, a coordinates CSV file, auxiliary file with details, etc.)"
+    },
+    {
+      "field_name": "tag_string",
+      "label": "tags (keywords)",
+      "form_snippet": null,
+      "validators": "merge_tags_from_datasets"
+    },
+    {
+      "field_name": "topic_category",
+      "validators": "merge_from_datasets",
+      "label": "Topic Category Code",
+      "form_snippet": null,
+      "display_snippet": "tag_string.html"
+    },
+    {
+      "field_name": "embargo",
+      "label": "Embargo end date",
+      "preset": "embargo",
+      "help_text": "Choose an embargo end date. Leave empty if embargo not needed"
+    },
+    {
+      "field_name": "license_id",
+      "required": true,
+      "validators": "required_custom",
+      "label": "License",
+      "help_text": "License definitions and additional information can be found at http://opendefinition.org/",
+      "preset": "select",
+      "choices": [
+        {
+          "value": "CC-BY_4.0",
+          "label": "Creative Commons Attribution (CC-BY 4.0)"
+        }
+      ]
+    },
+    {
+      "field_name": "author",
+      "display_snippet": "tag_string.html",
+      "required": true,
+      "validators": "ignore_missing",
+      "create_validators": "merge_from_datasets",
+      "edit_validators": "ignore_missing",
+      "label": "Contact Persons",
+      "display_property": "dc:creator",
+      "form_placeholder": "Comma-separated list of contact persons"
+    },
+    {
+      "field_name": "author_email",
+      "label": "Email Addresses",
+      "validators": "ignore_missing",
+      "create_validators": "merge_from_datasets",
+      "edit_validators": "ignore_missing list_to_tag_string",
+      "output_validators": "tag_string_to_list",
+      "display_property": "dc:creator",
+      "display_snippet": "multiple_choice_email.html",
+      "form_snippet": null
+    },
+    {
+      "field_name": "publisher",
+      "required": true,
+      "validators": "ignore_missing",
+      "create_validators": "merge_from_datasets",
+      "edit_validators": "ignore_missing",
+      "label": "Organization Names",
+      "display_snippet": "tag_string.html",
+      "display_property": "dc:publisher",
+      "form_placeholder": "Comma-separated list of organization names"
+    },
+    {
+      "field_name": "associated_parties",
+      "label": "Associated Parties",
+      "display_snippet": "tag_string.html",
+      "validators": "ignore_missing",
+      "create_validators": "merge_from_datasets",
+      "edit_validators": "ignore_missing list_to_tag_string",
+      "preset": "tag_string_autocomplete",
+      "form_attrs": {
+        "data-module": "autocomplete",
+        "data-module-tags": "",
+        "data-module-createtags": "false",
+        "data-module-source": "/scheming/api/util/associated_parties/autocomplete?incomplete=?",
+        "class": ""
+      }
+    },
+    {
+      "field_name": "persons",
+      "label": "Persons",
+      "validators": "ignore_missing",
+      "create_validators": "merge_from_datasets",
+      "edit_validators": "ignore_missing",
+      "display_snippet": "tag_string.html",
+      "form_placeholder": "Key people related to the dataset (eg: field technicians, PhD students...), comma delimited"
+    },
+    {
+      "field_name": "temporal_start",
+      "required": true,
+      "label": "Temporal Extent - start date",
+      "preset": "date"
+    },
+    {
+      "field_name": "temporal_end",
+      "required": true,
+      "label": "Temporal Extent - end date",
+      "preset": "date"
+    },
+    {
+      "field_name": "location",
+      "label": "Geographic Location",
+      "form_snippet": null,
+      "display_snippet": "tag_string.html",
+      "validators": "merge_from_datasets"
+    },
+    {
+      "field_name": "scientific_name",
+      "label": "Scientific Name",
+      "display_snippet": "tag_string.html",
+      "validators": "ignore_missing",
+      "create_validators": "merge_from_datasets",
+      "edit_validators": "ignore_missing list_to_tag_string",
+      "preset": "tag_string_autocomplete",
+      "form_attrs": {
+        "data-module": "autocomplete",
+        "data-module-tags": "",
+        "data-module-createtags": "false",
+        "data-module-source": "/scheming/api/util/scientific_name/autocomplete?incomplete=?",
+        "class": ""
+      },
+      "sorted_choices": true,
+      "help_text": "Scientific name(s) covered by this state variable. Auto-filled from linked datasets; can be narrowed or extended manually."
+    },
+    {
+      "field_name": "resource_citations",
+      "label": "Resource Citation",
+      "validators": "ignore_missing",
+      "form_snippet": null
+    },
+    {
+      "field_name": "scripts",
+      "label": "Associated Scripts",
+      "form_placeholder": "http://example.com/repository.git",
+      "display_snippet": "link.html"
+    },
+    {
+      "field_name": "protocol",
+      "label": "Associated study protocols",
+      "validators": "merge_from_datasets",
+      "display_snippet": "tag_string.html",
+      "form_snippet": null
+    },
+    {
+      "field_name": "bibliography",
+      "label": "Bibliographic citation",
+      "form_placeholder": "http://example.com/publication.pdf",
+      "display_snippet": "link.html"
+    },
+    {
+      "field_name": "funding",
+      "label": "Funding Source",
+      "form_placeholder": "funding source for the dataset "
+    },
+    {
+      "field_name": "downloads",
+      "label": "Downloads",
+      "validators": "ignore_missing unicode_safe",
+      "form_snippet": null
+    }
+  ],
+  "resource_fields": [
+    {
+      "field_name": "url",
+      "label": "URL",
+      "preset": "resource_url_upload"
+    },
+    {
+      "field_name": "name",
+      "label": "Name",
+      "form_snippet": "resource_name.html",
+      "validators": "lowercase_extension",
+      "form_placeholder": "eg. January 2011 Gold Prices"
+    },
+    {
+      "field_name": "description",
+      "label": "Description",
+      "form_snippet": "markdown.html",
+      "form_placeholder": "Some useful notes about the data"
+    },
+    {
+      "field_name": "format",
+      "label": "Format",
+      "form_snippet": "text-noformcontrol.html",
+      "preset": "resource_format_autocomplete"
+    },
+    {
+      "field_name": "downloads",
+      "label": "Downloads",
+      "validators": "ignore_missing unicode_safe",
+      "form_snippet": null
+    }
+  ]
+}

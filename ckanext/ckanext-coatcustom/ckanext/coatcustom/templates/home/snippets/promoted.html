@@ -1,0 +1,24 @@
+{% set intro = g.site_intro_text %}
+
+<div class="module-content box">
+  <header>
+    {% if intro %}
+      <h3 class="page-heading">{{ _("Climate-ecological Observatory for Arctic Tundra (COAT)") }}</h3>
+      <p>
+        {% trans %}Adaptive long-term research in the face of climate change.
+        {% endtrans %}
+      </p>
+    <p>{% trans %}See more details at the
+        <a href="https://coat.no">Official COAT web site</a>{% endtrans %}</p>
+    {% else %}
+     <h3 class="page-heading">{{ _("Climate-ecological Observatory for Arctic Tundra (COAT)") }}</h3>
+      <p>
+        {% trans %}Adaptive long-term research in the face of climate change.
+        {% endtrans %}
+      </p>
+    <p>{% trans %}See more details at the
+        <a href="https://coat.no">Official COAT web site</a>{% endtrans %}</p>
+    {% endif %}
+  </header>
+
+</div>

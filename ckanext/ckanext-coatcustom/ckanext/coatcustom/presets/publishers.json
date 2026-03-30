@@ -1,0 +1,34 @@
+[
+  {
+    "value": "UiT",
+    "label": "UiT - The Arctic University of Norway"
+  },
+  {
+    "value": "NPI",
+    "label": "NPI - Norwegian Polar Institute"
+  },
+  {
+    "value": "NINA",
+    "label": "NINA - Norwegian Institute for Nature Research"
+  },
+  {
+    "value": "NMBU",
+    "label": "NMBU - Norwegian University of Life Sciences"
+  },
+  {
+    "value": "NIBIO",
+    "label": "NIBIO - Norwegian Institute of Bioeconomy Research"
+  },
+  {
+    "value": "MET",
+    "label": "MET - Norwegian Meteorological institute"
+  },
+  {
+    "value": "UNIS",
+    "label": "UNIS - University Centre on Svalbard"
+  },
+  {
+    "value": "AU",
+    "label": "AU - University of Aarhus"
+  }
+]

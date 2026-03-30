@@ -1,0 +1,341 @@
+[
+    {
+        "value": "aerialimagery",
+        "label": "Aerial imagery"
+    },
+    {
+        "value": "air_temperature",
+        "label": "Air temperature"
+    },
+    {
+        "value": "albedo",
+        "label": "Albedo"
+    },
+    {
+        "value": "artificial_nests",
+        "label": "Artificial nests"
+    },
+    {
+        "value": "barcoding",
+        "label": "Barcoding"
+    },
+    {
+        "value": "birch_forest",
+        "label": "Birch forest"
+    },
+    {
+        "value": "bryophytes",
+        "label": "Bryophytes"
+    },
+    {
+        "value": "camera_traps",
+        "label": "Camera traps"
+    },
+    {
+        "value": "cryptograms",
+        "label": "Cryptograms"
+    },
+    {
+        "value": "deciduous_dwarf_shrubs",
+        "label": "Deciduous dwarf shrubs"
+    },
+    {
+        "value": "dendroecology",
+        "label": "Dendroecology"
+    },
+    {
+        "value": "distance_sampling",
+        "label": "Distance sampling"
+    },
+    {
+        "value": "disturbed_moss_tundra",
+        "label": "Disturbed moss tundra"
+    },
+    {   "value": "dryas_ridges",
+        "label": "Dryas ridges"
+    },
+    {
+        "value": "dwarf_shrub_heath",
+        "label": "Dwarf shrub heath"
+    },
+    {
+        "value": "evergreen_dwarf_shrubs",
+        "label": "Evergreen dwarf shrubs"
+    },
+    {
+        "value": "experimental_exclosures",
+        "label": "Experimental exclosures"
+    },
+    {
+        "value": "flight_intercept_traps",
+        "label": "Flight intercept traps"
+    },
+    {
+        "value": "forbs",
+        "label": "Forbs"
+    },
+    {
+        "value": "forest",
+        "label": "Forest"
+    },
+    {
+        "value": "goose_distrubance",
+        "label": "Goose disturbance"
+    },
+    {
+        "value": "GPS_tags",
+        "label": "GPS tags"
+    },
+    {
+        "value": "graminoids",
+        "label": "Graminoids"
+    },
+    {
+        "value": "grassy_tundra",
+        "label": "Grassy tundra"
+    },
+    {
+        "value": "ground_ice",
+        "label": "Ground ice"
+    },
+    {
+        "value": "ground_temperature",
+        "label": "Ground temperature"
+    },
+    {
+        "value": "grubbin",
+        "label": "Grubbing"
+    },
+    {
+        "value": "heath",
+        "label": "Heath"
+    },
+    {
+        "value": "humidity",
+        "label": "Humidity"
+    },
+    {
+        "value": "hummock_tundra",
+        "label": "Hummock tundra"
+    },
+    {
+        "value": "hunting_records",
+        "label": "Hunting records"
+    },
+    {
+        "value": "ice_thickness",
+        "label": "Ice thickness"
+    },
+    {
+        "value": "icing",
+        "label": "Icing"
+    },
+    {
+        "value": "live_trapping",
+        "label": "Live trapping"
+    },
+    {
+        "value": "meadow",
+        "label": "Meadow"
+    },
+    {
+        "value": "metabarcoding",
+        "label": "Metabarcoding"
+    },
+    {
+        "value": "microsatellites",
+        "label": "Microsatellites"
+    },
+    {
+        "value": "modelling",
+        "label": "Modelling"
+    },
+    {
+        "value": "moss_tundra",
+        "label": "Moss tundra"
+    },
+    {
+        "value": "NDVI",
+        "label": "NDVI"
+    },
+    {
+        "value": "NIRS",
+        "label": "NIRS"
+    },
+    {
+        "value": "pellet_counts",
+        "label": "Pellet counts"
+    },
+    {
+        "value": "point_intercept",
+        "label": "Point intercept"
+    },
+    {
+        "value": "population_modelling",
+        "label": "Population modelling"
+    },
+    {
+        "value": "precipitation",
+        "label": "Precipitation"
+    },
+    {
+        "value": "prostrate_shrubs",
+        "label": "Prostrate shrubs"
+    },
+    {
+        "value": "radiation",
+        "label": "Radiation"
+    },
+    {
+        "value": "rain_on_snow",
+        "label": "Rain on snow"
+    },
+    {
+        "value": "remote_sensing",
+        "label": "Remote sensing"
+    },
+    {
+        "value": "repeat_photography",
+        "label": "Repeat photography"
+    },
+    {
+        "value": "satellite_imagery",
+        "label": "Satellite imagery"
+    },
+    {
+        "value": "satellite_tags",
+        "label": "Satellite tags"
+    },
+    {
+        "value": "scat_analysis",
+        "label": "Scat analysis"
+    },
+    {
+        "value": "shrubs",
+        "label": "Shrubs"
+    },
+    {
+        "value": "snap_trapping",
+        "label": "Snap trapping"
+    },
+    {
+        "value": "snow_beds",
+        "label": "Snow beds"
+    },
+    {
+        "value": "snow_depth",
+        "label": "Snow depth"
+    },
+    {
+        "value": "snow_melt",
+        "label": "Snow melt"
+    },
+    {
+        "value": "snow_modelling",
+        "label": "Snow modelling"
+    },
+    {
+        "value": "snow_pits",
+        "label": "Snow pits"
+    },
+    {
+        "value": "snow_structure",
+        "label": "Snow structure"
+    },
+    {
+        "value": "snow_tracking",
+        "label": "Snow tracking"
+    },
+    {
+        "value": "soil_temperature",
+        "label": "Soil temperature"
+    },
+    {
+        "value": "stable_isotopes",
+        "label": "Stable isotopes"
+    },
+    {
+        "value": "surveys",
+        "label": "Surveys"
+    },
+    {
+        "value": "tall_shrub",
+        "label": "Tall shrub"
+    },
+    {
+        "value": "temperature",
+        "label": "Temperature"
+    },
+    {
+        "value": "temperature_logger",
+        "label": "Temperature logger"
+    },
+    {
+        "value": "timing_of_icing",
+        "label": "Timing of icing"
+    },
+    {
+        "value": "timing_of_snow_melt",
+        "label": "Timing of snow melt"
+    },
+    {
+        "value": "tundra",
+        "label": "Tundra"
+    },
+    {
+        "value": "weather_station",
+        "label": "Weather station"
+    },
+    {
+        "value": "wind",
+        "label": "Wind"
+    },
+    {
+        "value": "broad_leaved_grasses",
+        "label": "Broad leaved grasses"
+    },
+    {
+        "value": "deciduous_dwarf_shrubs",
+        "label": "Deciduous dwarf shrubs"
+    },
+    {
+        "value": "deciduous_vascular_cryptogams",
+        "label": "Deciduous vascular cryptogams"
+    },
+    {
+        "value": "evergreen_dwarf_shrubs",
+        "label": "Evergreen dwarf shrubs"
+    },
+    {
+        "value": "evergreen_non_woody",
+        "label": "Evergreen non woody"
+    },
+    {
+        "value": "hemiparasites",
+        "label": "Hemiparasites"
+    },
+    {
+        "value": "narrow_leaved_grasses",
+        "label": "Narrow leaved grasses"
+    },
+    {
+        "value": "prostrate_willows",
+        "label": "Prostrate willows"
+    },
+    {
+        "value": "sedges_rushes",
+        "label": "Sedges rushes"
+    },
+    {
+        "value": "small_forbs",
+        "label": "Small forbs"
+    },
+    {
+        "value": "tall_forbs",
+        "label": "Tall forbs"
+    },
+    {
+        "value": "bryophytes",
+        "label": "Bryophytes"
+    }
+]
