@@ -1,0 +1,48 @@
+{
+  "scheming_version": 1,
+  "organization_type": "organization",
+  "about_url": "http://github.com/ckan/ckanext-scheming",
+  "fields": [
+    {
+      "field_name": "title",
+      "label": "Name",
+      "required": true,
+      "validators": "scheming_required unicode_safe",
+      "form_snippet": "large_text.html",
+      "form_attrs": {"data-module": "slug-preview-target"},
+      "form_placeholder": "My Module name"
+    },
+    {
+      "field_name": "name",
+      "label": "URL",
+      "validators": "not_empty unicode_safe name_validator group_name_validator",
+      "form_snippet": "slug.html",
+      "form_placeholder": "my-organization"
+    },
+    {
+      "field_name": "description",
+      "label": "Description",
+      "form_snippet": "markdown.html",
+      "form_placeholder": "A little information about my organization...",
+      "validators": "scheming_required",
+      "required": true
+    },
+    {
+      "field_name": "datamanager",
+      "label": "Module Manager",
+      "preset": "select",
+      "choices_helper": "scheming_author_choice",
+      "validators": "scheming_required",
+      "required": true
+    },
+    {
+      "field_name": "image_url",
+      "label": "Image URL",
+      "validators": "unicode_safe remove_whitespace",
+      "form_snippet": "upload.html",
+      "upload_field": "image_upload",
+      "upload_clear": "clear_upload",
+      "upload_label": "Image"
+    }
+   ]
+}

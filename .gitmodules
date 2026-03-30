@@ -1,9 +1,3 @@
-[submodule "ckanext/ckanext-coat"]
-	path = ckanext/ckanext-coat
-	url = git@github.com:COATnor/ckanext-coat.git
-[submodule "ckanext/ckanext-coatcustom"]
-	path = ckanext/ckanext-coatcustom
-	url = git@github.com:COATnor/ckanext-coatcustom.git
 [submodule "ckanext/ckanext-datasetversions"]
 	path = ckanext/ckanext-datasetversions
 	url = git@github.com:aptivate/ckanext-datasetversions.git

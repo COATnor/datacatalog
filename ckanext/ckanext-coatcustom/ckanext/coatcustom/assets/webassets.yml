@@ -1,0 +1,4 @@
+coatcustom:
+  output: coatcustom/coatcustom.css
+  contents:
+    - coatcustom.css

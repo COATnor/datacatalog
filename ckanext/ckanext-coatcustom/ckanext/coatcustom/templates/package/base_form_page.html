@@ -1,0 +1,85 @@
+{% extends "package/edit_base.html" %}
+
+{% block primary_content %}
+  <section class="module">
+    {% block page_header %}{% endblock %}
+    <div class="module-content">
+      {% block primary_content_inner %}
+        {% block form %}
+          {#- passing c to a snippet is bad but is required here
+              for backwards compatibility with old templates and
+              plugins using setup_template_variables() -#}
+          {{- h.snippet(form_snippet, c=c, **form_vars) -}}
+        {% endblock %}
+      {% endblock %}
+    </div>
+  </section>
+{% endblock %}
+
+{% block secondary_content %}
+  {% block info_module %}
+    <section class="module module-narrow module-shallow">
+    {% if dataset_type == 'state-variable' %}
+      <h2 class="module-heading"><i class="fa fa-info-circle"></i> {{ _('What are state variables?') }}</h2>
+      <div class="module-content">
+        <p style="text-align: justify">
+          {% trans %}
+          A state variable describes directly a feature related to
+          the state of the ecosystem.
+          Such features can be related to ecosystem functions,
+          or structure and processes. State variables are calculated based on
+          biotic or climatic datasets from COAT, and contain metadata fields
+          which link directly both to the underlying datasets
+          and the scripts documenting how the state variable
+          has been calculated from the datasets.
+          {% endtrans %}
+        </p>
+      </div>
+    {% elif dataset_type == 'protocol' %}
+      <h2 class="module-heading"><i class="fa fa-info-circle"></i> {{ _('What are protocols?') }}</h2>
+      <div class="module-content">
+        <p style="text-align: justify">
+          {% trans %}
+          COAT study protocol includes a common part describing the study design,
+          and a set of data collection protocols.
+          Protocols are pdf-files placed at a fixed URL.
+          COAT datasets contain a metadata field which link to the relevant
+          protocol describing the study design and collection of the data.
+          Protocols do not include separate metadata.
+          {% endtrans %}
+        </p>
+      </div>
+    {% elif dataset_type == 'dmp' %}
+      <h2 class="module-heading"><i class="fa fa-info-circle"></i> {{ _('Data Management Plan?') }}</h2>
+      <div class="module-content">
+        <p style="text-align: justify">
+          {% trans %}
+          COAT Data Management Plan is included here, and all its versions available.
+          {% endtrans %}
+        </p>
+      </div>
+    {% else %}
+      <h2 class="module-heading"><i class="fa fa-info-circle"></i> {{ _('What are datasets?') }}</h2>
+      <div class="module-content">
+        <p style="text-align: justify">
+          {% trans %}
+          A dataset is a collection of data resources (such as files),
+          which can all be represented by the same set of metadata. Datasets
+          are placed at a fixed URL, and are what users see when searching
+          for data. A typical COAT dataset could be X number of files
+          containing measurements of the same variable in X number of years.
+          In addition, a coordinate file with sampling coordinates is
+          mandatory for all plot-based datasets. Non-mandatory files, for
+          instance containing plot or site levels environmental variables, or
+          species lists, can be included in datasets when needed.
+          {% endtrans %}
+        </p>
+      </div>
+    {% endif %}
+    </section>
+  {% endblock %}
+  {% block resources_module %}
+    {# TODO: Pass in a list of previously created resources and the current package dict #}
+    {% snippet "package/snippets/resources.html", pkg={}, action='new_resource' %}
+  {% endblock %}
+{% endblock %}

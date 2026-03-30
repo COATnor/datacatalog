@@ -1,0 +1,190 @@
+{
+  "scheming_version": 1,
+  "dataset_type": "protocol",
+  "about": "COAT protocol schema",
+  "about_url": "http://github.com/ckan/ckanext-scheming",
+  "dataset_fields": [
+    {
+      "field_name": "title",
+      "label": "Title",
+      "preset": "title",
+      "form_placeholder": "eg. A descriptive title"
+    },
+    {
+      "field_name": "name",
+      "label": "URL",
+      "preset": "dataset_slug",
+      "form_placeholder": "eg. my-dataset"
+    },
+    {
+      "field_name": "version",
+      "label": "Version",
+      "validators": "ignore_missing unicode_safe package_version_validator",
+      "form_snippet": null
+    },
+    {
+      "field_name": "owner_org",
+      "required": true,
+      "label": "Module",
+      "preset": "dataset_organization"
+    },
+    {
+      "field_name": "private",
+      "label": "Visibility",
+      "required": true,
+      "validators": "bool_to_str required_custom str_to_bool",
+      "create_validators": "bool_to_str required_custom str_to_bool private_on_creation",
+      "edit_validators": "bool_to_str required_custom str_to_bool",
+      "form_snippet": "visibility.html",
+      "display_snippet": "visibility.html",
+      "help_text": "Public datasets are immutable and they are available to everybody in case embargo is not set or is expired (otherwise just medatada are shown). Private dataset are available to members and editors of the module only."
+    },
+    {
+      "field_name": "state",
+      "required": true,
+      "validators": "required_custom",
+      "label": "State",
+      "help_text": "Select the current state of the dataset. 'Active' indicates the dataset is finalized and publicly accessible (depending on visibility settings). 'Draft' indicates the dataset is still being prepared and not ready for publication.",
+      "preset": "select",
+      "choices": [
+        {
+          "value": "active",
+          "label": "Active"
+        },
+        {
+          "value": "draft",
+          "label": "Draft"
+        }
+      ]
+    },
+    {
+      "field_name": "notes",
+      "required": true,
+      "validators": "required_custom",
+      "label": "Description",
+      "form_snippet": "markdown.html",
+      "form_placeholder": "Short description of the dataset, including relevant information about the content, data type, sampling method and frequency (or data source). Add any detail helping to understand the dataset's characteristics. Add a bulleted list of data file types included as resources to this dataset (ie: yearly txt with transect data, a coordinates CSV file, auxiliary file with details, etc.)"
+    },
+    {
+      "field_name": "license_id",
+      "required": true,
+      "validators": "required_custom",
+      "label": "License",
+      "help_text": "License definitions and additional information can be found at http://opendefinition.org/",
+      "preset": "select",
+      "choices": [
+        {
+          "value": "CC-BY_4.0",
+          "label": "Creative Commons Attribution (CC-BY 4.0)"
+        }
+      ]
+    },
+    {
+      "field_name": "author",
+      "preset": "select",
+      "choices_helper": "scheming_author_choice_required",
+      "required": true,
+      "validators": "required_custom",
+      "label": "Contact Person",
+      "form_placeholder": "data collector/creator or maintainer",
+      "display_property": "dc:creator"
+    },
+    {
+      "field_name": "author_email",
+      "label": "Email Address",
+      "form_placeholder": "joe@example.com",
+      "display_property": "dc:creator",
+      "display_snippet": "email.html"
+    },
+    {
+      "field_name": "position",
+      "label": "Title of Position",
+      "form_placeholder": "eg. Researcher, project manager, technician..."
+    },
+    {
+      "field_name": "publisher",
+      "required": true,
+      "validators": "required_custom",
+      "label": "Organization Name",
+      "preset": "select",
+      "choices_helper": "scheming_publisher_choices_required",
+      "form_placeholder": "Name of the contact person's organization",
+      "display_property": "dc:publisher",
+      "help_text": "Affiliation of the dataset's Contact person, or Institution responsible for data dataset creation"
+    },
+    {
+      "field_name": "associated_parties",
+      "label": "Associated Parties",
+      "preset": "tag_string_autocomplete",
+      "form_attrs": {
+        "data-module": "autocomplete",
+        "data-module-tags": "",
+        "data-module-createtags": "false",
+        "data-module-source": "/scheming/api/util/associated_parties/autocomplete?incomplete=?",
+        "class": ""
+      },
+      "form_placeholder": "eg. list of cooperating institutions, academy, enterprises... ",
+      "help_text": "List of other related institutions or organizations"
+    },
+    {
+      "field_name": "persons",
+      "label": "Persons",
+      "form_placeholder": "Key people related to the dataset (eg: field technicians, PhD students...), comma delimited"
+    },
+    {
+      "field_name": "resource_citations",
+      "label": "Resource Citation",
+      "validators": "ignore_missing",
+      "form_snippet": null
+    },
+    {
+      "field_name": "bibliography",
+      "label": "Bibliographic citation",
+      "form_placeholder": "http://example.com/publication.pdf",
+      "display_snippet": "link.html"
+    },
+    {
+      "field_name": "funding",
+      "label": "Funding Source",
+      "form_placeholder": "funding source for the dataset "
+    },
+    {
+      "field_name": "downloads",
+      "label": "Downloads",
+      "validators": "ignore_missing unicode_safe",
+      "form_snippet": null
+    }
+  ],
+  "resource_fields": [
+    {
+      "field_name": "url",
+      "label": "URL",
+      "preset": "resource_url_upload"
+    },
+    {
+      "field_name": "name",
+      "label": "Name",
+      "form_snippet": "resource_name.html",
+      "validators": "lowercase_extension",
+      "form_placeholder": "eg. January 2011 Gold Prices"
+    },
+    {
+      "field_name": "description",
+      "label": "Description",
+      "form_snippet": "markdown.html",
+      "form_placeholder": "Some useful notes about the data"
+    },
+    {
+      "field_name": "format",
+      "label": "Format",
+      "form_snippet": "text-noformcontrol.html",
+      "preset": "resource_format_autocomplete"
+    },
+    {
+      "field_name": "downloads",
+      "label": "Downloads",
+      "validators": "ignore_missing unicode_safe",
+      "form_snippet": null
+    }
+  ]
+}
