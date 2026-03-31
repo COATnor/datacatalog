@@ -196,5 +196,39 @@ vim ckanext/ckanext-coat/ckanext/coat/plugin.py
 
 ## Known Issues / Non-upstreamed Changes
 
-- **ckanext-oauth2**: Python 3/CKAN 2.9 support via a stale PR ([#42](https://github.com/conwetlab/ckanext-oauth2/pull/42))
-- **ckanext-scheming**: Custom patch to skip validation on parent datasets ([#331](https://github.com/ckan/ckanext-scheming/issues/331))
+### ckanext-oauth2
+
+The CKAN ecosystem lacks a well-maintained OAuth2 extension. The history of our fork:
+
+1. [conwetlab/ckanext-oauth2](https://github.com/conwetlab/ckanext-oauth2): the original extension (unmaintained)
+2. [FedericOldani](https://github.com/FedericOldani) submitted a Flask/Python 3 conversion ([conwetlab#42](https://github.com/conwetlab/ckanext-oauth2/pull/42)), never merged
+3. We ([COATnor](https://github.com/COATnor/ckanext-oauth2)) forked conwetlab, cherry-picked FedericOldani's work, added Feide `/userinfo` endpoint support and fixed `setup.py` for out-of-tree builds
+4. [In-For-Disaster-Analytics](https://github.com/In-For-Disaster-Analytics/ckanext-oauth2) forked COATnor and added CKAN 2.11 support
+5. We merged the changes back and improved `pyproject.toml`
+
+We are now collaborating on joint maintenance ([issue #25](https://github.com/In-For-Disaster-Analytics/ckanext-oauth2/issues/25)) and submitted the dependency cleanup upstream ([PR #26](https://github.com/In-For-Disaster-Analytics/ckanext-oauth2/pull/26)).
+
+### ckanext-scheming
+
+We use a [COATnor fork](https://github.com/COATnor/ckanext-scheming/tree/skip-validation-if-parent) with one extra commit on top of upstream v3.1.0: it skips schema validation when the `__parent` flag is set during dataset creation. This is needed because COAT's versioning system creates lightweight parent datasets that don't conform to the strict custom schemas. See [ckan/ckanext-scheming#331](https://github.com/ckan/ckanext-scheming/issues/331) for the upstream discussion.
+
+### ckanext-spatial
+
+We maintain a [COATnor fork](https://github.com/COATnor/ckanext-spatial/tree/coat) that adds proper dependency declarations to `pyproject.toml`. Submitted upstream as [ckan/ckanext-spatial#352](https://github.com/ckan/ckanext-spatial/pull/352).
+
+### ckanext-datasetversions
+
+[aptivate/ckanext-datasetversions](https://github.com/aptivate/ckanext-datasetversions) is mostly unmaintained (see [issue #17](https://github.com/aptivate/ckanext-datasetversions/issues/17)). We maintain a [NINAnor fork](https://github.com/NINAnor/ckanext-datasetversions) with the following non-upstreamed changes:
+
+- Flask blueprint migration (from Pylons)
+- `__parent` parameter for parent dataset creation
+- Create parent datasets with the same type as the child
+- Move versions list to a reusable snippet
+- Support for private dataset versions
+- CKAN 2.10 compatibility
+
+These should be submitted as PRs to aptivate (we have collaborator access).
+
+### CKAN core
+
+CKAN itself does not declare runtime dependencies in `pyproject.toml` (only `setuptools` in `install_requires`), requiring a [dummy package workaround](dummy/ckan/) to feed its pinned requirements into the resolver. We commented on [ckan/ckan#8382](https://github.com/ckan/ckan/issues/8382#issuecomment-4154186834) proposing to add dependencies to `pyproject.toml` and use `uv export` for pinning.
