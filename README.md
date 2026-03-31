@@ -86,7 +86,7 @@ The development server supports:
 - Interactive debugging with `pdb`
 - DOI test mode enabled by default
 - A fixed sysadmin user created automatically on startup when `CKAN_ADMIN_PASSWORD` is set in `.env`:
-  - **Username:** `admin`  **Password:** value of `CKAN_ADMIN_PASSWORD` (default: `admin`)
+  - **Username:** `admin`  **Password:** value of `CKAN_ADMIN_PASSWORD` (default: `administrator`)
 
 ### Production Deployment
 
