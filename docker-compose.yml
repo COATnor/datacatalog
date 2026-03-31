@@ -75,10 +75,7 @@ x-common-ckan-dev:
     - ./ckanext/ckanext-coat/ckanext:/usr/lib/ckan/ckanext/ckanext-coat/ckanext:ro
     - ./ckanext/ckanext-coatcustom/ckanext:/usr/lib/ckan/ckanext/ckanext-coatcustom/ckanext:ro
     - ./ckanext/ckanext-datasetversions/ckanext:/usr/lib/ckan/ckanext/ckanext-datasetversions/ckanext:ro
-    - ./ckanext/ckanext-doi/ckanext:/usr/lib/ckan/ckanext/ckanext-doi/ckanext:ro
     - ./ckanext/ckanext-oauth2/ckanext:/usr/lib/ckan/ckanext/ckanext-oauth2/ckanext:ro
-    - ./ckanext/ckanext-scheming/ckanext:/usr/lib/ckan/ckanext/ckanext-scheming/ckanext:ro
-    - ./ckanext/ckanext-spatial/ckanext:/usr/lib/ckan/ckanext/ckanext-spatial/ckanext:ro
     - ./custom/coat-entrypoint.sh:/coat-entrypoint.sh:ro
     - ./custom/coat-entrypoint-dev.sh:/coat-entrypoint-dev.sh:ro
     - tokens:/tokens
@@ -114,6 +111,7 @@ services:
     command: 'ckan run --host 0.0.0.0 --disable-reloader'
     environment:
       << : *common-ckan-env-dev
+      CKAN_SITE_URL: http://varnish
 
   test:
     profiles:

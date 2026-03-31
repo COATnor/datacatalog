@@ -6,7 +6,5 @@ VERSION="2.10.9"
 
 uv add "setuptools<46" wheel Cython
 
-uv add -r ../../ckanext/ckanext-spatial/requirements.txt
-
 uv add -r "https://raw.githubusercontent.com/ckan/ckan/refs/tags/ckan-$VERSION/requirements.txt"
 uv add "ckan @ git+https://github.com/ckan/ckan@ckan-$VERSION"
