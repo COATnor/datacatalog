@@ -33,12 +33,6 @@
       }
     },
     {
-      "preset_name": "tag_string_autocomplete_custom",
-      "values": {
-        "form_snippet": "tags_autocomplete.html"
-      }
-    },
-    {
       "preset_name": "dataset_organization",
       "values": {
         "validators": "owner_org_validator unicode_safe",
@@ -132,13 +126,6 @@
         "output_validators": "scheming_load_json",
         "form_snippet": "json.html",
         "display_snippet": "json.html"
-      }
-    },
-    {
-      "preset_name": "multiple_choice_autocomplete",
-      "values": {
-        "form_snippet": "multiple_choice_autocomplete.html",
-        "display_snippet": "multiple_choice.html"
       }
     }
   ]

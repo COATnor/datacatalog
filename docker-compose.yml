@@ -122,6 +122,8 @@ services:
     depends_on:
       ckan-test:
         condition: service_healthy
+      test-api:
+        condition: service_completed_successfully
     environment:
       COAT_URL: http://varnish
     volumes:
@@ -195,7 +197,7 @@ services:
     command: ["chown", "-R", "8983:8983", "/var/solr/data"]
 
   solr:
-    image: ckan/ckan-solr:2.10-solr9-spatial
+    image: ckan/ckan-solr:2.11-solr9-spatial
     depends_on:
       solr-init:
         condition: service_completed_successfully
