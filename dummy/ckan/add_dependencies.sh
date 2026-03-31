@@ -2,7 +2,7 @@
 
 set -ex
 
-VERSION="2.10.9"
+VERSION="2.11.4"
 
 uv add "setuptools<46" wheel Cython
 

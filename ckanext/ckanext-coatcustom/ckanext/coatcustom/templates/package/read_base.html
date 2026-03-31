@@ -44,9 +44,9 @@
     <span>
     {# ckanext.coat customization - start #}
     {% if h.coat_is_under_embargo(pkg) %}
-      <span class="label label-warning">Dataset under embargo</span>
+      <span class="badge bg-warning text-dark">Dataset under embargo</span>
     {% else %}
-      <a class="label label-primary" href="/dataset/{{ pkg.name }}/zip">Download {{ pkg.name }}.zip</a>
+      <a class="badge bg-primary" href="/dataset/{{ pkg.name }}/zip">Download {{ pkg.name }}.zip</a>
     {% endif %}
     {# ckanext.coat customization - end #}
     </span>
@@ -62,8 +62,8 @@
 
   {% block package_organization %}
     {% if pkg.organization %}
-      {% set org = h.get_organization(pkg.organization.name) %}
-      {% snippet "snippets/organization.html", organization=org, has_context_title=true %}
+      {% set org = h.get_organization(pkg.organization.id) %}
+      {% snippet "organization/snippets/info.html", organization=org, show_nums=false %}
     {% endif %}
   {% endblock %}
 
