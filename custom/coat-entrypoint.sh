@@ -97,6 +97,6 @@ conf_set ckanext.coat.resource_name_globally_unique true
 conf_set ckanext.coat.custom_form false
 
 ckan search-index rebuild # workaround
-ckan doi initdb
+ckan db upgrade -p doi
 
 exec "$@"

@@ -333,38 +333,30 @@ source = { editable = "ckanext/ckanext-datasetversions" }
 
 [[package]]
 name = "ckanext-doi"
-version = "3.0.7"
-source = { editable = "ckanext/ckanext-doi" }
+version = "4.0.4"
+source = { git = "https://github.com/NaturalHistoryMuseum/ckanext-doi.git?tag=v4.0.4#5a446c04f194ce98211e94d4f69343ccbbb85713" }
 dependencies = [
+    { name = "ckantools" },
     { name = "datacite" },
     { name = "jsonschema" },
     { name = "xmltodict" },
 ]
 
-[package.metadata]
-requires-dist = [
-    { name = "datacite", specifier = "==1.1.2" },
-    { name = "jsonschema", specifier = "==3.0.0" },
-    { name = "xmltodict", specifier = "==0.12.0" },
-]
-
 [[package]]
 name = "ckanext-oauth2"
-version = "1.0.0"
+version = "1.2.2"
 source = { editable = "ckanext/ckanext-oauth2" }
 dependencies = [
-    { name = "cryptography" },
     { name = "oauthlib" },
-    { name = "pyjwt" },
+    { name = "pyjwt", extra = ["crypto"] },
     { name = "requests-oauthlib" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "cryptography", specifier = ">=38.0.0" },
-    { name = "oauthlib", specifier = ">=3.0.0" },
-    { name = "pyjwt", extras = ["cryptography"], specifier = ">=2.0.0" },
-    { name = "requests-oauthlib", specifier = ">=1.0.0" },
+    { name = "oauthlib", specifier = ">=3.0" },
+    { name = "pyjwt", extras = ["crypto"], specifier = ">=2.0" },
+    { name = "requests-oauthlib", specifier = ">=1.0" },
 ]
 
 [package.metadata.requires-dev]
@@ -372,24 +364,15 @@ dev = [
     { name = "httpretty", specifier = ">=1.1.4" },
     { name = "parameterized", specifier = ">=0.9.0" },
     { name = "pytest", specifier = ">=8.4.2" },
+    { name = "pytest-factoryboy", specifier = ">=2.8.1" },
 ]
 
 [[package]]
 name = "ckanext-scheming"
-version = "2.1.0"
-source = { editable = "ckanext/ckanext-scheming" }
+version = "3.1.0"
+source = { git = "https://github.com/COATnor/ckanext-scheming.git?branch=skip-validation-if-parent#fc477e42e25eb9a9b279ca2cfa36fe8ce5f44cdf" }
 dependencies = [
     { name = "ckanapi" },
-    { name = "ckantoolkit" },
-    { name = "pytz" },
-    { name = "pyyaml" },
-    { name = "six" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "ckanapi" },
-    { name = "ckantoolkit", specifier = ">=0.0.2" },
     { name = "pytz" },
     { name = "pyyaml" },
     { name = "six" },
@@ -397,7 +380,18 @@ requires-dist = [
 
 [[package]]
 name = "ckanext-spatial"
-source = { editable = "ckanext/ckanext-spatial" }
+version = "2.3.1"
+source = { git = "https://github.com/COATnor/ckanext-spatial.git?branch=coat#f4cde9b7f403b071106ad1c4f81689555d2c7ec8" }
+dependencies = [
+    { name = "ckantoolkit" },
+    { name = "geojson" },
+    { name = "lxml" },
+    { name = "owslib" },
+    { name = "pyparsing" },
+    { name = "pyproj" },
+    { name = "requests" },
+    { name = "shapely" },
+]
 
 [[package]]
 name = "ckantoolkit"
@@ -407,6 +401,18 @@ dependencies = [
     { name = "six" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/29/f2/1755cd3bf0b1e9eb017547a3f4c46336390f53dd2388182c95f90779f298/ckantoolkit-0.0.7.tar.gz", hash = "sha256:72432c1a1c48b96a6ebc614f11fc2b9c3c27d7507dbbd35534068ef060a2c754", size = 2820, upload-time = "2022-04-06T10:39:59.991Z" }
+
+[[package]]
+name = "ckantools"
+version = "0.5.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "ckan" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/3e/7c/3761f846f2d8d38328d2de0004f1d719e2cbae144d16f80476c446bd4f76/ckantools-0.5.0.tar.gz", hash = "sha256:509a85fc033165a9dda772ea6ccd6df773164eb9fff91c292b31c851bf84e219", size = 24393, upload-time = "2026-03-13T17:39:04.727Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/eb/da/41d9a9527e32858b2bf06fdc18b84bcc3402dd25759afd6371a58aa092f3/ckantools-0.5.0-py3-none-any.whl", hash = "sha256:76f7da052ece3246a34c232325490d8004cf9de98b9f949d08b9f149a7e24bd0", size = 26390, upload-time = "2026-03-13T17:39:03.52Z" },
+]
 
 [[package]]
 name = "click"
@@ -892,10 +898,10 @@ requires-dist = [
     { name = "ckanext-coat", editable = "ckanext/ckanext-coat" },
     { name = "ckanext-coatcustom", editable = "ckanext/ckanext-coatcustom" },
     { name = "ckanext-datasetversions", editable = "ckanext/ckanext-datasetversions" },
-    { name = "ckanext-doi", editable = "ckanext/ckanext-doi" },
+    { name = "ckanext-doi", git = "https://github.com/NaturalHistoryMuseum/ckanext-doi.git?tag=v4.0.4" },
     { name = "ckanext-oauth2", editable = "ckanext/ckanext-oauth2" },
-    { name = "ckanext-scheming", editable = "ckanext/ckanext-scheming" },
-    { name = "ckanext-spatial", editable = "ckanext/ckanext-spatial" },
+    { name = "ckanext-scheming", git = "https://github.com/COATnor/ckanext-scheming.git?branch=skip-validation-if-parent" },
+    { name = "ckanext-spatial", git = "https://github.com/COATnor/ckanext-spatial.git?branch=coat" },
     { name = "crudini", specifier = ">=0.9.6" },
     { name = "gunicorn", specifier = ">=23.0.0" },
 ]
@@ -1032,6 +1038,11 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/d8/6b/6287745054dbcccf75903630346be77d4715c594402cec7c2518032416c2/PyJWT-2.4.0.tar.gz", hash = "sha256:d42908208c699b3b973cbeb01a969ba6a96c821eefb1c5bfe4c390c01d67abba", size = 66327, upload-time = "2022-05-12T18:58:21.274Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/1c/fb/b82e9601b00d88cf8bbee1f39b855ae773f9d5bcbcedb3801b2f72460696/PyJWT-2.4.0-py3-none-any.whl", hash = "sha256:72d1d253f32dbd4f5c88eaf1fdc62f3a19f676ccbadb9dbc5d07e951b2b26daf", size = 18228, upload-time = "2022-05-12T18:58:19.269Z" },
+]
+
+[package.optional-dependencies]
+crypto = [
+    { name = "cryptography" },
 ]
 
 [[package]]
