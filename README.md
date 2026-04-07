@@ -107,7 +107,6 @@ docker compose --profile prod up -d
 | `CKAN_SITE_URL` | Public URL of the CKAN instance | Yes |
 | `CKAN_PORT` | Port to expose CKAN (default: 5000) | No |
 | `POSTGRES_PASSWORD` | PostgreSQL admin password | Yes |
-| `DATASTORE_READONLY_PASSWORD` | DataStore read-only password | Yes |
 | `DOI_PREFIX` | DataCite DOI prefix | Yes (prod) |
 | `DOI_ACCOUNT_NAME` | DataCite account name | Yes (prod) |
 | `DOI_ACCOUNT_PWD` | DataCite account password | Yes (prod) |
