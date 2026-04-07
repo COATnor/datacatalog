@@ -1,4 +1,4 @@
-FROM ghcr.io/astral-sh/uv:python3.9-trixie
+FROM ghcr.io/astral-sh/uv:python3.11-trixie
 
 RUN --mount=type=cache,sharing=locked,target=/var/cache/apt \
     rm /etc/apt/apt.conf.d/docker-clean && \
