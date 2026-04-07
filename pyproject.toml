@@ -3,7 +3,7 @@ name = "nina-ckan-coat"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.9,<3.10"
+requires-python = ">=3.11,<3.12"
 dependencies = [
     "ckan_dummy",
     "ckanext-coat",
@@ -17,6 +17,10 @@ dependencies = [
     "gunicorn>=23.0.0",
 ]
 
+[tool.uv]
+# certifi bundles CA certificates; always use the latest
+override-dependencies = ["certifi>=2026"]
+
 [tool.uv.workspace]
 members = ["dummy/ckan"]
 
@@ -29,16 +33,6 @@ ckanext-doi = { git = "https://github.com/NaturalHistoryMuseum/ckanext-doi.git",
 ckanext-oauth2 = { path = "./ckanext/ckanext-oauth2", editable = true }
 ckanext-scheming = { git = "https://github.com/COATnor/ckanext-scheming.git", branch = "skip-validation-if-parent" }
 ckanext-spatial = { git = "https://github.com/COATnor/ckanext-spatial.git", branch = "coat" }
-
-[tool.uv]
-no-build-isolation-package = [
-    "ckan",
-    "zope-interface",
-    "pyproj",
-]
-override-dependencies = [
-    "certifi>=2026",
-]
 
 [dependency-groups]
 dev = [

@@ -2,7 +2,7 @@
 name = "ckan_dummy"
 version = "0.1.0"
 description = "Extend and replace CKAN dependencies"
-requires-python = ">=3.9,<3.10"
+requires-python = ">=3.11,<3.12"
 dependencies = [
     "alembic==1.13.2",
     "async-timeout==4.0.3",
@@ -14,7 +14,6 @@ dependencies = [
     "charset-normalizer==3.3.2",
     "ckan",
     "click==8.1.7",
-    "cython>=3.2.4",
     "dominate==2.9.1",
     "feedgen==1.0.0",
     "flask==3.0.3",
@@ -48,7 +47,7 @@ dependencies = [
     "redis==5.0.7",
     "requests==2.32.4",
     "rq==1.16.2",
-    "setuptools<46",
+    "setuptools==77.0.3",
     "simplejson==3.19.2",
     "six==1.16.0",
     "sqlalchemy2-stubs==0.0.2a38",
@@ -62,25 +61,10 @@ dependencies = [
     "webassets==2.0",
     "webencodings==0.5.1",
     "werkzeug[watchdog]==3.0.6",
-    "wheel>=0.45.1",
     "wtforms==3.1.2",
     "zipp==3.19.2",
     "zope-interface==6.4.post2",
 ]
-
-[tool.uv]
-no-build-isolation-package = [
-    "ckan",
-    "zope-interface",
-    "pyproj",
-]
-override-dependencies = [
-    "certifi>=2026",
-]
-
-[tool.uv.extra-build-dependencies]
-psycopg2 = ["wheel"]
-simplejson = ["wheel"]
 
 [tool.uv.sources]
 psycopg2 = { path = "../psycopg2" }
