@@ -39,7 +39,6 @@ A detailed description of the Data Portal and COAT's Data Management Policy and 
 
 [coatnor.github.io](https://coatnor.github.io/) contains more details about the COAT Data portal and its usage.
 "
-conf_set ckan.datastore.sqlalchemy.pool_pre_ping true
 conf_set ckan.search.show_all_types everything
 conf_set ckan.search.solr_allowed_query_parsers "edismax collapse"
 conf_set ckan.favicon "/images/coat.png"
