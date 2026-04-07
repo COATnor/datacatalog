@@ -97,21 +97,13 @@ services:
     << : *common-ckan-dev
     profiles:
       - dev
+      - test
     command: 'python -m pdb -c continue /usr/lib/ckan/.venv/bin/ckan run --host 0.0.0.0 --passthrough-errors'
     tty: true
     stdin_open: true
     environment:
       << : *common-ckan-env-dev
       WERKZEUG_DEBUG_PIN: 5000
-
-  ckan-test:
-    << : *common-ckan-dev
-    profiles:
-      - test
-    command: 'ckan run --host 0.0.0.0 --disable-reloader'
-    environment:
-      << : *common-ckan-env-dev
-      CKAN_SITE_URL: http://varnish
 
   test:
     profiles:
@@ -120,7 +112,7 @@ services:
       context: tests
       dockerfile: Dockerfile
     depends_on:
-      ckan-test:
+      ckan-dev:
         condition: service_healthy
       test-api:
         condition: service_completed_successfully
@@ -136,7 +128,7 @@ services:
       context: tests
       dockerfile: Dockerfile
     depends_on:
-      ckan-test:
+      ckan-dev:
         condition: service_healthy
     environment:
       COAT_URL: http://varnish
