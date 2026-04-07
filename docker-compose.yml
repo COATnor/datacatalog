@@ -48,8 +48,6 @@ x-common-ckan:
       condition: service_healthy
     redis:
       condition: service_healthy
-    varnish:
-      condition: service_started
     pycsw:
       condition: service_started
     bulk-download:
@@ -59,6 +57,11 @@ x-common-ckan:
       ckan_storage:/var/lib/ckan
   healthcheck:
     test: ["CMD", "wget", "-qO", "/dev/null", "localhost:5000/dataset/"]
+  labels:
+    - traefik.enable=true
+    - traefik.http.routers.ckan.rule=PathPrefix(`/`)
+    - traefik.http.routers.ckan.priority=1
+    - traefik.http.services.ckan.loadbalancer.server.port=5000
 
 x-common-ckan-prod:
   &common-ckan-prod
@@ -117,7 +120,7 @@ services:
       test-api:
         condition: service_completed_successfully
     environment:
-      COAT_URL: http://varnish
+      COAT_URL: http://traefik
     volumes:
       - ./tests/latest_logs:/app/latest_logs
 
@@ -131,7 +134,7 @@ services:
       ckan-dev:
         condition: service_healthy
     environment:
-      COAT_URL: http://varnish
+      COAT_URL: http://traefik
     volumes:
       - ./tests/test_api.py:/app/test_api.py:ro
       - tokens:/tokens:ro
@@ -147,6 +150,10 @@ services:
       PYCSW_URL: http://localhost/pycsw/csw.py
     healthcheck:
       test: ["CMD", "wget", "-qO", "/dev/null", "localhost:8000/pycsw/csw.py"]
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.pycsw.rule=PathPrefix(`/pycsw/`)
+      - traefik.http.services.pycsw.loadbalancer.server.port=8000
 
   bulk-download:
     build:
@@ -156,20 +163,25 @@ services:
     environment:
       COAT_URL: http://ckan:5000/
       COAT_PUBLIC_URL: http://127.0.0.1:${CKAN_PORT}/
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.bulk-download.rule=PathRegexp(`^/dataset/[^/]+/(zip|geojson)$`)
+      - traefik.http.services.bulk-download.loadbalancer.server.port=8000
 
-  nginx:
-    build:
-      context: services/nginx
-      dockerfile: Dockerfile
-
-  varnish:
-    build:
-      context: services/varnish
-      dockerfile: Dockerfile
-    depends_on:
-      - nginx
+  traefik:
+    image: traefik:v3.6
+    command:
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+      - --entrypoints.web.transport.respondingTimeouts.readTimeout=0
+      - --api.insecure=true
+      - --accesslog=true
     ports:
       - "${CKAN_PORT}:80"
+      - "8080:8080"
+    volumes:
+      - ${DOCKER_SOCK:-/var/run/docker.sock}:/var/run/docker.sock:ro
 
   db:
     image: registry.gitlab.com/nina-data/ckan/nina-ckan-2-9-7/postgresql

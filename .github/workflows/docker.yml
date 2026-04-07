@@ -19,10 +19,7 @@ jobs:
         include:
           - context: .
             image_name: ckan
-          - context: services/nginx
-            image_name: nginx
-          - context: services/varnish
-            image_name: varnish
+
     permissions:
       contents: read
       packages: write

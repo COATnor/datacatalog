@@ -23,15 +23,12 @@ This repository contains a complete, production-ready deployment of CKAN tailore
 
 ```mermaid
 flowchart TB
-    varnish["varnish"] --> nginx["nginx"]
-
-    nginx --> ckan["CKAN"]
-    nginx --> pycsw["pycsw"]
-    nginx --> bulk["bulk-download"]
+    traefik["traefik"] --> ckan["CKAN"]
+    traefik --> pycsw["pycsw"]
+    traefik --> bulk["bulk-download"]
 
     pycsw --> ckan
     bulk --> ckan
-    datapusher["datapusher"] <--> ckan
 
     ckan --> db[("PostgreSQL")]
     ckan --> solr[("Solr")]
@@ -173,9 +170,7 @@ docker compose logs -f ckan
 │   └── coat-entrypoint-dev.sh
 ├── services/                # Supporting services
 │   ├── bulk-download/       # ZIP download service
-│   ├── nginx/               # Reverse proxy
 │   ├── pycsw/               # OGC CSW service
-│   └── varnish/             # HTTP cache
 ├── scripts/                 # Utility scripts
 ├── tests/                   # Integration tests
 ├── docker-compose.yml       # Service orchestration
