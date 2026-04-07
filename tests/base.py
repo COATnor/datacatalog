@@ -35,6 +35,11 @@ class CKANTest(BaseCase):
         self.open(BASE)
         self.click_link(label)
 
+    @sanity_check
+    def test_search_map(self):
+        self.open(BASE + "/dataset/")
+        self.assert_element(".leaflet-container")
+
 
 class PyCSW(BaseCase):
     def test_homepage(self):
