@@ -76,15 +76,13 @@ conf_set ckanext.doi.account_password "$DOI_ACCOUNT_PWD"
 conf_set ckanext.doi.test_mode "$DOI_TEST_MODE"
 
 #ckanext-oauth2
-if [ "${ENV:=}" == "prod" ]
-then
-    conf_set_list ckan.plugins oauth2
-    conf_set ckan.oauth2.profile_api_url "https://auth.dataporten.no/userinfo"
-    conf_set_list ckan.oauth2.scope userinfo-photo userinfo-name email
-    conf_set ckan.oauth2.profile_api_user_field email
-    conf_set ckan.oauth2.profile_api_fullname_field name
-    conf_set ckan.oauth2.profile_api_mail_field email
-fi
+conf_set_list ckan.plugins oauth2
+conf_set ckan.oauth2.profile_api_url "https://auth.dataporten.no/userinfo"
+conf_set_list ckan.oauth2.scope userinfo-name email
+conf_set ckan.oauth2.profile_response_path user
+conf_set ckan.oauth2.profile_api_user_field userid
+conf_set ckan.oauth2.profile_api_fullname_field name
+conf_set ckan.oauth2.profile_api_mail_field email
 
 #ckanext-datasetversions
 conf_set_list ckan.plugins datasetversions

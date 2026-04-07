@@ -45,3 +45,14 @@ class PyCSW(BaseCase):
     def test_homepage(self):
         self.open(BASE + "/pycsw/csw.py")
         self.assert_element_present("*")  # XML page loaded
+
+
+class OAuth2Login(BaseCase):
+    def test_feide_login(self):
+        self.open(BASE + "/user/login")
+        self.click("a.section-list")  # "Feide test users"
+        # https://docs.feide.no/reference/testusers.html
+        self.type("#username", "emma123elev")
+        self.type("#password", "098asd")
+        self.click("button[type=submit].button-primary")
+        self.assert_element(".account .username", timeout=15)
