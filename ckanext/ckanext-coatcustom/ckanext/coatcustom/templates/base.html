@@ -1,5 +1,7 @@
 {% ckan_extends %}
 
+{% block bodytag %} data-site-root="" data-locale-root="" {% endblock %}
+
 {% block styles %}
   {{ super() }}
   {% asset 'coatcustom/coatcustom' %}
