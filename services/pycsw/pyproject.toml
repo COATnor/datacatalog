@@ -1,0 +1,15 @@
+[project]
+name = "coat2pycsw"
+version = "0.2.0"
+description = "Populate PyCSW using data from the COAT CKAN catalog"
+requires-python = ">=3.11"
+dependencies = [
+    "pycsw @ https://github.com/geopython/pycsw/archive/refs/tags/3.0.0-beta2.tar.gz",
+    "owslib<=0.35.0",
+    "sqlalchemy<2",
+    "pygeometa>=0.19.0",
+    "requests",
+    "shapely",
+    "pyyaml",
+    "tenacity",
+]

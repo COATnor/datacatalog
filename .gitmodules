@@ -1,9 +1,6 @@
 [submodule "ckanext/ckanext-datasetversions"]
 	path = ckanext/ckanext-datasetversions
 	url = git@github.com:aptivate/ckanext-datasetversions.git
-[submodule "pycsw"]
-	path = services/pycsw
-	url = git@github.com:COATnor/coat2pycsw.git
 [submodule "bulk-download"]
 	path = services/bulk-download
 	url = git@github.com:COATnor/coat-bulk-download.git
