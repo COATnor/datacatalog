@@ -1,0 +1,42 @@
+server:
+  url: ${PYCSW_URL}
+  mimetype: application/xml; charset=UTF-8
+  encoding: UTF-8
+  language: en-US
+  maxrecords: 10
+  gzip_compresslevel: 9
+
+profiles:
+  - apiso
+
+logging:
+  level: DEBUG
+
+manager:
+  transactions: false
+  allowed_ips:
+    - 127.0.0.1
+
+metadata:
+  identification:
+    title: COAT Geospatial Catalogue
+    description: COAT OGC CSW server powered by pycsw
+    keywords:
+      - coat
+      - catalogue
+      - discovery
+      - metadata
+    fees: None
+    accessconstraints: None
+  provider:
+    name: COAT
+    url: https://coat.no/
+  contact:
+    name: Francesco Frassinelli
+    country: Norway
+    url: https://www.nina.no/english/Contact/Employees/Employee-info?AnsattID=15958
+    role: pointOfContact
+
+repository:
+  database: ${DATABASE}
+  table: records

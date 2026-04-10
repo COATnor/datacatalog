@@ -2,18 +2,6 @@
 	path = ckanext/ckanext-datasetversions
 	url = https://github.com/COATnor/ckanext-datasetversions.git
 	branch = coat
-[submodule "ckanext/ckanext-scheming"]
-	path = ckanext/ckanext-scheming
-	url = git@github.com:COATnor/ckanext-scheming.git
-[submodule "ckanext/ckanext-spatial"]
-	path = ckanext/ckanext-spatial
-	url = https://github.com/ckan/ckanext-spatial
-[submodule "ckanext/ckanext-doi"]
-	path = ckanext/ckanext-doi
-	url = https://github.com/NaturalHistoryMuseum/ckanext-doi.git
-[submodule "pycsw"]
-	path = services/pycsw
-	url = git@github.com:COATnor/coat2pycsw.git
 [submodule "bulk-download"]
 	path = services/bulk-download
 	url = git@github.com:COATnor/coat-bulk-download.git

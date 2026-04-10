@@ -7,6 +7,16 @@ volumes:
     driver: local
   tokens:
     driver: local
+  pycsw_data:
+    driver: local
+
+x-pycsw-env:
+  &pycsw-env
+  DATABASE: sqlite:////home/pycsw/cite.db
+
+x-coat-env:
+  &coat-env
+  COAT_URL: http://ckan:5000/
 
 x-common-ckan-env:
   &common-ckan-env
@@ -138,19 +148,30 @@ services:
     command: ["test_api.py", "-v", "--headless"]
 
   pycsw:
-    build:
-      context: services/pycsw
-      dockerfile: Dockerfile
-    image: ghcr.io/coatnor/coat2pycsw:main
+    image: geopython/pycsw:3.0.0-beta2
     environment:
-      COAT_URL: http://ckan:5000/
-      PYCSW_URL: http://localhost/pycsw/csw.py
+      << : *pycsw-env
+      PYCSW_CONFIG: /etc/pycsw.yml
+      PYCSW_URL: ${CKAN_SITE_URL}/pycsw
     healthcheck:
-      test: ["CMD", "wget", "-qO", "/dev/null", "localhost:8000/pycsw/csw.py"]
+      test: ["CMD", "/venv/bin/python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/')"]
     labels:
       - traefik.enable=true
-      - traefik.http.routers.pycsw.rule=PathPrefix(`/pycsw/`)
+      - traefik.http.routers.pycsw.rule=PathPrefix(`/pycsw`)
+      - traefik.http.middlewares.pycsw-strip.stripprefix.prefixes=/pycsw
+      - traefik.http.routers.pycsw.middlewares=pycsw-strip
       - traefik.http.services.pycsw.loadbalancer.server.port=8000
+    volumes:
+      - pycsw_data:/home/pycsw
+      - ./services/pycsw/pycsw.yml:/etc/pycsw.yml:ro
+
+  coat2pycsw:
+    build: services/pycsw
+    image: ghcr.io/coatnor/coat2pycsw:main
+    environment:
+      << : [*coat-env, *pycsw-env]
+    volumes:
+      - pycsw_data:/home/pycsw
 
   bulk-download:
     build:
@@ -158,7 +179,7 @@ services:
       dockerfile: Dockerfile
     image: ghcr.io/coatnor/coat-bulk-download:main
     environment:
-      COAT_URL: http://ckan:5000/
+      << : *coat-env
       COAT_PUBLIC_URL: http://127.0.0.1:${CKAN_PORT}/
     labels:
       - traefik.enable=true
