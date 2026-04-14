@@ -10,7 +10,9 @@ Requires:
 
 import os
 import uuid
+import zipfile
 from datetime import datetime, timedelta
+from io import BytesIO
 
 import pytest
 import requests
@@ -69,6 +71,7 @@ def make_user(fullname=None):
 # Client
 # ---------------------------------------------------------------------------
 
+
 class CKANAPIError(Exception):
     def __init__(self, action, error, status_code):
         self.action = action
@@ -100,11 +103,17 @@ class CKANClient:
 
     def create_package(self, org_id, *, author, **overrides):
         title = overrides.pop("title", f"Test Package {uid()}")
-        return self.action("package_create", **{
-            **PKG_DEFAULTS, "title": title,
-            "owner_org": org_id, "private": True, "author": author,
-            **overrides,
-        })
+        return self.action(
+            "package_create",
+            **{
+                **PKG_DEFAULTS,
+                "title": title,
+                "owner_org": org_id,
+                "private": True,
+                "author": author,
+                **overrides,
+            },
+        )
 
     def create_sv(self, org_id, *dataset_names, **overrides):
         """Create a state variable and return the package_show result.
@@ -112,14 +121,17 @@ class CKANClient:
         dataset_names are joined as the 'datasets' field. Extra keyword
         arguments are passed through to package_create.
         """
-        sv = self.action("package_create", **{
-            **SV_DEFAULTS,
-            "title": overrides.pop("title", f"Test SV {uid()}"),
-            "owner_org": org_id,
-            "private": True,
-            "datasets": ",".join(dataset_names),
-            **overrides,
-        })
+        sv = self.action(
+            "package_create",
+            **{
+                **SV_DEFAULTS,
+                "title": overrides.pop("title", f"Test SV {uid()}"),
+                "owner_org": org_id,
+                "private": True,
+                "datasets": ",".join(dataset_names),
+                **overrides,
+            },
+        )
         # after_show computes resource_citations; package_create does not trigger it
         return self.action("package_show", id=sv["id"])
 
@@ -136,6 +148,7 @@ class CKANClient:
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
+
 
 @retry(stop=stop_after_delay(60), wait=wait_fixed(2), reraise=True)
 def _wait_for_ckan():
@@ -236,19 +249,23 @@ def pub(client, pkg):
 # Package lifecycle
 # ---------------------------------------------------------------------------
 
+
 class TestPackageLifecycle:
     def test_create_is_private(self, pkg):
         assert pkg["private"] is True
         assert pkg["state"] == "active"
 
     def test_create_public_rejected(self, client, org):
-        resp = client.post("package_create", **{
-            **PKG_DEFAULTS,
-            "title": f"Should Fail {uid()}",
-            "owner_org": org["id"],
-            "private": False,
-            "author": TEST_USER_NAME,
-        })
+        resp = client.post(
+            "package_create",
+            **{
+                **PKG_DEFAULTS,
+                "title": f"Should Fail {uid()}",
+                "owner_org": org["id"],
+                "private": False,
+                "author": TEST_USER_NAME,
+            },
+        )
         assert not resp.json()["success"]
 
     def test_create_sets_version_and_base_name(self, client, org):
@@ -288,32 +305,49 @@ class TestPackageLifecycle:
 # Draft
 # ---------------------------------------------------------------------------
 
+
 class TestDraftBehavior:
     def test_draft_forced_private(self, client, org):
         pkg = client.create_package(org["id"], author=TEST_USER_NAME, state="draft")
-        assert client.update_package(pkg["id"], private=False, state="draft")["private"] is True
+        assert (
+            client.update_package(pkg["id"], private=False, state="draft")["private"]
+            is True
+        )
 
 
 # ---------------------------------------------------------------------------
 # Resources
 # ---------------------------------------------------------------------------
 
+
 class TestResourceManagement:
     def test_create_resource(self, client, pkg):
-        res = client.action("resource_create", package_id=pkg["id"],
-                            name="data.csv", url="http://example.com/data.csv")
+        res = client.action(
+            "resource_create",
+            package_id=pkg["id"],
+            name="data.csv",
+            url="http://example.com/data.csv",
+        )
         assert res["name"] == "data.csv"
         assert res["package_id"] == pkg["id"]
 
     def test_resource_extension_lowercased(self, client, pkg):
-        res = client.action("resource_create", package_id=pkg["id"],
-                            name="DATA.CSV", url="http://example.com/data.csv")
+        res = client.action(
+            "resource_create",
+            package_id=pkg["id"],
+            name="DATA.CSV",
+            url="http://example.com/data.csv",
+        )
         assert res["name"] == "DATA.csv"
 
     def test_multiple_resources(self, client, pkg):
         for i in range(2):
-            client.action("resource_create", package_id=pkg["id"],
-                          name=f"data{i}.csv", url=f"http://example.com/data{i}.csv")
+            client.action(
+                "resource_create",
+                package_id=pkg["id"],
+                name=f"data{i}.csv",
+                url=f"http://example.com/data{i}.csv",
+            )
         assert len(client.action("package_show", id=pkg["id"])["resources"]) == 2
 
 
@@ -321,16 +355,24 @@ class TestResourceManagement:
 # Embargo
 # ---------------------------------------------------------------------------
 
-@pytest.mark.parametrize("days,use_anon,expected_url", [
-    ( 30, True,  "#resource-under-embargo"),       # future embargo: hidden for anon
-    ( 30, False, "http://example.com/res.csv"),    # future embargo: visible for auth
-    ( -1, True,  "http://example.com/res.csv"),    # past embargo: visible for anon
-])
+
+@pytest.mark.parametrize(
+    "days,use_anon,expected_url",
+    [
+        (30, True, "#resource-under-embargo"),  # future embargo: hidden for anon
+        (30, False, "http://example.com/res.csv"),  # future embargo: visible for auth
+        (-1, True, "http://example.com/res.csv"),  # past embargo: visible for anon
+    ],
+)
 def test_embargo(days, use_anon, expected_url, client, org, anon):
     embargo_date = (datetime.now() + timedelta(days=days)).strftime("%Y-%m-%d")
     pkg = client.create_package(org["id"], author=TEST_USER_NAME, embargo=embargo_date)
-    client.action("resource_create", package_id=pkg["id"],
-                  name="res.csv", url="http://example.com/res.csv")
+    client.action(
+        "resource_create",
+        package_id=pkg["id"],
+        name="res.csv",
+        url="http://example.com/res.csv",
+    )
     client.publish(pkg["id"])
 
     viewer = anon if use_anon else client
@@ -341,6 +383,7 @@ def test_embargo(days, use_anon, expected_url, client, org, anon):
 # ---------------------------------------------------------------------------
 # Versioning
 # ---------------------------------------------------------------------------
+
 
 class TestVersioning:
     def test_name_suffix_and_version(self, pkg):
@@ -360,17 +403,22 @@ class TestVersioning:
 # Search
 # ---------------------------------------------------------------------------
 
+
 class TestSearch:
     def test_search_returns_results(self, client, org):
         tag = uid()
-        client.publish(client.create_package(org["id"], author=TEST_USER_NAME,
-                                             title=f"Searchable {tag}")["id"])
+        client.publish(
+            client.create_package(
+                org["id"], author=TEST_USER_NAME, title=f"Searchable {tag}"
+            )["id"]
+        )
         assert client.action("package_search", q=tag)["count"] >= 1
 
 
 # ---------------------------------------------------------------------------
 # Anonymous access
 # ---------------------------------------------------------------------------
+
 
 class TestAnonymousAccess:
     def test_can_view_public(self, anon, pub):
@@ -380,19 +428,23 @@ class TestAnonymousAccess:
         assert not anon.post("package_show", id=pkg["id"]).json()["success"]
 
     def test_cannot_create(self, anon, org):
-        resp = anon.post("package_create", **{
-            **PKG_DEFAULTS,
-            "title": "Anon Fail",
-            "owner_org": org["id"],
-            "private": True,
-            "author": TEST_USER_NAME,
-        })
+        resp = anon.post(
+            "package_create",
+            **{
+                **PKG_DEFAULTS,
+                "title": "Anon Fail",
+                "owner_org": org["id"],
+                "private": True,
+                "author": TEST_USER_NAME,
+            },
+        )
         assert not resp.json()["success"]
 
 
 # ---------------------------------------------------------------------------
 # State variable — citations
 # ---------------------------------------------------------------------------
+
 
 class TestStateVariableCitation:
     def test_citation_populated(self, client, org, pkg):
@@ -431,6 +483,7 @@ class TestStateVariableCitation:
 # State variable — external datasets
 # ---------------------------------------------------------------------------
 
+
 class TestStateVariableExternalDatasets:
     def test_external_datasets_stored_and_returned(self, client, org, pkg):
         """external_datasets entries are stored and returned on package_show."""
@@ -450,6 +503,7 @@ class TestStateVariableExternalDatasets:
 # State variable — create-only merge and manual overrides
 # ---------------------------------------------------------------------------
 
+
 class TestStateVariableMergeFields:
     def test_fields_merged_on_create(self, client, org, pkg):
         """author and publisher are auto-merged from linked datasets on creation."""
@@ -464,9 +518,9 @@ class TestStateVariableMergeFields:
     def test_manual_override_preserved_on_update(self, client, org, pkg):
         """Manually set author/publisher on update are not overwritten by merge."""
         sv = client.create_sv(org["id"], pkg["name"])
-        updated = client.update_package(sv["id"],
-                                        author="custom_author",
-                                        publisher="Custom Publisher")
+        updated = client.update_package(
+            sv["id"], author="custom_author", publisher="Custom Publisher"
+        )
         shown = client.action("package_show", id=updated["id"])
         assert shown.get("author") == "custom_author"
         assert shown.get("publisher") == "Custom Publisher"
@@ -476,11 +530,14 @@ class TestStateVariableMergeFields:
 # State variable — scientific_name manual editing
 # ---------------------------------------------------------------------------
 
+
 class TestStateVariableScientificName:
     def test_scientific_name_merged_on_create(self, client, org):
         """scientific_name is auto-merged from the linked dataset on SV creation."""
         species = "Lemmus lemmus"
-        pkg = client.create_package(org["id"], author=TEST_USER_NAME, scientific_name=species)
+        pkg = client.create_package(
+            org["id"], author=TEST_USER_NAME, scientific_name=species
+        )
         sv = client.create_sv(org["id"], pkg["name"])
         assert species in sv.get("scientific_name", ""), (
             f"Expected {species!r} in scientific_name, got: {sv.get('scientific_name')!r}"
@@ -488,8 +545,35 @@ class TestStateVariableScientificName:
 
     def test_scientific_name_manual_override_preserved(self, client, org):
         """Manually set scientific_name on update is not overwritten by merge."""
-        pkg = client.create_package(org["id"], author=TEST_USER_NAME,
-                                    scientific_name="Rangifer tarandus")
+        pkg = client.create_package(
+            org["id"], author=TEST_USER_NAME, scientific_name="Rangifer tarandus"
+        )
         sv = client.create_sv(org["id"], pkg["name"])
         updated = client.update_package(sv["id"], scientific_name="Lemmus lemmus")
-        assert client.action("package_show", id=updated["id"])["scientific_name"] == "Lemmus lemmus"
+        assert (
+            client.action("package_show", id=updated["id"])["scientific_name"]
+            == "Lemmus lemmus"
+        )
+
+
+# ---------------------------------------------------------------------------
+# Bulk download
+# ---------------------------------------------------------------------------
+
+
+class TestBulkDownload:
+    def test_zip_download(self, client, org):
+        """Download a public dataset as zip — response is a valid zip archive."""
+        pkg = client.create_package(org["id"], author=TEST_USER_NAME)
+        client.action(
+            "resource_create",
+            package_id=pkg["id"],
+            name="data.csv",
+            url=f"{BASE}/api/3/action/status_show",
+        )
+        client.publish(pkg["id"])
+        resp = requests.get(f"{BASE}/dataset/{pkg['name']}/zip")
+        assert resp.status_code == 200, f"Expected 200, got {resp.status_code}"
+        assert resp.headers["content-type"] == "application/zip"
+        zf = zipfile.ZipFile(BytesIO(resp.content))
+        assert zf.namelist()

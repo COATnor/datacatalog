@@ -1,10 +1,9 @@
+import os
+from functools import wraps
+
 from parameterized import parameterized
 from seleniumbase import BaseCase
 from seleniumbase.config import settings
-
-from functools import wraps
-import os
-
 
 BASE = os.environ.get("COAT_URL", "http://localhost:5000")
 
@@ -15,6 +14,7 @@ def sanity_check(method):
         method(self, *method_args, **method_kwargs)
         self.assert_no_404_errors(multithreaded=False, timeout=settings.EXTREME_TIMEOUT)
         self.assert_no_js_errors()
+
     return _impl
 
 
