@@ -2,9 +2,6 @@
 	path = ckanext/ckanext-datasetversions
 	url = https://github.com/COATnor/ckanext-datasetversions.git
 	branch = coat
-[submodule "bulk-download"]
-	path = services/bulk-download
-	url = git@github.com:COATnor/coat-bulk-download.git
 [submodule "ckanext/ckanext-oauth2"]
 	path = ckanext/ckanext-oauth2
 	url = https://github.com/COATnor/ckanext-oauth2.git

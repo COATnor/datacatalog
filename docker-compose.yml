@@ -174,9 +174,7 @@ services:
       - pycsw_data:/home/pycsw
 
   bulk-download:
-    build:
-      context: services/bulk-download
-      dockerfile: Dockerfile
+    build: services/bulk-download
     image: ghcr.io/coatnor/coat-bulk-download:main
     environment:
       << : *coat-env

@@ -21,6 +21,8 @@ jobs:
             image_name: ckan
           - context: services/pycsw
             image_name: coat2pycsw
+          - context: services/bulk-download
+            image_name: coat-bulk-download
 
     permissions:
       contents: read
