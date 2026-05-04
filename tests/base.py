@@ -50,7 +50,7 @@ class PyCSW(BaseCase):
 class OAuth2Login(BaseCase):
     def test_feide_login(self):
         self.open(BASE + "/user/login")
-        self.click("a.section-list")  # "Feide test users"
+        self.click_link_text("Feide test users")
         # https://docs.feide.no/reference/testusers.html
         self.type("#username", "emma123elev")
         self.type("#password", "098asd")

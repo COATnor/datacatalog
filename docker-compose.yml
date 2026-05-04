@@ -59,6 +59,8 @@ x-common-ckan:
       condition: service_started
     bulk-download:
       condition: service_started
+    traefik:
+      condition: service_started
   volumes:
     - &common-ckan-volume
       ckan_storage:/var/lib/ckan
@@ -107,13 +109,25 @@ services:
     << : *common-ckan-dev
     profiles:
       - dev
-      - test
     command: 'python -m pdb -c continue /usr/lib/ckan/.venv/bin/ckan run --host 0.0.0.0 --passthrough-errors'
     tty: true
     stdin_open: true
     environment:
       << : *common-ckan-env-dev
       WERKZEUG_DEBUG_PIN: 5000
+
+
+  ckan-test:
+    << : *common-ckan
+    profiles:
+      - test
+    volumes:
+      - tokens:/tokens
+    entrypoint: ["bash", "/coat-entrypoint-dev.sh"]
+    command: ["gunicorn", "wsgi:application", "-b", "0.0.0.0:5000"]
+    environment:
+      << : *common-ckan-env-dev
+      CKAN_SITE_URL: http://traefik
 
   test:
     profiles:
@@ -122,10 +136,8 @@ services:
       context: tests
       dockerfile: Dockerfile
     depends_on:
-      ckan-dev:
+      ckan-test:
         condition: service_healthy
-      test-api:
-        condition: service_completed_successfully
     environment:
       COAT_URL: http://traefik
     volumes:
@@ -138,7 +150,7 @@ services:
       context: tests
       dockerfile: Dockerfile
     depends_on:
-      ckan-dev:
+      ckan-test:
         condition: service_healthy
     environment:
       COAT_URL: http://traefik

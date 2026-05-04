@@ -25,7 +25,7 @@ then
         password="TestPassword123!" fullname="COAT Test Admin" 2>/dev/null || true
     ckan sysadmin add coat_test_admin 2>/dev/null || true
     TOKEN=$(ckan user token add coat_test_admin integration_test 2>&1 \
-        | grep -oE 'eyJ[A-Za-z0-9_.-]+')
+        | grep -oE 'eyJ[A-Za-z0-9_.-]+' || true)
     if [ -n "$TOKEN" ]; then
         echo "$TOKEN" > /tokens/api_token
     fi
