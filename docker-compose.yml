@@ -115,6 +115,7 @@ services:
     environment:
       << : *common-ckan-env-dev
       WERKZEUG_DEBUG_PIN: 5000
+      GUNICORN_CMD_ARGS: "--workers 4 --worker-class sync --timeout 60"
 
 
   ckan-test:
@@ -128,6 +129,7 @@ services:
     environment:
       << : *common-ckan-env-dev
       CKAN_SITE_URL: http://traefik
+      GUNICORN_CMD_ARGS: "--workers 4 --worker-class sync --timeout 60"
 
   test:
     profiles:
@@ -240,9 +242,9 @@ services:
       - "8983:8983"
     healthcheck:
       test: ["CMD", "wget", "-qO", "/dev/null", "localhost:8983/solr/ckan/admin/ping"]
-      start_period: 60s
-      interval: 10s
-      retries: 6
+      start_period: 5s
+      interval: 5s
+      retries: 10
 
   redis:
     image: redis:6
