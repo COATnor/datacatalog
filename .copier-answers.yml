@@ -1,0 +1,15 @@
+# Changes here will be overwritten by Copier
+_commit: v0.2.6
+_src_path: gh:ninanor/template-python
+author_name: Francesco Frassinelli
+debug: false
+default_branch_name: master
+docker: true
+email: francesco.frassinelli@nina.no
+notebook: false
+project_name: COAT datacatalog
+project_slug: coat_datacatalog
+repo_name: datacatalog
+repo_org: COATnor
+template_type: python
+type_annotations: false

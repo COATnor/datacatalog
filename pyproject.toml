@@ -1,9 +1,8 @@
+
 [project]
-name = "nina-ckan-coat"
-version = "0.1.0"
-description = "Add your description here"
-readme = "README.md"
-requires-python = ">=3.11,<3.12"
+authors = [
+  {name = "Francesco Frassinelli", email = "francesco.frassinelli@nina.no"}
+]
 dependencies = [
     "ckan_dummy",
     "ckanext-coat",
@@ -16,11 +15,14 @@ dependencies = [
     "crudini>=0.9.6",
     "gunicorn>=23.0.0",
 ]
+description = "CKAN-based data catalog for natural heritage data"
+license = "GPL-3.0+"
+name = "coat_datacatalog"
+readme = "README.md"
+requires-python = ">=3.11"
+version = "0.1.0"
 
 [tool.uv]
-# certifi bundles CA certificates; always use the latest
-override-dependencies = ["certifi>=2026"]
-
 [tool.uv.workspace]
 members = ["dummy/ckan"]
 
@@ -37,6 +39,7 @@ ckanext-spatial = { git = "https://github.com/COATnor/ckanext-spatial.git", bran
 [dependency-groups]
 dev = [
     "flask-debugtoolbar>=0.14.1",
+    "deptry",
 ]
 test = [
     "playwright>=1.40",
@@ -47,6 +50,17 @@ test = [
 
 [tool.pytest.ini_options]
 addopts = "-v --tb=short -n auto --dist loadgroup -p no:ckan -p no:ckan_fixtures"
+
+[tool.deptry]
+known_first_party = ["ckanext", "dummy"]
+
+[tool.ruff]
+fix = true
+line-length = 100
+
+[tool.ruff.lint]
+ignore = ["COM812"]
+select = ["E", "W", "I", "F", "UP", "S", "B", "A", "COM", "LOG", "PTH", "Q"]
 
 [tool.setuptools]
 packages = []
