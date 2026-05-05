@@ -1,6 +1,6 @@
-# COAT Data Portal (nina-ckan-coat)
+# COAT Data Portal
 
-[![pipeline status](https://gitlab.com/nina-data/nina-ckan-coat/badges/master/pipeline.svg)](https://gitlab.com/nina-data/nina-ckan-coat/commits/master)
+[![CI](https://github.com/COATnor/datacatalog/actions/workflows/docker.yml/badge.svg)](https://github.com/COATnor/datacatalog/actions/workflows/docker.yml)
 
 A customized [CKAN](https://ckan.org/) data catalog for the **Climate-ecological Observatory for Arctic Tundra (COAT)** project, developed by [NINA](https://www.nina.no/) (Norwegian Institute for Nature Research).
 
@@ -26,12 +26,13 @@ flowchart TB
     traefik["traefik"] --> ckan["CKAN"]
     traefik --> pycsw["pycsw"]
     traefik --> bulk["bulk-download"]
+    traefik --> solr[("Solr")]
 
     pycsw --> ckan
     bulk --> ckan
 
     ckan --> db[("PostgreSQL")]
-    ckan --> solr[("Solr")]
+    ckan --> solr
     ckan --> redis[("Redis")]
     ckan --> storage[("File Storage")]
 ```
@@ -54,7 +55,7 @@ flowchart TB
 
 **Dependencies:**
 - Docker 20.10+ with Compose V2
-- Python 3.8+ (for scripts only)
+- Python 3.11+ (for scripts only)
 - Git with submodule support
 
 ## Quick Start
@@ -63,8 +64,8 @@ flowchart TB
 
 ```bash
 # Clone the repository with submodules
-git clone --recursive https://gitlab.com/nina-data/nina-ckan-coat.git
-cd nina-ckan-coat
+git clone --recursive https://github.com/COATnor/datacatalog.git
+cd datacatalog
 
 # Or if already cloned, fetch submodules
 git submodule update --init --recursive
@@ -114,6 +115,8 @@ docker compose --profile prod up -d
 | `CKAN_OAUTH2_CLIENT_ID` | OAuth2 client ID | Yes (prod) |
 | `CKAN_OAUTH2_CLIENT_SECRET` | OAuth2 client secret | Yes (prod) |
 | `CKAN_MAX_UPLOAD_SIZE_MB` | Max upload size (default: 1000) | No |
+| `BEAKER_SESSION_SECRET` | Session encryption secret | Yes |
+| `DOCKER_SOCK` | Docker socket path (for rootless Docker) | No |
 
 ## Testing
 
@@ -122,13 +125,12 @@ There are two test suites, both run inside Docker against a live `ckan-test` ins
 | Suite | File | Description |
 |-------|------|-------------|
 | API integration | `tests/test_api.py` | CKAN API tests (package lifecycle, versioning, embargo, …) |
-| E2E browser | `tests/base.py` | SeleniumBase browser automation |
+| E2E browser | `tests/test_browser.py` | Playwright browser automation via Lightpanda CDP |
 
 ### Run tests
 
 ```bash
-docker compose --profile test build
-docker compose --profile test run --rm test-api
+docker compose --profile test build test
 docker compose --profile test run --rm test
 ```
 
@@ -140,10 +142,10 @@ The `ckan-test` instance also creates the fixed sysadmin on startup (when `CKAN_
 
 ```bash
 # Create a sysadmin user
-docker compose exec ckan ckan -c /etc/ckan/production.ini sysadmin add USERNAME
+docker compose --profile prod exec ckan-prod ckan -c /etc/ckan/production.ini sysadmin add USERNAME
 
 # Rebuild search index
-docker compose exec ckan ckan -c /etc/ckan/production.ini search-index rebuild
+docker compose --profile prod exec ckan-prod ckan -c /etc/ckan/production.ini search-index rebuild
 
 # Access PostgreSQL
 docker compose exec db psql -U ckan
@@ -151,8 +153,8 @@ docker compose exec db psql -U ckan
 # View CKAN logs
 docker compose logs -f ckan
 
-# Access Solr admin
-# Open http://localhost:8983/solr/ in browser
+# Access Solr admin (via traefik)
+# Open http://localhost:5000/solr/ in browser
 ```
 
 ## Development
@@ -160,7 +162,7 @@ docker compose logs -f ckan
 ### Project Structure
 
 ```
-├── ckanext/                 # CKAN extensions (git submodules)
+├── ckanext/                 # CKAN extensions (local packages and git submodules)
 │   ├── ckanext-coat/        # Core COAT extension
 │   ├── ckanext-coatcustom/  # COAT customizations and schemas
 │   ├── ckanext-*/           # Other extensions
@@ -212,7 +214,7 @@ We maintain a [COATnor fork](https://github.com/COATnor/ckanext-spatial/tree/coa
 
 ### ckanext-datasetversions
 
-[aptivate/ckanext-datasetversions](https://github.com/aptivate/ckanext-datasetversions) is mostly unmaintained (see [issue #17](https://github.com/aptivate/ckanext-datasetversions/issues/17)). We maintain a [NINAnor fork](https://github.com/NINAnor/ckanext-datasetversions) with the following non-upstreamed changes:
+[aptivate/ckanext-datasetversions](https://github.com/aptivate/ckanext-datasetversions) is mostly unmaintained (see [issue #17](https://github.com/aptivate/ckanext-datasetversions/issues/17)). We maintain a [COATnor fork](https://github.com/COATnor/ckanext-datasetversions) with the following non-upstreamed changes:
 
 - Flask blueprint migration (from Pylons)
 - `__parent` parameter for parent dataset creation

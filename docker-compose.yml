@@ -117,7 +117,6 @@ services:
       WERKZEUG_DEBUG_PIN: 5000
       GUNICORN_CMD_ARGS: "--workers 4 --worker-class sync --timeout 60"
 
-
   ckan-test:
     << : *common-ckan
     profiles:
@@ -135,8 +134,6 @@ services:
     image: lightpanda/browser:nightly
     profiles:
       - test
-    ports:
-      - "9222:9222"
 
   test:
     profiles:
@@ -233,8 +230,10 @@ services:
         condition: service_completed_successfully
     volumes:
       - solr_data:/var/solr/data
-    ports:
-      - "8983:8983"
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.solr.rule=PathPrefix(`/solr`)
+      - traefik.http.services.solr.loadbalancer.server.port=8983
     healthcheck:
       test: ["CMD", "wget", "-qO", "/dev/null", "localhost:8983/solr/ckan/admin/ping"]
       start_period: 5s
