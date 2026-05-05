@@ -9,19 +9,25 @@ RUN --mount=type=cache,sharing=locked,target=/var/cache/apt \
 COPY custom/ckan.po .
 RUN msgfmt ckan.po -o /ckan.mo
 
-FROM base
-RUN --mount=type=cache,sharing=locked,target=/var/cache/apt \
-    apt-get install -qy --no-install-recommends \
-        postgresql-client
+FROM base AS src
 WORKDIR /usr/lib/ckan/
-
 COPY ckanext/ ckanext/
 COPY dummy/ dummy/
 COPY pyproject.toml uv.lock ./
 
+FROM src AS test
 RUN --mount=type=cache,sharing=locked,target=/root/.cache/uv \
-    uv sync --locked
+    uv sync --locked --only-group test
+COPY tests/ tests/
+WORKDIR /usr/lib/ckan/tests
+CMD ["uv", "run", "--only-group", "test", "pytest"]
 
+FROM src
+RUN --mount=type=cache,sharing=locked,target=/root/.cache/uv \
+    uv sync --locked --no-group test
+RUN --mount=type=cache,sharing=locked,target=/var/cache/apt \
+    apt-get install -qy --no-install-recommends \
+        postgresql-client
 
 COPY custom/coat-entrypoint.sh custom/coat-entrypoint-dev.sh custom/ckan-entrypoint.sh /
 COPY wsgi.py .

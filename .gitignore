@@ -177,3 +177,6 @@ pyrightconfig.json
 
 # translation .mo file
 *.mo
+
+# pytest logs
+tests/latest_logs/

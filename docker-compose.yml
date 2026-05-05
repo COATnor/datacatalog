@@ -131,35 +131,30 @@ services:
       CKAN_SITE_URL: http://traefik
       GUNICORN_CMD_ARGS: "--workers 4 --worker-class sync --timeout 60"
 
+  lightpanda:
+    image: lightpanda/browser:nightly
+    profiles:
+      - test
+    ports:
+      - "9222:9222"
+
   test:
     profiles:
       - test
     build:
-      context: tests
-      dockerfile: Dockerfile
+      context: .
+      target: test
     depends_on:
       ckan-test:
         condition: service_healthy
+      lightpanda:
+        condition: service_started
     environment:
       COAT_URL: http://traefik
+      CDP_ENDPOINT: ws://lightpanda:9222
     volumes:
-      - ./tests/latest_logs:/app/latest_logs
-
-  test-api:
-    profiles:
-      - test
-    build:
-      context: tests
-      dockerfile: Dockerfile
-    depends_on:
-      ckan-test:
-        condition: service_healthy
-    environment:
-      COAT_URL: http://traefik
-    volumes:
-      - ./tests/test_api.py:/app/test_api.py:ro
+      - ./tests/latest_logs:/usr/lib/ckan/tests/latest_logs
       - tokens:/tokens:ro
-    command: ["test_api.py", "-v", "--headless"]
 
   pycsw:
     image: geopython/pycsw:3.0.0-beta2

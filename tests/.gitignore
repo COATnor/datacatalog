@@ -1,7 +1,0 @@
-# Python
-__pycache__
-
-# Seleniumbase
-archived_logs/
-latest_logs/
-geckodriver.log

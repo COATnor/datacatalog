@@ -38,6 +38,15 @@ ckanext-spatial = { git = "https://github.com/COATnor/ckanext-spatial.git", bran
 dev = [
     "flask-debugtoolbar>=0.14.1",
 ]
+test = [
+    "playwright>=1.40",
+    "pytest-xdist>=3.0",
+    "requests>=2.28",
+    "tenacity>=8.0",
+]
+
+[tool.pytest.ini_options]
+addopts = "-v --tb=short -n auto --dist loadgroup -p no:ckan -p no:ckan_fixtures"
 
 [tool.setuptools]
 packages = []
