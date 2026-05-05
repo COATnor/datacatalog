@@ -212,11 +212,13 @@ services:
       - ${DOCKER_SOCK:-/var/run/docker.sock}:/var/run/docker.sock:ro
 
   db:
-    image: registry.gitlab.com/nina-data/ckan/nina-ckan-2-9-7/postgresql
+    image: postgres:18
     environment:
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      POSTGRES_DB: ckan
+      POSTGRES_USER: ckan
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
-      - pg_data:/var/lib/postgresql/data
+      - pg_data:/var/lib/postgresql
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "ckan"]
 
