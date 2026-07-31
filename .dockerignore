@@ -4,3 +4,12 @@ build/
 .venv/
 dummy/*/uv.lock
 .python-version
+
+_build/
+__pycache__/
+.vscode
+.git
+prek.toml
+prek-extra.toml
+.venv
+.env
