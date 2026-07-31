@@ -1,0 +1,46 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = ["setuptools>=61.0"]
+
+[project]
+authors = [
+  {name = "Francesco Frassinelli", email = "francesco.frassinelli@nina.no"},
+  {name = "Matteo De Stefano", email = "matteo.destefano@nina.no"}
+]
+description = "COAT custom extensions for CKAN"
+license = "AGPL-3.0-or-later"
+name = "ckanext-coatcustom"
+readme = "README.rst"
+requires-python = ">=3.11"
+version = "0.1.0"
+
+[project.entry-points."babel.extractors"]
+ckan = "ckan.lib.extract:extract_ckan"
+
+[project.entry-points."ckan.plugins"]
+coatcustom = "ckanext.coatcustom.plugin:CoatcustomPlugin"
+
+[project.entry-points."ckan.rdf.profiles"]
+coat_dcat_profile = "ckanext.coatcustom.nina_dcat_profile:CoatDcatProfile"
+
+[tool.babel.compile_catalog]
+directory = "ckanext/coatcustom/i18n"
+domain = "ckanext-coatcustom"
+statistics = true
+
+[tool.babel.extract_messages]
+add_comments = "TRANSLATORS:"
+keywords = "translate isPlural"
+output_file = "ckanext/coatcustom/i18n/ckanext-coatcustom.pot"
+width = 80
+
+[tool.babel.init_catalog]
+domain = "ckanext-coatcustom"
+input_file = "ckanext/coatcustom/i18n/ckanext-coatcustom.pot"
+output_dir = "ckanext/coatcustom/i18n"
+
+[tool.babel.update_catalog]
+domain = "ckanext-coatcustom"
+input_file = "ckanext/coatcustom/i18n/ckanext-coatcustom.pot"
+output_dir = "ckanext/coatcustom/i18n"
+previous = true

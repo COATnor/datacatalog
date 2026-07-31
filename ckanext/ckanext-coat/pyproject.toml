@@ -1,0 +1,42 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = ["setuptools>=61.0"]
+
+[project]
+authors = [
+  {name = "Francesco Frassinelli", email = "francesco.frassinelli@nina.no"}
+]
+description = "COAT extensions for CKAN"
+license = "AGPL-3.0-or-later"
+name = "ckanext-coat"
+readme = "README.rst"
+requires-python = ">=3.11"
+version = "0.0.1"
+
+[project.entry-points."babel.extractors"]
+ckan = "ckan.lib.extract:extract_ckan"
+
+[project.entry-points."ckan.plugins"]
+coat = "ckanext.coat.plugin:CoatPlugin"
+
+[tool.babel.compile_catalog]
+directory = "ckanext/coat/i18n"
+domain = "ckanext-coat"
+statistics = true
+
+[tool.babel.extract_messages]
+add_comments = "TRANSLATORS:"
+keywords = "translate isPlural"
+output_file = "ckanext/coat/i18n/ckanext-coat.pot"
+width = 80
+
+[tool.babel.init_catalog]
+domain = "ckanext-coat"
+input_file = "ckanext/coat/i18n/ckanext-coat.pot"
+output_dir = "ckanext/coat/i18n"
+
+[tool.babel.update_catalog]
+domain = "ckanext-coat"
+input_file = "ckanext/coat/i18n/ckanext-coat.pot"
+output_dir = "ckanext/coat/i18n"
+previous = true
