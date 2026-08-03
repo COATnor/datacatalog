@@ -154,7 +154,7 @@ services:
       - tokens:/tokens:ro
 
   pycsw:
-    image: geopython/pycsw:3.0.0-beta2
+    image: geopython/pycsw:3.0.0-beta3
     environment:
       << : *pycsw-env
       PYCSW_CONFIG: /etc/pycsw.yml
@@ -169,7 +169,7 @@ services:
       - traefik.http.services.pycsw.loadbalancer.server.port=8000
     volumes:
       - pycsw_data:/home/pycsw
-      - ./services/pycsw/pycsw.yml:/etc/pycsw.yml:ro
+      - ./services/pycsw-server/pycsw.yml:/etc/pycsw.yml:ro
 
   coat2pycsw:
     build: services/pycsw

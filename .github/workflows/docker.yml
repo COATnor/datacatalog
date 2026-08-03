@@ -19,10 +19,16 @@ jobs:
         include:
           - context: .
             image_name: ckan
+            dockerfile: Dockerfile
           - context: services/pycsw
             image_name: coat2pycsw
+            dockerfile: services/pycsw/Dockerfile
+          - context: services/pycsw-server
+            image_name: pycsw
+            dockerfile: services/pycsw-server/Dockerfile
           - context: services/bulk-download
             image_name: coat-bulk-download
+            dockerfile: services/bulk-download/Dockerfile
 
     permissions:
       contents: read
@@ -30,7 +36,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
           submodules: true
@@ -49,9 +55,10 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.REPOSITORY }}/${{ matrix.image_name }}
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@ca052bb54ab0790a636c9b5f226502c73d547a25 # v5.4.0
         with:
           context: ${{ matrix.context }}
+          file: ${{ matrix.dockerfile }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
