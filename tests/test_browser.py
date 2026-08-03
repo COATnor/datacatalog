@@ -49,7 +49,9 @@ def test_feide_login(page):
     page.wait_for_selector("#username")
     page.fill("#username", "emma123elev")
     page.fill("#password", "098asd")
-    page.click("button[type='submit']")
+    # Press Enter instead of clicking the submit button — the button is below
+    # the fold and Lightpanda can't click elements outside the viewport
+    page.press("#password", "Enter")
 
     # Lightpanda doesn't update the page after form POST redirect chains
     # https://github.com/lightpanda-io/browser/issues/1890
