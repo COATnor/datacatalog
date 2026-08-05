@@ -40,7 +40,6 @@ This extension enables:
 * **Geographic search** - Find datasets by location and spatial extent
 * **Dataset citation** - Generate DOIs and Datacite metadata for published datasets
 * **Domain-specific discovery** - Search by location, scientific name, and topic category
-* **Metadata interoperability** - Export COAT-compliant DCAT metadata
 
 **Important:** This extension requires ``ckanext-coat`` and cannot be used independently.
 

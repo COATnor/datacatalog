@@ -17,7 +17,6 @@ This repository contains a complete, production-ready deployment of CKAN tailore
 - 🔐 **OAuth2 Authentication** - Federated authentication via Dataporten
 - 📦 **Bulk Download** - Download multiple resources as a single ZIP archive
 - 🌐 **CSW Support** - PyCSW integration for OGC Catalogue Service for the Web
-- 📊 **DCAT Metadata** - Export COAT-compliant DCAT metadata for interoperability
 
 ### Architecture
 

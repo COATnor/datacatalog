@@ -20,9 +20,6 @@ ckan = "ckan.lib.extract:extract_ckan"
 [project.entry-points."ckan.plugins"]
 coatcustom = "ckanext.coatcustom.plugin:CoatcustomPlugin"
 
-[project.entry-points."ckan.rdf.profiles"]
-coat_dcat_profile = "ckanext.coatcustom.nina_dcat_profile:CoatDcatProfile"
-
 [tool.babel.compile_catalog]
 directory = "ckanext/coatcustom/i18n"
 domain = "ckanext-coatcustom"

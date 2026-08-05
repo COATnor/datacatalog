@@ -44,7 +44,6 @@ extend_exclude = [
 known_first_party = ["ckanext", "dummy"]
 
 [tool.deptry.per_rule_ignores]
-DEP001 = ["rdflib"]
 DEP002 = ["ckan_dummy", "crudini", "gunicorn"]
 DEP003 = ["ckan", "flask", "pkg_resources"]
 DEP004 = ["requests"]
