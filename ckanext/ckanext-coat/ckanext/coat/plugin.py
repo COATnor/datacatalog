@@ -1,3 +1,4 @@
+import os
 import time
 
 import ckan.plugins as plugins
@@ -12,7 +13,8 @@ import ckanext.coat.logic.action.update
 import ckanext.coat.logic.validators as validators
 from ckanext.coat import blueprint, helpers
 
-CKAN_SCHEMA = "http://solr:8983/solr/ckan/schema"
+CKAN_SOLR_URL = os.getenv("CKAN_SOLR_URL", "http://localhost:8983/solr/ckan")
+CKAN_SCHEMA = CKAN_SOLR_URL + "/schema"
 
 
 class CoatPlugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm):

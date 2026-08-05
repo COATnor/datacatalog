@@ -1,4 +1,5 @@
 import json
+import os
 
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
@@ -15,7 +16,8 @@ from ckanext.coat.helpers import extras_dict
 from ckanext.coatcustom.views import scheming
 from ckanext.doi.interfaces import IDoi
 
-CKAN_SCHEMA = "http://solr:8983/solr/ckan/schema"
+CKAN_SOLR_URL = os.getenv("CKAN_SOLR_URL", "http://localhost:8983/solr/ckan")
+CKAN_SCHEMA = CKAN_SOLR_URL + "/schema"
 
 
 class CoatcustomPlugin(plugins.SingletonPlugin):
