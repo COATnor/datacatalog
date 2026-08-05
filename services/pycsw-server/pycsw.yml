@@ -36,6 +36,20 @@ metadata:
     country: Norway
     url: https://www.nina.no/english/Contact/Employees/Employee-info?AnsattID=15958
     role: pointOfContact
+  inspire:
+    enabled: false
+    languages_supported:
+      - eng
+    default_language: eng
+    date: "2026-08-04"
+    gemet_keywords:
+      - Utility and governmental services
+    conformity_service: notEvaluated
+    contact_name: COAT
+    contact_email: data@coat.no
+    temp_extent:
+      begin: 2000-01-01
+      end: 2026-12-31
 
 repository:
   database: ${DATABASE}
