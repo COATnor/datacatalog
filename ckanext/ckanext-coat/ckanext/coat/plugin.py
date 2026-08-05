@@ -12,7 +12,8 @@ import ckanext.coat.logic.action.update
 import ckanext.coat.logic.validators as validators
 from ckanext.coat import blueprint, helpers
 
-CKAN_SCHEMA = 'http://solr:8983/solr/ckan/schema'
+CKAN_SCHEMA = "http://solr:8983/solr/ckan/schema"
+
 
 class CoatPlugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm):
     plugins.implements(plugins.IConfigurer)
@@ -26,77 +27,74 @@ class CoatPlugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm):
     # IConfigurer
 
     def update_config(self, config_):
-        toolkit.add_template_directory(config_, 'templates')
-        toolkit.add_public_directory(config_, 'public')
-        toolkit.add_resource('fanstatic', 'coat')
+        toolkit.add_template_directory(config_, "templates")
+        toolkit.add_public_directory(config_, "public")
+        toolkit.add_resource("fanstatic", "coat")
         self._custom_schema()
 
     def _custom_schema(self):
         for attempt in range(10):
             try:
-                response = requests.get(CKAN_SCHEMA+'/copyfields', timeout=5)
+                response = requests.get(CKAN_SCHEMA + "/copyfields", timeout=5)
                 data = response.json()
-                if 'copyFields' not in data:
-                    raise ValueError(f"Solr core not ready (attempt {attempt+1}): {data}")
-                copyfields = data['copyFields']
+                if "copyFields" not in data:
+                    raise ValueError(f"Solr core not ready (attempt {attempt + 1}): {data}")
+                copyfields = data["copyFields"]
                 break
             except Exception:
                 if attempt == 9:
                     raise
                 time.sleep(3)
         if {"dest": "version_i", "source": "version"} in copyfields:
-           return
-        requests.post(CKAN_SCHEMA, json={
-            "add-field":{
-                "name": "version_i",
-                "type": "int",
-                "stored": True,
-            }
-        })
-        requests.post(CKAN_SCHEMA, json={
-            "add-copy-field":{
-                "source": "version",
-                "dest": ["version_i"],
-            }
-        })
+            return
+        requests.post(
+            CKAN_SCHEMA,
+            json={
+                "add-field": {
+                    "name": "version_i",
+                    "type": "int",
+                    "stored": True,
+                }
+            },
+            timeout=5,
+        )
+        requests.post(
+            CKAN_SCHEMA,
+            json={
+                "add-copy-field": {
+                    "source": "version",
+                    "dest": ["version_i"],
+                }
+            },
+            timeout=5,
+        )
 
     # IActions
 
     def get_actions(self):
         return {
-            'ckan_package_create':
-            ckanext.coat.logic.action.create.ckan_package_create,
-            'package_create':
-            ckanext.coat.logic.action.create.package_create,
-            'ckan_package_search':
-            ckanext.coat.logic.action.get.ckan_package_search,
-            'package_search':
-            ckanext.coat.logic.action.get.package_search,
-            'ckan_package_update':
-            ckanext.coat.logic.action.update.ckan_package_update,
-            'package_show':
-            ckanext.coat.logic.action.get.package_show,
-            'package_update':
-            ckanext.coat.logic.action.update.package_update,
-            'ckan_package_delete':
-            ckanext.coat.logic.action.delete.ckan_package_delete,
-            'package_delete':
-            ckanext.coat.logic.action.delete.package_delete,
-            'ckan_resource_show':
-            ckanext.coat.logic.action.get.ckan_resource_show,
-            'resource_show':
-            ckanext.coat.logic.action.get.resource_show,
+            "ckan_package_create": ckanext.coat.logic.action.create.ckan_package_create,
+            "package_create": ckanext.coat.logic.action.create.package_create,
+            "ckan_package_search": ckanext.coat.logic.action.get.ckan_package_search,
+            "package_search": ckanext.coat.logic.action.get.package_search,
+            "ckan_package_update": ckanext.coat.logic.action.update.ckan_package_update,
+            "package_show": ckanext.coat.logic.action.get.package_show,
+            "package_update": ckanext.coat.logic.action.update.package_update,
+            "ckan_package_delete": ckanext.coat.logic.action.delete.ckan_package_delete,
+            "package_delete": ckanext.coat.logic.action.delete.package_delete,
+            "ckan_resource_show": ckanext.coat.logic.action.get.ckan_resource_show,
+            "resource_show": ckanext.coat.logic.action.get.resource_show,
         }
 
     # IResourceController
 
     def before_resource_update(self, context, obj, *args, **kwargs):
-        resource = toolkit.get_action('resource_show')(context, obj)
-        helpers.is_protected(resource, action='update')
+        resource = toolkit.get_action("resource_show")(context, obj)
+        helpers.is_protected(resource, action="update")
 
     def before_resource_delete(self, context, obj, *args, **kwargs):
-        resource = toolkit.get_action('resource_show')(context, obj)
-        helpers.is_protected(resource, action='delete')
+        resource = toolkit.get_action("resource_show")(context, obj)
+        helpers.is_protected(resource, action="delete")
 
     # IBlueprint
 
@@ -107,46 +105,45 @@ class CoatPlugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm):
 
     def get_helpers(self):
         return {
-            'coat_is_under_embargo': helpers.is_under_embargo,
+            "coat_is_under_embargo": helpers.is_under_embargo,
         }
 
     # IDatasetForm
 
     def _custom_package_schema(self, schema):
-        validators = schema['resources']['name']
-        for validator in ('lowercase_extension', 'resource_name_conflict'):
+        validators = schema["resources"]["name"]
+        for validator in ("lowercase_extension", "resource_name_conflict"):
             validators.append(toolkit.get_validator(validator))
-        schema['resources']['name'] = validators
+        schema["resources"]["name"] = validators
         return schema
 
     def create_package_schema(self):
-        schema = super(CoatPlugin, self).create_package_schema()
-        schema['private'].append(toolkit.get_validator('private_on_creation'))
+        schema = super().create_package_schema()
+        schema["private"].append(toolkit.get_validator("private_on_creation"))
         return self._custom_package_schema(schema)
 
     def update_package_schema(self):
-        schema = super(CoatPlugin, self).update_package_schema()
+        schema = super().update_package_schema()
         return self._custom_package_schema(schema)
 
     def show_package_schema(self):
-        schema = super(CoatPlugin, self).show_package_schema()
+        schema = super().show_package_schema()
         return schema
 
     def is_fallback(self):
         return False
 
     def package_types(self):
-        if config.get('ckanext.coat.custom_form', "true").lower() == "false":
+        if config.get("ckanext.coat.custom_form", "true").lower() == "false":
             return []
         else:
-            return ['dataset']
-
+            return ["dataset"]
 
     # IValidators
 
     def get_validators(self):
         return {
-            'lowercase_extension': validators.lowercase_extension,
-            'resource_name_conflict': validators.resource_name_conflict,
-            'private_on_creation': validators.private_on_creation,
+            "lowercase_extension": validators.lowercase_extension,
+            "resource_name_conflict": validators.resource_name_conflict,
+            "private_on_creation": validators.private_on_creation,
         }

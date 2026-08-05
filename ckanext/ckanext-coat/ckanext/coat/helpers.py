@@ -8,60 +8,71 @@ from ckanext.coat import auth
 
 
 def is_resource(obj):
-    return 'package_id' in obj
+    return "package_id" in obj
+
 
 def extras_dict(package):
-    return {f['key']:f['value'] for f in package.get('extras', {})}
+    return {f["key"]: f["value"] for f in package.get("extras", {})}
+
 
 def new_context():
     context = {
-        'model': model,
-        'session': model.Session,
-        'user': g.user,
-        'for_view': True,
-        'auth_user_obj': g.userobj,
+        "model": model,
+        "session": model.Session,
+        "user": g.user,
+        "for_view": True,
+        "auth_user_obj": g.userobj,
     }
-    for attr in ('user', 'userobj'):
+    for attr in ("user", "userobj"):
         if hasattr(g, attr):
             context[attr] = getattr(g, attr)
     return context
+
 
 def get_package(obj, context=None):
     if not context:
         context = new_context()
     if is_resource(obj):
-        data_dict = {'id': obj['package_id']}
+        data_dict = {"id": obj["package_id"]}
     else:
-        for attr in ('id', 'name_or_id'):
+        for attr in ("id", "name_or_id"):
             if attr in obj:
                 data_dict = {attr: obj[attr]}
                 break
-    return toolkit.get_action('ckan_package_show')(context, data_dict)
+    return toolkit.get_action("ckan_package_show")(context, data_dict)
+
 
 def is_public(package):
-    return not package.get('private', False)
+    return not package.get("private", False)
 
-def is_protected(obj, action='update'):
+
+def is_protected(obj, action="update"):
     if is_resource(obj):
-        if action == 'update':
-            return # WORKAROUND FOR BULK UPLOAD
-            raise toolkit.NotAuthorized('Cannot modify a resource: you have to delete it first')
+        if action == "update":
+            return  # WORKAROUND FOR BULK UPLOAD
+            raise toolkit.NotAuthorized("Cannot modify a resource: you have to delete it first")
         package = get_package(obj)
     else:
         package = obj
     if is_public(package):
         if g.userobj and g.userobj.sysadmin:
             return  # sysadmins may modify public datasets
-        raise toolkit.NotAuthorized('Public datasets cannot be modified: make it private if you really need to amend some information')
+        raise toolkit.NotAuthorized(
+            "Public datasets cannot be modified: make it private if you "
+            "really need to amend some information"
+        )
+
 
 def next_version(obj):
-    version = obj.get('version', '1')
+    version = obj.get("version", "1")
     if version.isdigit():
-        version = str(int(version)+1)
+        version = str(int(version) + 1)
     return version
 
+
 def get_resource_path(res):
-    return uploader.get_resource_uploader(res).get_path(res['id'])
+    return uploader.get_resource_uploader(res).get_path(res["id"])
+
 
 def is_under_embargo(package):
     context = new_context()
@@ -70,4 +81,3 @@ def is_under_embargo(package):
     except logic.NotAuthorized:
         return True
     return False
-

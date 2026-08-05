@@ -1,7 +1,7 @@
-from flask import Blueprint, jsonify
 import ckan.plugins.toolkit as toolkit
+from flask import Blueprint, jsonify
+
 from . import helpers
-import re
 
 scheming = Blueprint("scheming", __name__)
 
@@ -11,17 +11,17 @@ special_characters = '+ - && || ! ( ) { } [ ] ^ " ~ * ? : /'.split()
 
 def escape(text):
     for character in special_characters:
-        text = text.replace(character, '\\'+character)
+        text = text.replace(character, "\\" + character)
     return text
 
 
-@scheming.route('/scheming/api/util/<field>/autocomplete')
+@scheming.route("/scheming/api/util/<field>/autocomplete")
 def autocomplete(field):
     tags = []
-    value = toolkit.request.params.get('incomplete')
+    value = toolkit.request.params.get("incomplete")
     value = escape(value)
     if field == "dataset":
-        dataset_type = toolkit.request.params.get('dataset_type')
+        dataset_type = toolkit.request.params.get("dataset_type")
         context = {
             "user": toolkit.g.user,
             "userobj": toolkit.g.userobj,
@@ -32,9 +32,9 @@ def autocomplete(field):
         }
         if dataset_type:
             query["q"] += f" AND dataset_type:{dataset_type}"
-        found = toolkit.get_action('package_search')(context,  query)
-        for dataset in found['results']:
-            tags.append(dataset['name'])
+        found = toolkit.get_action("package_search")(context, query)
+        for dataset in found["results"]:
+            tags.append(dataset["name"])
     elif field == "associated_parties":
         tags = helpers.scheming_publisher_tags(field)
     elif field == "location":
@@ -48,5 +48,5 @@ def autocomplete(field):
     results = []
     for tag in tags:
         if value.lower() in tag.lower():
-            results.append({'Name': tag})
+            results.append({"Name": tag})
     return jsonify({"ResultSet": {"Result": results}})

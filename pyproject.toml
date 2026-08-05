@@ -1,19 +1,30 @@
+[dependency-groups]
+dev = [
+  "flask-debugtoolbar>=0.14.1",
+  "deptry"
+]
+test = [
+  "playwright>=1.40",
+  "pytest-xdist>=3.0",
+  "requests>=2.28",
+  "tenacity>=8.0"
+]
 
 [project]
 authors = [
   {name = "Francesco Frassinelli", email = "francesco.frassinelli@nina.no"}
 ]
 dependencies = [
-    "ckan_dummy",
-    "ckanext-coat",
-    "ckanext-coatcustom",
-    "ckanext-datasetversions",
-    "ckanext-doi",
-    "ckanext-oauth2",
-    "ckanext-scheming",
-    "ckanext-spatial",
-    "crudini>=0.9.6",
-    "gunicorn>=23.0.0",
+  "ckan_dummy",
+  "ckanext-coat",
+  "ckanext-coatcustom",
+  "ckanext-datasetversions",
+  "ckanext-doi",
+  "ckanext-oauth2",
+  "ckanext-scheming",
+  "ckanext-spatial",
+  "crudini>=0.9.6",
+  "gunicorn>=23.0.0"
 ]
 description = "CKAN-based data catalog for natural heritage data"
 license = "GPL-3.0+"
@@ -22,37 +33,24 @@ readme = "README.md"
 requires-python = ">=3.11"
 version = "0.1.0"
 
-[tool.uv]
-[tool.uv.workspace]
-members = ["dummy/ckan"]
-
-[tool.uv.sources]
-ckan_dummy = { workspace = true }
-ckanext-coat = { path = "./ckanext/ckanext-coat", editable = true }
-ckanext-coatcustom = { path = "./ckanext/ckanext-coatcustom", editable = true }
-ckanext-datasetversions = { path = "./ckanext/ckanext-datasetversions", editable = true }
-ckanext-doi = { git = "https://github.com/NaturalHistoryMuseum/ckanext-doi.git", tag = "v4.0.4" }
-ckanext-oauth2 = { path = "./ckanext/ckanext-oauth2", editable = true }
-ckanext-scheming = { git = "https://github.com/COATnor/ckanext-scheming.git", branch = "skip-validation-if-parent" }
-ckanext-spatial = { git = "https://github.com/COATnor/ckanext-spatial.git", branch = "coat" }
-
-[dependency-groups]
-dev = [
-    "flask-debugtoolbar>=0.14.1",
-    "deptry",
+[tool.deptry]
+extend_exclude = [
+  "ckanext/ckanext-datasetversions",
+  "ckanext/ckanext-oauth2",
+  "services",
+  "utils",
+  "dummy"
 ]
-test = [
-    "playwright>=1.40",
-    "pytest-xdist>=3.0",
-    "requests>=2.28",
-    "tenacity>=8.0",
-]
+known_first_party = ["ckanext", "dummy"]
+
+[tool.deptry.per_rule_ignores]
+DEP001 = ["rdflib"]
+DEP002 = ["ckan_dummy", "crudini", "gunicorn"]
+DEP003 = ["ckan", "flask", "pkg_resources"]
+DEP004 = ["requests"]
 
 [tool.pytest.ini_options]
 addopts = "-v --tb=short -n auto --dist loadgroup -p no:ckan -p no:ckan_fixtures"
-
-[tool.deptry]
-known_first_party = ["ckanext", "dummy"]
 
 [tool.ruff]
 fix = true
@@ -62,5 +60,23 @@ line-length = 100
 ignore = ["COM812"]
 select = ["E", "W", "I", "F", "UP", "S", "B", "A", "COM", "LOG", "PTH", "Q"]
 
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "S105"]
+
 [tool.setuptools]
 packages = []
+
+[tool.uv]
+
+[tool.uv.sources]
+ckan_dummy = {workspace = true}
+ckanext-coat = {path = "./ckanext/ckanext-coat", editable = true}
+ckanext-coatcustom = {path = "./ckanext/ckanext-coatcustom", editable = true}
+ckanext-datasetversions = {path = "./ckanext/ckanext-datasetversions", editable = true}
+ckanext-doi = {git = "https://github.com/NaturalHistoryMuseum/ckanext-doi.git", tag = "v4.0.4"}
+ckanext-oauth2 = {path = "./ckanext/ckanext-oauth2", editable = true}
+ckanext-scheming = {git = "https://github.com/COATnor/ckanext-scheming.git", branch = "skip-validation-if-parent"}
+ckanext-spatial = {git = "https://github.com/COATnor/ckanext-spatial.git", branch = "coat"}
+
+[tool.uv.workspace]
+members = ["dummy/ckan"]

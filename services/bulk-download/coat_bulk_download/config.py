@@ -1,6 +1,7 @@
-from fastapi.templating import Jinja2Templates
 import os
 import pathlib
+
+from fastapi.templating import Jinja2Templates
 
 TEMPLATES = Jinja2Templates(directory="coat_bulk_download/templates")
 

@@ -8,19 +8,17 @@ import fastapi
 import httpx
 import stream_zip
 
-from .config import COAT_URL, COAT_PUBLIC_URL, LOGGING, GEOJSON_PATH
-
+from .config import COAT_PUBLIC_URL, COAT_URL, GEOJSON_PATH, LOGGING
 
 app = fastapi.FastAPI()
 
 logging.basicConfig(level=LOGGING)
+logger = logging.getLogger(__name__)
 
 
 def external_to_internal(external_url):
     if not external_url.startswith(COAT_PUBLIC_URL):
-        logging.error(
-            f"{external_url} does not start with the URL of the project {COAT_PUBLIC_URL}"
-        )
+        logger.error(f"{external_url} does not start with the URL of the project {COAT_PUBLIC_URL}")
         return external_url
     elif COAT_URL == COAT_PUBLIC_URL:
         return external_url
@@ -29,9 +27,7 @@ def external_to_internal(external_url):
         # replace scheme and netloc
         external_splitted[0:2] = list(urllib.parse.urlsplit(COAT_URL))[0:2]
         # rewrite path
-        external_splitted[2] = external_splitted[2].replace(
-            COAT_PUBLIC_URL, COAT_URL, 1
-        )
+        external_splitted[2] = external_splitted[2].replace(COAT_PUBLIC_URL, COAT_URL, 1)
         return urllib.parse.urlunsplit(external_splitted)
 
 
@@ -57,7 +53,7 @@ async def download_zip(request: fastapi.Request, dataset_id):
 
 
 def read_geojson(dataset_id):
-    with open(str(GEOJSON_PATH / dataset_id), mode="rb") as geojson:
+    with (GEOJSON_PATH / dataset_id).open(mode="rb") as geojson:
         yield from geojson
 
 
@@ -66,12 +62,8 @@ async def download_geojson(request: fastapi.Request, dataset_id):
     try:
         return fastapi.responses.StreamingResponse(
             read_geojson(dataset_id),
-            media_type='application/json',
+            media_type="application/json",
             headers={"Content-Disposition": f'attachment; filename="{dataset_id}.json"'},
         )
-    except:
-        return {
-            "type": "FeatureCollection",
-            "features": [],
-            "name": dataset_id
-        }
+    except Exception:
+        return {"type": "FeatureCollection", "features": [], "name": dataset_id}

@@ -8,4 +8,3 @@ Two containers share a SQLite database via a named volume:
 
 - pycsw; official `geopython/pycsw` image serving the catalogue
 - coat2pycsw: index CKAN datasets into pycsw
-

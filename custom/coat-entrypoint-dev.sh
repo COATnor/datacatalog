@@ -22,7 +22,7 @@ fi
 if [ -d /tokens ]
 then
     ckan user add coat_test_admin email=coat_test_admin@coat.no \
-        password="TestPassword123!" fullname="COAT Test Admin" 2>/dev/null || true
+        password="TestPassword123!" fullname="COAT Test Admin" 2>/dev/null || true  # pragma: allowlist secret
     ckan sysadmin add coat_test_admin 2>/dev/null || true
     TOKEN=$(ckan user token add coat_test_admin integration_test 2>&1 \
         | grep -oE 'eyJ[A-Za-z0-9_.-]+' || true)

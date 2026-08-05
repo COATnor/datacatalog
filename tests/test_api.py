@@ -13,6 +13,7 @@ import uuid
 import zipfile
 from datetime import datetime, timedelta
 from io import BytesIO
+from pathlib import Path
 
 import pytest
 import requests
@@ -23,7 +24,7 @@ _RUN_ID = uuid.uuid4().hex[:8]
 
 TEST_USER_NAME = f"test_apiuser_{_RUN_ID}"
 TEST_USER_EMAIL = f"apiuser_{_RUN_ID}@test.coat.no"
-TEST_USER_PASSWORD = "TestPassword123!"
+TEST_USER_PASSWORD = "TestPassword123!"  # pragma: allowlist secret
 TEST_USER_FULLNAME = "Test API User"
 
 # Required COAT schema fields for every dataset
@@ -158,7 +159,7 @@ def _wait_for_ckan():
 def _read_file(path):
     """Return stripped file content, or None if the file is missing/empty."""
     try:
-        content = open(path).read().strip()
+        content = Path(path).read_text().strip()
         return content or None
     except OSError:
         return None
@@ -309,10 +310,7 @@ class TestPackageLifecycle:
 class TestDraftBehavior:
     def test_draft_forced_private(self, client, org):
         pkg = client.create_package(org["id"], author=TEST_USER_NAME, state="draft")
-        assert (
-            client.update_package(pkg["id"], private=False, state="draft")["private"]
-            is True
-        )
+        assert client.update_package(pkg["id"], private=False, state="draft")["private"] is True
 
 
 # ---------------------------------------------------------------------------
@@ -408,9 +406,7 @@ class TestSearch:
     def test_search_returns_results(self, client, org):
         tag = uid()
         client.publish(
-            client.create_package(
-                org["id"], author=TEST_USER_NAME, title=f"Searchable {tag}"
-            )["id"]
+            client.create_package(org["id"], author=TEST_USER_NAME, title=f"Searchable {tag}")["id"]
         )
         assert client.action("package_search", q=tag)["count"] >= 1
 
@@ -535,9 +531,7 @@ class TestStateVariableScientificName:
     def test_scientific_name_merged_on_create(self, client, org):
         """scientific_name is auto-merged from the linked dataset on SV creation."""
         species = "Lemmus lemmus"
-        pkg = client.create_package(
-            org["id"], author=TEST_USER_NAME, scientific_name=species
-        )
+        pkg = client.create_package(org["id"], author=TEST_USER_NAME, scientific_name=species)
         sv = client.create_sv(org["id"], pkg["name"])
         assert species in sv.get("scientific_name", ""), (
             f"Expected {species!r} in scientific_name, got: {sv.get('scientific_name')!r}"
@@ -550,10 +544,7 @@ class TestStateVariableScientificName:
         )
         sv = client.create_sv(org["id"], pkg["name"])
         updated = client.update_package(sv["id"], scientific_name="Lemmus lemmus")
-        assert (
-            client.action("package_show", id=updated["id"])["scientific_name"]
-            == "Lemmus lemmus"
-        )
+        assert client.action("package_show", id=updated["id"])["scientific_name"] == "Lemmus lemmus"
 
 
 # ---------------------------------------------------------------------------
@@ -572,7 +563,7 @@ class TestBulkDownload:
             url=f"{BASE}/api/3/action/status_show",
         )
         client.publish(pkg["id"])
-        resp = requests.get(f"{BASE}/dataset/{pkg['name']}/zip")
+        resp = requests.get(f"{BASE}/dataset/{pkg['name']}/zip", timeout=10)
         assert resp.status_code == 200, f"Expected 200, got {resp.status_code}"
         assert resp.headers["content-type"] == "application/zip"
         zf = zipfile.ZipFile(BytesIO(resp.content))

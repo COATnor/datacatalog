@@ -1,9 +1,9 @@
 [project]
-name = "report"
-version = "0.1.0"
+dependencies = [
+  "requests>=2.32.3"
+]
 description = "Add your description here"
+name = "report"
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = [
-    "requests>=2.32.3",
-]
+version = "0.1.0"

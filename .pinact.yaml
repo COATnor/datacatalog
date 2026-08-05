@@ -4,6 +4,8 @@ version: 3
 files:
   - pattern: .github/workflows/*.yml
   - pattern: "*/.github/workflows/*.yml"
+  - pattern: .github/workflows/*.yaml
+  - pattern: "*/.github/workflows/*.yaml"
 
 ignore_actions:
 # - name: slsa-framework/slsa-github-generator/\.github/workflows/generator_generic_slsa3\.yml

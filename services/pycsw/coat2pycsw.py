@@ -4,6 +4,7 @@ import json
 import logging
 import os
 import time
+from pathlib import Path
 from urllib.parse import urljoin
 
 import pycsw.core.admin
@@ -29,12 +30,12 @@ INTERVAL = int(os.getenv("INTERVAL", 86400))
 
 def get_datasets(url):
     package_search = urljoin(url, "api/3/action/package_search")
-    res = requests.get(package_search, params={"rows": 0})
+    res = requests.get(package_search, params={"rows": 0}, timeout=10)
     end = res.json()["result"]["count"]
     log.info("Found %d packages in COAT catalog", end)
     rows = 10
     for start in range(0, end, rows):
-        res = requests.get(package_search, params={"start": start, "rows": rows})
+        res = requests.get(package_search, params={"start": start, "rows": rows}, timeout=10)
         for dataset in res.json()["result"]["results"]:
             if dataset["type"] == "dataset":
                 yield dataset
@@ -49,7 +50,7 @@ def get_bbox(dataset):
     return shape(json.loads(extra["value"])).bounds
 
 
-with open("mappings/topics.yaml") as _f:
+with Path("mappings/topics.yaml").open() as _f:
     coat2iso19115_topiccategory_mapping = yaml.safe_load(_f)
 
 
@@ -108,9 +109,7 @@ def main():
                         }
                     }
                 },
-                "topiccategory": [
-                    coat2iso19115_topiccategory(dataset["topic_category"])
-                ],
+                "topiccategory": [coat2iso19115_topiccategory(dataset["topic_category"])],
                 "extents": {
                     "spatial": [{"bbox": get_bbox(dataset), "crs": 4326}],
                     "temporal": [
