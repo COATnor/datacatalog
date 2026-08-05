@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/COATnor/datacatalog/actions/workflows/docker.yml/badge.svg)](https://github.com/COATnor/datacatalog/actions/workflows/docker.yml)
 
-A customized [CKAN](https://ckan.org/) data catalog for the **Climate-ecological Observatory for Arctic Tundra (COAT)** project, developed by [NINA](https://www.nina.no/) (Norwegian Institute for Nature Research).
+A customized [CKAN](https://ckan.org/) data catalog for the **Climate-ecological Observatory for Arctic Tundra (COAT)** project, developed by [NINA](https://www.nina.no/) (Norwegian Institute for Nature Research). The production instance is live at [data.coat.no](https://data.coat.no).
 
 ## Overview
 
