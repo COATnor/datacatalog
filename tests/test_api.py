@@ -577,3 +577,45 @@ class TestBulkDownload:
         assert resp.headers["content-type"] == "application/zip"
         zf = zipfile.ZipFile(BytesIO(resp.content))
         assert zf.namelist()
+
+
+class TestPycsw:
+    """Smoke tests for the pycsw CSW endpoint."""
+
+    PYCSW_URL = os.environ.get("PYCSW_URL", f"{BASE}/pycsw/csw")
+
+    def test_get_capabilities(self):
+        """CSW GetCapabilities returns an OWS service description."""
+        resp = requests.get(
+            self.PYCSW_URL,
+            params={
+                "service": "CSW",
+                "request": "GetCapabilities",
+                "version": "2.0.2",
+            },
+            timeout=10,
+        )
+        assert resp.status_code == 200, f"Expected 200, got {resp.status_code}"
+        assert resp.headers["content-type"].startswith("application/xml")
+        assert b"GetCapabilities" in resp.content
+        assert b"GetRecords" in resp.content
+        assert b"ServiceIdentification" in resp.content
+
+    def test_get_records_returns_xml(self):
+        """CSW GetRecords returns a valid csw:GetRecordsResponse."""
+        resp = requests.get(
+            self.PYCSW_URL,
+            params={
+                "service": "CSW",
+                "request": "GetRecords",
+                "version": "2.0.2",
+                "typeNames": "csw:Record",
+                "resultType": "results",
+                "elementsetname": "full",
+                "maxRecords": "10",
+            },
+            timeout=10,
+        )
+        assert resp.status_code == 200, f"Expected 200, got {resp.status_code}"
+        assert resp.headers["content-type"].startswith("application/xml")
+        assert b"GetRecordsResponse" in resp.content
