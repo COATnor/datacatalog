@@ -93,4 +93,17 @@ conf_set ckanext.coat.custom_form false
 
 ckan db upgrade
 
+while ! wget -qO /dev/null "${CKAN_SOLR_URL}/admin/ping"; do
+  sleep 2
+done
+
+MARKER="${CKAN_STORAGE_PATH}/.schema-checksum"
+SCHEMA_HASH=$(wget -qO- "${CKAN_SOLR_URL}/schema?omitHeader=true" | md5sum | cut -d' ' -f1)
+
+if [ ! -f "$MARKER" ] || [ "$(cat "$MARKER")" != "$SCHEMA_HASH" ]; then
+  echo "Solr schema changed; rebuilding search index"
+  ckan search-index rebuild
+  echo "$SCHEMA_HASH" > "$MARKER"
+fi
+
 exec "$@"
