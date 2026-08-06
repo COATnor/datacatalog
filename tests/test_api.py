@@ -397,6 +397,21 @@ class TestVersioning:
         assert extras(after).get("base_name") == before
 
 
+class TestVersionCollapse:
+    """Search collapses to the latest version via the version_i Solr field."""
+
+    def test_search_returns_latest_version_only(self, client, org):
+        tag = uid()
+        title = f"Collapse Test {tag}"
+        v1 = client.create_package(org["id"], author=TEST_USER_NAME, title=title, version="1")
+        v2 = client.create_package(org["id"], author=TEST_USER_NAME, title=title, version="2")
+        client.publish(v1["id"])
+        client.publish(v2["id"])
+        result = client.action("package_search", q=f'"{tag}"')
+        ids = {r["id"] for r in result["results"]}
+        assert ids == {v2["id"]}
+
+
 # ---------------------------------------------------------------------------
 # Search
 # ---------------------------------------------------------------------------
@@ -438,6 +453,29 @@ class TestSpatialSearch:
         result = client.action("package_search", extras={"ext_bbox": "-20,-30,20,30"})
         ids = {r["id"] for r in result["results"]}
         assert pkg["id"] not in ids
+
+
+class TestSearchFacets:
+    """Faceting on the tokenized locations/scientific_names Solr fields."""
+
+    def test_locations_and_scientific_names_facets(self, client, org):
+        tag = uid()
+        pkg = client.create_package(
+            org["id"],
+            author=TEST_USER_NAME,
+            title=f"Facet Test {tag}",
+            location="Svalbard",
+            scientific_name="Lemmus lemmus",
+        )
+        client.publish(pkg["id"])
+        result = client.action(
+            "package_search",
+            q=tag,
+            **{"facet.field": ["locations", "scientific_names"]},
+        )
+        facets = result["facets"]
+        assert "Svalbard" in facets["locations"]
+        assert "Lemmus lemmus" in facets["scientific_names"]
 
 
 # ---------------------------------------------------------------------------
