@@ -1,9 +1,5 @@
-import os
-import time
-
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
-import requests
 from ckan.common import config
 
 import ckanext.coat.logic.action.create
@@ -12,9 +8,6 @@ import ckanext.coat.logic.action.get
 import ckanext.coat.logic.action.update
 import ckanext.coat.logic.validators as validators
 from ckanext.coat import blueprint, helpers
-
-CKAN_SOLR_URL = os.getenv("CKAN_SOLR_URL", "http://localhost:8983/solr/ckan")
-CKAN_SCHEMA = CKAN_SOLR_URL + "/schema"
 
 
 class CoatPlugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm):
@@ -32,44 +25,6 @@ class CoatPlugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm):
         toolkit.add_template_directory(config_, "templates")
         toolkit.add_public_directory(config_, "public")
         toolkit.add_resource("fanstatic", "coat")
-        self._custom_schema()
-
-    def _custom_schema(self):
-        for attempt in range(10):
-            try:
-                response = requests.get(CKAN_SCHEMA + "/copyfields", timeout=5)
-                data = response.json()
-                if "copyFields" not in data:
-                    raise ValueError(f"Solr core not ready (attempt {attempt + 1}): {data}")
-                copyfields = data["copyFields"]
-                break
-            except Exception:
-                if attempt == 9:
-                    raise
-                time.sleep(3)
-        if {"dest": "version_i", "source": "version"} in copyfields:
-            return
-        requests.post(
-            CKAN_SCHEMA,
-            json={
-                "add-field": {
-                    "name": "version_i",
-                    "type": "int",
-                    "stored": True,
-                }
-            },
-            timeout=5,
-        )
-        requests.post(
-            CKAN_SCHEMA,
-            json={
-                "add-copy-field": {
-                    "source": "version",
-                    "dest": ["version_i"],
-                }
-            },
-            timeout=5,
-        )
 
     # IActions
 

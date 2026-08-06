@@ -1,9 +1,7 @@
 import json
-import os
 
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
-import requests
 from ckan.common import config
 
 import ckanext.coat.logic.action.create
@@ -15,9 +13,6 @@ import ckanext.coatcustom.validators as validators
 from ckanext.coat.helpers import extras_dict
 from ckanext.coatcustom.views import scheming
 from ckanext.doi.interfaces import IDoi
-
-CKAN_SOLR_URL = os.getenv("CKAN_SOLR_URL", "http://localhost:8983/solr/ckan")
-CKAN_SCHEMA = CKAN_SOLR_URL + "/schema"
 
 
 class CoatcustomPlugin(plugins.SingletonPlugin):
@@ -40,49 +35,6 @@ class CoatcustomPlugin(plugins.SingletonPlugin):
         toolkit.add_template_directory(config_, "templates")
         toolkit.add_public_directory(config_, "public")
         toolkit.add_resource("assets", "coatcustom")
-        self._custom_schema()
-
-    def _custom_schema(self):
-        # multivalued
-        requests.post(
-            CKAN_SCHEMA,
-            json={
-                "add-field-type": {
-                    "name": "TextWithCommaTokenizer",
-                    "class": "solr.TextField",
-                    "analyzer": {
-                        "tokenizer": {"class": "solr.PatternTokenizerFactory", "pattern": ","}
-                    },
-                }
-            },
-            timeout=5,
-        )
-        response = requests.get(CKAN_SCHEMA + "/copyfields", timeout=5)
-        copyfields = response.json()["copyFields"]
-        for name in "location scientific_name".split():
-            if {"dest": name + "s", "source": name} in copyfields:
-                continue
-            requests.post(
-                CKAN_SCHEMA,
-                json={
-                    "add-field": {
-                        "name": name + "s",
-                        "type": "TextWithCommaTokenizer",
-                        "stored": True,
-                    }
-                },
-                timeout=5,
-            )
-            requests.post(
-                CKAN_SCHEMA,
-                json={
-                    "add-copy-field": {
-                        "source": name,
-                        "dest": [name + "s"],
-                    }
-                },
-                timeout=5,
-            )
 
     # IPackageController
 

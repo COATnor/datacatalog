@@ -224,7 +224,8 @@ services:
     command: ["chown", "-R", "8983:8983", "/var/solr/data"]
 
   solr:
-    image: ckan/ckan-solr:2.11-solr9-spatial
+    build: services/solr
+    image: ghcr.io/coatnor/datacatalog/solr:main
     depends_on:
       solr-init:
         condition: service_completed_successfully

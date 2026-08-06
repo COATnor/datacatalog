@@ -419,7 +419,6 @@ dependencies = [
     { name = "ckanext-spatial" },
     { name = "crudini" },
     { name = "gunicorn" },
-    { name = "requests" },
 ]
 
 [package.dev-dependencies]
@@ -446,7 +445,6 @@ requires-dist = [
     { name = "ckanext-spatial", git = "https://github.com/COATnor/ckanext-spatial.git?branch=coat" },
     { name = "crudini", specifier = ">=0.9.6" },
     { name = "gunicorn", specifier = ">=23.0.0" },
-    { name = "requests", specifier = ">=2.28" },
 ]
 
 [package.metadata.requires-dev]

@@ -29,6 +29,9 @@ jobs:
           - context: services/bulk-download
             image_name: coat-bulk-download
             dockerfile: services/bulk-download/Dockerfile
+          - context: services/solr
+            image_name: solr
+            dockerfile: services/solr/Dockerfile
 
     permissions:
       contents: read
