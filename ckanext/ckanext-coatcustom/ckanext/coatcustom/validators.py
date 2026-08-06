@@ -31,13 +31,11 @@ def commalist_to_json(value):
             return value
 
 
-def select_parent_locations(selected_values, sep=" - "):
+def select_parent_locations(selected_values, *, sep=" - "):
     if not selected_values:
         return []
     if isinstance(selected_values, str):
         selected_values = selected_values.split(",")
-    elif isinstance(selected_values, list):
-        selected_values = [selected_values]
     generated = set()
     for selected_value in selected_values:
         while sep in selected_value:
