@@ -411,6 +411,35 @@ class TestSearch:
         assert client.action("package_search", q=tag)["count"] >= 1
 
 
+class TestSpatialSearch:
+    """Bounding-box spatial search via the ckanext-spatial solr-bbox backend."""
+
+    # Polygon covering lon 10..35, lat 74..81 (Svalbard)
+    SVALBARD_POLYGON = (
+        '{"type": "Polygon", "coordinates": [[[10, 74], [35, 74], [35, 81], [10, 81], [10, 74]]]}'
+    )
+
+    def _create_spatial_dataset(self, client, org):
+        pkg = client.create_package(
+            org["id"],
+            author=TEST_USER_NAME,
+            extras=[{"key": "spatial", "value": self.SVALBARD_POLYGON}],
+        )
+        return client.publish(pkg["id"])
+
+    def test_bbox_search_returns_contained_dataset(self, client, org):
+        pkg = self._create_spatial_dataset(client, org)
+        result = client.action("package_search", extras={"ext_bbox": "0,70,40,85"})
+        ids = {r["id"] for r in result["results"]}
+        assert pkg["id"] in ids
+
+    def test_bbox_search_excludes_distant_dataset(self, client, org):
+        pkg = self._create_spatial_dataset(client, org)
+        result = client.action("package_search", extras={"ext_bbox": "-20,-30,20,30"})
+        ids = {r["id"] for r in result["results"]}
+        assert pkg["id"] not in ids
+
+
 # ---------------------------------------------------------------------------
 # Anonymous access
 # ---------------------------------------------------------------------------
