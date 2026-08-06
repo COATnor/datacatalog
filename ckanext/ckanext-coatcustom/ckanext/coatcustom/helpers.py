@@ -3,6 +3,7 @@ from pathlib import Path
 
 import ckan.logic as logic
 import ckan.model as model
+import yaml
 
 from ckanext.scheming.helpers import scheming_get_dataset_schema
 
@@ -179,8 +180,8 @@ def get_site_statistics():
     return stats
 
 
-with (file_dir / "publishers.json").open() as publishers_file:
-    publishers = json.load(publishers_file)
+with (file_dir / "publishers.yml").open() as publishers_file:
+    publishers = yaml.safe_load(publishers_file)
 
 
 def scheming_publisher_choices(field):
@@ -197,8 +198,8 @@ def scheming_publisher_choices_required(field):
     yield from scheming_publisher_choices(field)
 
 
-with (file_dir / "tags.json").open() as tags_file:
-    tags = json.load(tags_file)
+with (file_dir / "tags.yml").open() as tags_file:
+    tags = yaml.safe_load(tags_file)
 
 
 def scheming_coat_tags(field=None):
@@ -206,8 +207,8 @@ def scheming_coat_tags(field=None):
         yield tag["value"]
 
 
-with (file_dir / "locations.json").open() as locations_file:
-    locations = json.load(locations_file)
+with (file_dir / "locations.yml").open() as locations_file:
+    locations = yaml.safe_load(locations_file)
 
 
 def scheming_locations_choices(field):
@@ -219,8 +220,8 @@ def scheming_locations_tags(field=None):
         yield location["label"]
 
 
-with (file_dir / "categories.json").open() as categories_file:
-    categories = json.load(categories_file)
+with (file_dir / "categories.yml").open() as categories_file:
+    categories = yaml.safe_load(categories_file)
 
 
 def scheming_topic_category_choices(field):
@@ -235,9 +236,9 @@ def scheming_topic_category_choices_required(field):
     return choices
 
 
-with (file_dir / "names.json").open() as names_file:
+with (file_dir / "names.yml").open() as names_file:
     names = []
-    for name in json.load(names_file):
+    for name in yaml.safe_load(names_file):
         names.append({"label": name, "value": name.split(" - ")[-1].split("(")[0]})
 
 

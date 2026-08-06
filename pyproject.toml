@@ -45,7 +45,7 @@ known_first_party = ["ckanext", "dummy"]
 
 [tool.deptry.per_rule_ignores]
 DEP002 = ["ckan_dummy", "crudini", "gunicorn"]
-DEP003 = ["ckan", "flask", "pkg_resources"]
+DEP003 = ["ckan", "flask", "pkg_resources", "yaml"]
 
 [tool.pytest.ini_options]
 addopts = "-v --tb=short -n auto --dist loadgroup -p no:ckan -p no:ckan_fixtures"

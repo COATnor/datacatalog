@@ -15,5 +15,5 @@ mv "$(basename "$SPECIES_PATH")" species.xlsx
 mv "$(basename "$LOCALITIES_PATH")" localities.xlsx
 
 duckdb -f generate.sql
-jq  --indent 4 '[.[].full_name]' taxonomy.json > "$PRESETS_PATH/names.json"
-jq  --indent 4 . localities.json > "$PRESETS_PATH/locations.json"
+yq -y '[.[].full_name]' taxonomy.json > "$PRESETS_PATH/names.yml"
+yq -y . localities.json > "$PRESETS_PATH/locations.yml"

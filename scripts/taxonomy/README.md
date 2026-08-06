@@ -4,6 +4,7 @@ Requirements:
 - rclone
 - duckdb
 - jq
+- yq
 
 A remote named must be configured in rclone: type "box", type enterprise, and authenticate via web browser.
 
