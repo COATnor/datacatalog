@@ -43,18 +43,6 @@ class CoatcustomPlugin(plugins.SingletonPlugin):
         self._custom_schema()
 
     def _custom_schema(self):
-        # spatial
-        response = requests.get(CKAN_SCHEMA + "/fields", timeout=5)
-        fields = response.json()["fields"]
-        for name in "bbox_area maxx maxy minx miny".split():
-            new_field = {
-                "name": name,
-                "type": "float",
-                "indexed": "true",
-                "stored": "true",
-            }
-            if new_field not in fields:
-                requests.post(CKAN_SCHEMA, json={"add-field": new_field}, timeout=5)
         # multivalued
         requests.post(
             CKAN_SCHEMA,
