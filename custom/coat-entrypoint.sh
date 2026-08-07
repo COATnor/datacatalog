@@ -93,6 +93,8 @@ conf_set ckanext.coat.custom_form false
 
 ckan db upgrade
 
+crudini --set "$CKAN_INI" logger_ckanext level WARNING
+
 while ! wget -qO /dev/null "${CKAN_SOLR_URL}/admin/ping"; do
   sleep 2
 done
