@@ -1,6 +1,7 @@
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 from ckan.common import config
+from ckan.config.declaration import Declaration, Key
 
 import ckanext.coat.logic.action.create
 import ckanext.coat.logic.action.delete
@@ -18,6 +19,8 @@ class CoatPlugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm):
     plugins.implements(plugins.ITemplateHelpers)
     plugins.implements(plugins.IDatasetForm)
     plugins.implements(plugins.IValidators)
+    # https://github.com/NaturalHistoryMuseum/ckanext-doi/issues/126
+    plugins.implements(plugins.IConfigDeclaration, inherit=True)
 
     # IConfigurer
 
@@ -25,6 +28,21 @@ class CoatPlugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm):
         toolkit.add_template_directory(config_, "templates")
         toolkit.add_public_directory(config_, "public")
         toolkit.add_resource("fanstatic", "coat")
+
+    # IConfigDeclaration
+
+    def declare_config_options(self, declaration: Declaration, key: Key):
+        # https://github.com/NaturalHistoryMuseum/ckanext-doi/issues/126
+        group = key.ckanext.doi
+        declaration.declare(group.account_name)
+        declaration.declare(group.account_password)
+        declaration.declare(group.prefix)
+        declaration.declare(group.publisher)
+        declaration.declare(group.site_title)
+        declaration.declare(group.test_mode)
+        # ckanext.doi.site_url is intentionally not declared: ckanext-doi
+        # reads it with a fallback to ckan.site_url, and declaring it would
+        # inject None and break that fallback.
 
     # IActions
 
