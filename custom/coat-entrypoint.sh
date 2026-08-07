@@ -101,9 +101,8 @@ MARKER="${CKAN_STORAGE_PATH}/.schema-checksum"
 SCHEMA_HASH=$(wget -qO- "${CKAN_SOLR_URL}/schema?omitHeader=true" | md5sum | cut -d' ' -f1)
 
 if [ ! -f "$MARKER" ] || [ "$(cat "$MARKER")" != "$SCHEMA_HASH" ]; then
-  echo "Solr schema changed; rebuilding search index"
-  ckan search-index rebuild
-  echo "$SCHEMA_HASH" > "$MARKER"
+  echo "Solr schema changed; rebuilding search index in background"
+  ( ckan search-index rebuild --force && echo "$SCHEMA_HASH" > "$MARKER" ) &
 fi
 
 exec "$@"
