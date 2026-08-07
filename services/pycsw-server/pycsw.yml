@@ -10,7 +10,7 @@ profiles:
   - apiso
 
 logging:
-  level: DEBUG
+  level: WARNING
 
 manager:
   transactions: false
