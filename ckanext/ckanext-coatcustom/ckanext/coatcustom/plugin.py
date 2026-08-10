@@ -44,8 +44,8 @@ class CoatcustomPlugin(plugins.SingletonPlugin):
         if pkg_dict.get("type") not in self._CITATION_TYPES:
             return
         url = config["ckan.site_url"] + "/dataset/" + pkg_dict["name"]
-        modified = pkg_dict.get("metadata_modified", "")
-        year = modified[:4] if modified else ""
+        created = pkg_dict.get("metadata_created", "")
+        year = created[:4] if created else ""
         authors = helpers.coatcustom_get_authors_display(pkg_dict)
         pkg_dict["resource_citations"] = (
             authors + ", " if authors else ""
