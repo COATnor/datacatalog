@@ -42,7 +42,7 @@ def select_parent_locations(selected_values, *, sep=" - "):
             generated.add(selected_value)
             selected_value, _ = selected_value.rsplit(sep, 1)
         generated.add(selected_value)
-    return list(generated)
+    return sorted(generated)
 
 
 def list_to_tag_string(value):
