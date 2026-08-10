@@ -157,7 +157,7 @@ def main():
                     "function": "download",
                 },
                 "zip": {
-                    "url": urljoin(dataset_url, "zip"),
+                    "url": urljoin(dataset_url + "/", "zip"),
                     "type": "WWW:DOWNLOAD-1.0-http--download",
                     "rel": "canonical",
                     "name": 'ZIP-compressed dataset "' + dataset["name"] + '"',
