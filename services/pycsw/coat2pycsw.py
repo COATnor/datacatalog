@@ -133,12 +133,13 @@ def main():
                 "pointOfContact": {
                     "individualname": dataset.get("author", ""),
                     "email": dataset.get("author_email", ""),
+                    "organisation": dataset["publisher"],
                 },
                 "distributor": {
                     "individualname": "Francesco Frassinelli",
-                    "organisation": "NINA",
+                    "organisation": "Norwegian Institute for Nature Research",
                     "positionname": "Senior engineer IT",
-                    "url": "https://www.nina.no/english/Contact/Employees/Employee-info?AnsattID=15958",
+                    "url": "https://www.nina.no/vare-ansatte/francesco-frassinelli",
                 },
                 "CI_ResponsibleParty": {
                     "individualname": dataset.get("author", ""),
