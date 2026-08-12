@@ -42,6 +42,7 @@ COPY --from=language /ckan.mo $CKAN_VENV/lib/python3.11/site-packages/ckan/i18n/
 RUN mkdir -p $CKAN_STORAGE_PATH/webassets/.webassets-cache
 
 ENV PATH="$CKAN_VENV/bin:$PATH"
+ENV GUNICORN_CMD_ARGS="--workers 4"
 
 ENTRYPOINT ["/coat-entrypoint.sh"]
 CMD ["gunicorn", "wsgi:application", "-b", "0.0.0.0:5000"]
