@@ -1,5 +1,13 @@
 {% ckan_extends %}
 
+{% block head_extras %}
+  {{ super() }}
+  {% if request.query_string %}
+    <meta name="robots" content="noindex,follow">
+    <link rel="canonical" href="{{ h.url_for('%s.search' % dataset_type) }}">
+  {% endif %}
+{% endblock %}
+
 {% block secondary_content %}
   {% snippet "spatial/snippets/spatial_query.html", default_extent="[[69.00, 6.00], [80.00, 34.00]]" %}
   <div class="filters">
