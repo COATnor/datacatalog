@@ -74,7 +74,7 @@ ckanext-datasetversions = {path = "./ckanext/ckanext-datasetversions", editable 
 ckanext-doi = {git = "https://github.com/NaturalHistoryMuseum/ckanext-doi.git", tag = "v4.0.4"}
 ckanext-oauth2 = {path = "./ckanext/ckanext-oauth2", editable = true}
 ckanext-scheming = {git = "https://github.com/COATnor/ckanext-scheming.git", branch = "skip-validation-if-parent"}
-ckanext-spatial = {git = "https://github.com/COATnor/ckanext-spatial.git", branch = "coat"}
+ckanext-spatial = {git = "https://github.com/ckan/ckanext-spatial.git", tag = "v2.3.2"}
 
 [tool.uv.workspace]
 members = ["dummy/ckan"]
