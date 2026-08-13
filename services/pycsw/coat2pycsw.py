@@ -53,10 +53,34 @@ def get_bbox(dataset):
 with Path("mappings/topics.yaml").open() as _f:
     coat2iso19115_topiccategory_mapping = yaml.safe_load(_f)
 
+with Path("mappings/publishers.yml").open() as _f:
+    publishers = yaml.safe_load(_f)
+
 
 def coat2iso19115_topiccategory(category):
     """Compatibility workaround for old COAT topic category values"""
     return coat2iso19115_topiccategory_mapping.get(category, category)
+
+
+def publisher_label_from_email(email):
+    """Resolve the full organization label from an author's email domain."""
+    domain = (email or "").strip().rsplit("@", 1)[-1].lower()
+    for publisher in publishers:
+        if domain in publisher.get("domains", []):
+            return publisher["label"]
+    return None
+
+
+def fetch_fullnames(url):
+    """Build a lookup of author email -> full name from the public user list."""
+    user_list = urljoin(url, "api/3/action/user_list")
+    res = requests.get(user_list, params={"all_fields": True}, timeout=10)
+    names = {}
+    for user in res.json()["result"]:
+        fullname = user.get("fullname") or user.get("name") or ""
+        names.setdefault(user.get("email"), fullname)
+        names.setdefault(user.get("name"), fullname)
+    return names
 
 
 def normalize_datetime(timestamp):
@@ -82,9 +106,14 @@ def main():
     pycsw.core.admin.delete_records(context, DATABASE, TABLE)
     repo = repository.Repository(DATABASE, context, table=TABLE)
 
+    fullnames = fetch_fullnames(COAT_URL)
+
     # https://github.com/geopython/pygeometa/blob/0.19.0/pygeometa/schemas/iso19139/contact.j2
     for dataset in get_datasets(COAT_URL):
         dataset_url = urljoin(COAT_PUBLIC_URL, "dataset/" + dataset["name"])
+        author = dataset.get("author", "")
+        individualname = fullnames.get(author, author)
+        organization = publisher_label_from_email(author)
         dataset_metadata = {
             "mcf": {"version": 1.0},
             "metadata": {
@@ -131,9 +160,9 @@ def main():
             },
             "contact": {
                 "pointOfContact": {
-                    "individualname": dataset.get("author", ""),
-                    "email": dataset.get("author_email", ""),
-                    "organization": dataset.get("publisher", ""),
+                    "individualname": individualname,
+                    "email": author,
+                    "organization": organization,
                 },
                 "distributor": {
                     "individualname": "Francesco Frassinelli",
