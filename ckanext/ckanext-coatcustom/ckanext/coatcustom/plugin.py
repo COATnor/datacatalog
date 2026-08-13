@@ -53,7 +53,14 @@ class CoatcustomPlugin(plugins.SingletonPlugin):
 
         # author_email is derived from author: the author select stores the
         # user's email, so show it directly instead of a separately entered value.
-        pkg_dict["author_email"] = pkg_dict.get("author", "")
+        # State variables hold a comma-separated list of emails and display via
+        # multiple_choice_email.html, which expects a list.
+        author = pkg_dict.get("author") or ""
+        if pkg_dict.get("type") == "state-variable":
+            emails = [p.strip() for p in author.split(",") if "@" in p]
+            pkg_dict["author_email"] = emails
+        else:
+            pkg_dict["author_email"] = author
 
     # IValidators
 
