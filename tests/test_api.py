@@ -23,7 +23,7 @@ BASE = os.environ.get("COAT_URL", "http://localhost:5000")
 _RUN_ID = uuid.uuid4().hex[:8]
 
 TEST_USER_NAME = f"test_apiuser_{_RUN_ID}"
-TEST_USER_EMAIL = f"apiuser_{_RUN_ID}@test.coat.no"
+TEST_USER_EMAIL = f"apiuser_{_RUN_ID}@uit.no"
 TEST_USER_PASSWORD = "TestPassword123!"  # pragma: allowlist secret
 TEST_USER_FULLNAME = "Test API User"
 
@@ -32,7 +32,6 @@ PKG_DEFAULTS = {
     "notes": "Test dataset for automated API tests.",
     "topic_category": "Biota",
     "license_id": "CC-BY_4.0",
-    "publisher": "NINA",
     "state": "active",
 }
 
@@ -237,7 +236,7 @@ def anon():
 @pytest.fixture
 def pkg(client, org):
     """Fresh private package for each test."""
-    return client.create_package(org["id"], author=TEST_USER_NAME)
+    return client.create_package(org["id"], author=TEST_USER_EMAIL)
 
 
 @pytest.fixture
@@ -272,7 +271,7 @@ class TestPackageLifecycle:
     def test_create_sets_version_and_base_name(self, client, org):
         tag = uid()
         title = f"Version Base Name Test {tag}"
-        pkg = client.create_package(org["id"], author=TEST_USER_NAME, title=title)
+        pkg = client.create_package(org["id"], author=TEST_USER_EMAIL, title=title)
         assert pkg["version"] == "1"
         assert pkg["name"].endswith("_v1")
         pkg_extras = extras(pkg)
@@ -309,7 +308,7 @@ class TestPackageLifecycle:
 
 class TestDraftBehavior:
     def test_draft_forced_private(self, client, org):
-        pkg = client.create_package(org["id"], author=TEST_USER_NAME, state="draft")
+        pkg = client.create_package(org["id"], author=TEST_USER_EMAIL, state="draft")
         assert client.update_package(pkg["id"], private=False, state="draft")["private"] is True
 
 
@@ -364,7 +363,7 @@ class TestResourceManagement:
 )
 def test_embargo(days, use_anon, expected_url, client, org, anon):
     embargo_date = (datetime.now() + timedelta(days=days)).strftime("%Y-%m-%d")
-    pkg = client.create_package(org["id"], author=TEST_USER_NAME, embargo=embargo_date)
+    pkg = client.create_package(org["id"], author=TEST_USER_EMAIL, embargo=embargo_date)
     client.action(
         "resource_create",
         package_id=pkg["id"],
@@ -403,8 +402,8 @@ class TestVersionCollapse:
     def test_search_returns_latest_version_only(self, client, org):
         tag = uid()
         title = f"Collapse Test {tag}"
-        v1 = client.create_package(org["id"], author=TEST_USER_NAME, title=title, version="1")
-        v2 = client.create_package(org["id"], author=TEST_USER_NAME, title=title, version="2")
+        v1 = client.create_package(org["id"], author=TEST_USER_EMAIL, title=title, version="1")
+        v2 = client.create_package(org["id"], author=TEST_USER_EMAIL, title=title, version="2")
         client.publish(v1["id"])
         client.publish(v2["id"])
         result = client.action("package_search", q=f'"{tag}"')
@@ -421,7 +420,9 @@ class TestSearch:
     def test_search_returns_results(self, client, org):
         tag = uid()
         client.publish(
-            client.create_package(org["id"], author=TEST_USER_NAME, title=f"Searchable {tag}")["id"]
+            client.create_package(org["id"], author=TEST_USER_EMAIL, title=f"Searchable {tag}")[
+                "id"
+            ]
         )
         assert client.action("package_search", q=tag)["count"] >= 1
 
@@ -437,7 +438,7 @@ class TestSpatialSearch:
     def _create_spatial_dataset(self, client, org):
         pkg = client.create_package(
             org["id"],
-            author=TEST_USER_NAME,
+            author=TEST_USER_EMAIL,
             extras=[{"key": "spatial", "value": self.SVALBARD_POLYGON}],
         )
         return client.publish(pkg["id"])
@@ -462,7 +463,7 @@ class TestSearchFacets:
         tag = uid()
         pkg = client.create_package(
             org["id"],
-            author=TEST_USER_NAME,
+            author=TEST_USER_EMAIL,
             title=f"Facet Test {tag}",
             location="Svalbard",
             scientific_name="Lemmus lemmus",
@@ -509,6 +510,57 @@ class TestAnonymousAccess:
 # ---------------------------------------------------------------------------
 
 
+class TestAuthorEmailDerivation:
+    def test_dataset_author_email_is_string(self, client, org, pkg):
+        """A dataset's author_email is derived from author as a plain string."""
+        shown = client.action("package_show", id=pkg["id"])
+        assert shown.get("author_email") == TEST_USER_EMAIL, (
+            f"Expected author_email == author, got: {shown.get('author_email')!r}"
+        )
+
+    def test_sv_author_email_is_list(self, client, org, pkg):
+        """A state variable's author_email is derived as a list of emails."""
+        sv = client.create_sv(org["id"], pkg["name"])
+        author_email = sv.get("author_email")
+        assert isinstance(author_email, list), (
+            f"Expected author_email to be a list, got: {author_email!r}"
+        )
+        assert author_email == [TEST_USER_EMAIL], (
+            f"Expected [{{TEST_USER_EMAIL}}], got: {author_email!r}"
+        )
+
+    def test_sv_author_email_drops_non_email_tokens(self, client, org, pkg):
+        """Non-email author tokens (e.g. legacy full names) are dropped from author_email."""
+        sv = client.create_sv(org["id"], pkg["name"])
+        updated = client.update_package(sv["id"], author=f"{TEST_USER_EMAIL},Jane Doe")
+        shown = client.action("package_show", id=updated["id"])
+        assert shown.get("author_email") == [TEST_USER_EMAIL], (
+            f"Expected email-only list, got: {shown.get('author_email')!r}"
+        )
+
+    def test_publisher_derived_from_author_domain(self, client, org, pkg):
+        """publisher is derived from the contact person's email domain."""
+        shown = client.action("package_show", id=pkg["id"])
+        assert shown.get("publisher") == "UiT", (
+            f"Expected publisher 'UiT' derived from {TEST_USER_EMAIL!r}, "
+            f"got: {shown.get('publisher')!r}"
+        )
+
+    def test_publisher_empty_for_unknown_domain(self, client, org, pkg):
+        """An email domain outside the mapping yields an empty publisher."""
+        user = make_user()
+        p = client.create_package(org["id"], author=user["email"])
+        shown = client.action("package_show", id=p["id"])
+        assert shown.get("publisher") in (None, ""), (
+            f"Expected empty publisher for {user['email']!r}, got: {shown.get('publisher')!r}"
+        )
+
+
+# ---------------------------------------------------------------------------
+# State variable — external datasets
+# ---------------------------------------------------------------------------
+
+
 class TestStateVariableCitation:
     def test_citation_populated(self, client, org, pkg):
         """resource_citations resolves the author's fullname and contains the SV name."""
@@ -533,7 +585,7 @@ class TestStateVariableCitation:
     def test_citation_multiple_authors_et_al(self, client, org):
         """Two datasets with different authors produce 'First Author et al.'"""
         user2 = make_user(fullname=f"Second Author {uid()}")
-        pkg1 = client.create_package(org["id"], author=TEST_USER_NAME)
+        pkg1 = client.create_package(org["id"], author=TEST_USER_EMAIL)
         pkg2 = client.create_package(org["id"], author=user2["name"])
         sv = client.create_sv(org["id"], pkg1["name"], pkg2["name"])
         citation = sv.get("resource_citations", "")
@@ -569,24 +621,23 @@ class TestStateVariableExternalDatasets:
 
 class TestStateVariableMergeFields:
     def test_fields_merged_on_create(self, client, org, pkg):
-        """author and publisher are auto-merged from linked datasets on creation."""
+        """author is merged from linked datasets; publisher is derived from the email domain."""
         sv = client.create_sv(org["id"], pkg["name"])
-        assert TEST_USER_NAME in sv.get("author", ""), (
-            f"Expected author to contain {TEST_USER_NAME!r}, got: {sv.get('author')!r}"
+        assert TEST_USER_EMAIL in sv.get("author", ""), (
+            f"Expected author to contain {TEST_USER_EMAIL!r}, got: {sv.get('author')!r}"
         )
-        assert "NINA" in sv.get("publisher", ""), (
-            f"Expected publisher to contain 'NINA', got: {sv.get('publisher')!r}"
+        assert sv.get("publisher") == "UiT", (
+            f"Expected publisher to be derived as 'UiT' from {TEST_USER_EMAIL!r}, "
+            f"got: {sv.get('publisher')!r}"
         )
 
-    def test_manual_override_preserved_on_update(self, client, org, pkg):
-        """Manually set author/publisher on update are not overwritten by merge."""
+    def test_manual_author_override_preserved_on_update(self, client, org, pkg):
+        """Manually set author on update is preserved; publisher follows the author domain."""
         sv = client.create_sv(org["id"], pkg["name"])
-        updated = client.update_package(
-            sv["id"], author="custom_author", publisher="Custom Publisher"
-        )
+        updated = client.update_package(sv["id"], author=TEST_USER_EMAIL)
         shown = client.action("package_show", id=updated["id"])
-        assert shown.get("author") == "custom_author"
-        assert shown.get("publisher") == "Custom Publisher"
+        assert shown.get("author") == TEST_USER_EMAIL
+        assert shown.get("publisher") == "UiT"
 
 
 # ---------------------------------------------------------------------------
@@ -598,7 +649,7 @@ class TestStateVariableScientificName:
     def test_scientific_name_merged_on_create(self, client, org):
         """scientific_name is auto-merged from the linked dataset on SV creation."""
         species = "Lemmus lemmus"
-        pkg = client.create_package(org["id"], author=TEST_USER_NAME, scientific_name=species)
+        pkg = client.create_package(org["id"], author=TEST_USER_EMAIL, scientific_name=species)
         sv = client.create_sv(org["id"], pkg["name"])
         assert species in sv.get("scientific_name", ""), (
             f"Expected {species!r} in scientific_name, got: {sv.get('scientific_name')!r}"
@@ -607,7 +658,7 @@ class TestStateVariableScientificName:
     def test_scientific_name_manual_override_preserved(self, client, org):
         """Manually set scientific_name on update is not overwritten by merge."""
         pkg = client.create_package(
-            org["id"], author=TEST_USER_NAME, scientific_name="Rangifer tarandus"
+            org["id"], author=TEST_USER_EMAIL, scientific_name="Rangifer tarandus"
         )
         sv = client.create_sv(org["id"], pkg["name"])
         updated = client.update_package(sv["id"], scientific_name="Lemmus lemmus")
@@ -622,7 +673,7 @@ class TestStateVariableScientificName:
 class TestBulkDownload:
     def test_zip_download(self, client, org):
         """Download a public dataset as zip — response is a valid zip archive."""
-        pkg = client.create_package(org["id"], author=TEST_USER_NAME)
+        pkg = client.create_package(org["id"], author=TEST_USER_EMAIL)
         client.action(
             "resource_create",
             package_id=pkg["id"],
