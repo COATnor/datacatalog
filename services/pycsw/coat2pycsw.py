@@ -82,7 +82,7 @@ def main():
     pycsw.core.admin.delete_records(context, DATABASE, TABLE)
     repo = repository.Repository(DATABASE, context, table=TABLE)
 
-    # https://github.com/geopython/pygeometa/blob/0.13.1/pygeometa/schemas/iso19139/main.j2
+    # https://github.com/geopython/pygeometa/blob/0.19.0/pygeometa/schemas/iso19139/contact.j2
     for dataset in get_datasets(COAT_URL):
         dataset_url = urljoin(COAT_PUBLIC_URL, "dataset/" + dataset["name"])
         dataset_metadata = {
@@ -133,17 +133,13 @@ def main():
                 "pointOfContact": {
                     "individualname": dataset.get("author", ""),
                     "email": dataset.get("author_email", ""),
-                    "organisation": dataset["publisher"],
+                    "organization": dataset.get("publisher", ""),
                 },
                 "distributor": {
                     "individualname": "Francesco Frassinelli",
-                    "organisation": "Norwegian Institute for Nature Research",
+                    "organization": "Norwegian Institute for Nature Research",
                     "positionname": "Senior engineer IT",
                     "url": "https://www.nina.no/vare-ansatte/francesco-frassinelli",
-                },
-                "CI_ResponsibleParty": {
-                    "individualname": dataset.get("author", ""),
-                    "email": dataset.get("author_email", ""),
                 },
             },
             "distribution": {
