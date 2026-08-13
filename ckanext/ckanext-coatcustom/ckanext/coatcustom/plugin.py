@@ -51,6 +51,10 @@ class CoatcustomPlugin(plugins.SingletonPlugin):
             authors + ", " if authors else ""
         ) + f"{year}, {pkg_dict['name']}: COAT project data. Available online: {url}"
 
+        # author_email is derived from author: the author select stores the
+        # user's email, so show it directly instead of a separately entered value.
+        pkg_dict["author_email"] = pkg_dict.get("author", "")
+
     # IValidators
 
     def get_validators(self):

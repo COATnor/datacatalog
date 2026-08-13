@@ -148,9 +148,6 @@
     {
       "field_name": "author_email",
       "label": "Email Addresses",
-      "validators": "ignore_missing",
-      "create_validators": "merge_from_datasets",
-      "edit_validators": "ignore_missing list_to_tag_string",
       "output_validators": "tag_string_to_list",
       "display_property": "dc:creator",
       "display_snippet": "multiple_choice_email.html",
