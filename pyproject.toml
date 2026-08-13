@@ -24,7 +24,8 @@ dependencies = [
   "ckanext-scheming",
   "ckanext-spatial",
   "crudini>=0.9.6",
-  "gunicorn>=23.0.0"
+  "gunicorn>=23.0.0",
+  "sentry-sdk>=2.68.0",
 ]
 description = "CKAN-based data catalog for natural heritage data"
 license = "GPL-3.0+"
@@ -37,6 +38,7 @@ version = "0.1.0"
 extend_exclude = [
   "ckanext/ckanext-datasetversions",
   "ckanext/ckanext-oauth2",
+  "scripts",
   "services",
   "utils",
   "dummy"
