@@ -76,7 +76,8 @@ def _associated_datasets(data):
 
 def merge_from_datasets(key, data, errors, context):
     sep = ","
-    values = set()
+    seen = set()
+    merged = []
     for package in _associated_datasets(data):
         parts = package.get(key[0])
         if not parts:
@@ -85,22 +86,23 @@ def merge_from_datasets(key, data, errors, context):
             parts = parts.split(sep)
         for part in parts:
             part = part.strip()
-            if part:
-                values.add(part)
-    data[key] = sep.join(values)
+            if not part:
+                continue
+            if part not in seen:
+                seen.add(part)
+                merged.append(part)
+    data[key] = sep.join(merged)
 
 
 def merge_tags_from_datasets(key, data, errors, context):
     # Extract tags from datasets
-    tags = set()
+    tags = []
+    seen = set()
     for package in _associated_datasets(data):
         for tag in package["tags"]:
-            if tag:
-                tags.add(tag["name"])
+            if tag and tag["name"] not in seen:
+                seen.add(tag["name"])
+                tags.append(tag["name"])
     data[key] = ",".join(tags)
-    # Remove old tags
-    # for data_key in data.copy().keys():
-    #    if data_key[0] == 'tags':
-    #        del data[data_key]
     # Create new tags
     toolkit.get_validator("tag_string_convert")(key, data, errors, context)
