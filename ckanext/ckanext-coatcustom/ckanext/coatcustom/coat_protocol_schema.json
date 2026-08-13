@@ -103,14 +103,10 @@
     },
     {
       "field_name": "publisher",
-      "required": true,
-      "validators": "required_custom",
       "label": "Organization Name",
-      "preset": "select",
-      "choices_helper": "scheming_publisher_choices_required",
-      "form_placeholder": "Name of the contact person's organization",
+      "form_snippet": null,
       "display_property": "dc:publisher",
-      "help_text": "Affiliation of the dataset's Contact person, or Institution responsible for data dataset creation"
+      "validators": "ignore_missing"
     },
     {
       "field_name": "associated_parties",

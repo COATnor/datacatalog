@@ -62,6 +62,9 @@ class CoatcustomPlugin(plugins.SingletonPlugin):
         else:
             pkg_dict["author_email"] = author
 
+        # publisher is derived from the contact person's email domain
+        pkg_dict["publisher"] = helpers.publishers_from_authors(author)
+
     # IValidators
 
     def get_validators(self):

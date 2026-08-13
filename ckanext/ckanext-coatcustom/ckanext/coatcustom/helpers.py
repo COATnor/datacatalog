@@ -200,6 +200,34 @@ def scheming_publisher_choices_required(field):
     yield from scheming_publisher_choices(field)
 
 
+def publisher_from_email(email):
+    """Map an email address to its publisher short code (e.g. uit.no -> UiT)."""
+    domain = (email or "").strip().rsplit("@", 1)[-1].lower()
+    for publisher in publishers:
+        if domain in publisher.get("domains", []):
+            return publisher["value"]
+    return None
+
+
+def publishers_from_authors(author):
+    """Resolve a comma-separated author list to the set of publisher short codes.
+
+    Non-email tokens (e.g. legacy full names) are ignored; unknown domains are
+    skipped. Returns a comma-separated string of unique codes.
+    """
+    codes = []
+    seen = set()
+    for token in (author or "").split(","):
+        token = token.strip()
+        if "@" not in token:
+            continue
+        code = publisher_from_email(token)
+        if code and code not in seen:
+            seen.add(code)
+            codes.append(code)
+    return ",".join(codes)
+
+
 with (file_dir / "tags.yml").open() as tags_file:
     tags = yaml.safe_load(tags_file)
 

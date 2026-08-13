@@ -155,14 +155,11 @@
     },
     {
       "field_name": "publisher",
-      "required": true,
-      "validators": "ignore_missing",
-      "create_validators": "merge_from_datasets",
-      "edit_validators": "ignore_missing",
       "label": "Organization Names",
+      "form_snippet": null,
       "display_snippet": "tag_string.html",
       "display_property": "dc:publisher",
-      "form_placeholder": "Comma-separated list of organization names"
+      "validators": "ignore_missing"
     },
     {
       "field_name": "associated_parties",
