@@ -44,6 +44,8 @@ conf_set ckan.search.solr_allowed_query_parsers "edismax collapse"
 conf_set ckan.favicon "/images/coat.png"
 conf_set SECRET_KEY "$BEAKER_SESSION_SECRET"
 
+conf_set_list ckan.plugins image_view text_view webpage_view resource_proxy datatables_view
+
 #ckanext-coatcustom
 conf_set_list ckan.plugins coatcustom
 
