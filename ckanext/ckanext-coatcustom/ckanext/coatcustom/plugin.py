@@ -120,6 +120,14 @@ class CoatcustomPlugin(plugins.SingletonPlugin):
     # IDoi
 
     def build_metadata_dict(self, pkg_dict, metadata_dict, errors):
+        # one DataCite creator per contact person, resolved to a display name
+        creators = []
+        for author in helpers.parse_authors(pkg_dict.get("author") or ""):
+            if author["name"]:
+                creators.append({"full_name": author["name"]})
+        if creators:
+            metadata_dict["creators"] = creators
+
         # add COAT topic_category as Datacite subject
         topic = pkg_dict.get("topic_category", None)
         if topic:
