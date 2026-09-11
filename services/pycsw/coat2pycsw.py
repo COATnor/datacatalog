@@ -89,6 +89,29 @@ def fetch_fullnames(url):
     return names
 
 
+def parse_contact(author, fullnames, fallback_email=""):
+    """Split an author value into ``(display name, email)``.
+
+    Handles plain emails, usernames, and ``Name <email>`` tokens (mirrors
+    ``ckanext.coatcustom.helpers.parse_authors`` for the single-author
+    dataset case, using the pre-fetched ``fullnames`` lookup).
+    """
+    token = (author or "").strip()
+    if not token:
+        return "", (fallback_email or "").strip()
+    if "<" in token and ">" in token:
+        name_part, _, rest = token.partition("<")
+        email = rest.partition(">")[0].strip()
+        name = name_part.strip() or fullnames.get(email, email)
+        return name, email
+    if "@" in token:
+        email = token.strip()
+        return fullnames.get(email, email), email
+    # username: resolve display name via lookup, email via derived field
+    email = (fallback_email or "").strip()
+    return fullnames.get(token, token), email
+
+
 def normalize_datetime(timestamp):
     if not timestamp:
         return timestamp
@@ -118,8 +141,11 @@ def main():
     for dataset in get_datasets(COAT_URL):
         dataset_url = urljoin(COAT_PUBLIC_URL, "dataset/" + dataset["name"])
         author = dataset.get("author", "")
-        individualname = fullnames.get(author, author)
-        organization = publisher_label_from_email(author)
+        derived_email = dataset.get("author_email", "") or ""
+        if isinstance(derived_email, list):
+            derived_email = derived_email[0] if derived_email else ""
+        individualname, email = parse_contact(author, fullnames, derived_email)
+        organization = publisher_label_from_email(email)
         dataset_metadata = {
             "mcf": {"version": 1.0},
             "metadata": {
@@ -167,7 +193,7 @@ def main():
             "contact": {
                 "pointOfContact": {
                     "individualname": individualname,
-                    "email": author,
+                    "email": email,
                     "organization": organization,
                 },
                 "distributor": {
