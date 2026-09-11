@@ -555,6 +555,30 @@ class TestAuthorEmailDerivation:
             f"Expected empty publisher for {user['email']!r}, got: {shown.get('publisher')!r}"
         )
 
+    def test_search_index_has_no_derived_fields(self, client, org, pkg):
+        """Derived fields are not stored in the Solr index (search results)."""
+        tag = uid()
+        client.update_package(pkg["id"], tag_string=tag, private=False)
+        result = client.action("package_search", q=tag)
+        assert result["count"] >= 1, f"Expected package to be findable, got {result['count']}"
+        found = False
+        for item in result["results"]:
+            if item["id"] != pkg["id"]:
+                continue
+            found = True
+            for field in ("author_email", "publisher", "resource_citations"):
+                assert field not in item, (
+                    f"Expected {field} to be absent from search result, got: {item.get(field)!r}"
+                )
+        assert found, f"Expected package {pkg['id']!r} in search results"
+
+    def test_show_has_derived_fields(self, client, org, pkg):
+        """package_show recomputes the derived fields."""
+        shown = client.action("package_show", id=pkg["id"])
+        assert shown.get("author_email") == TEST_USER_EMAIL
+        assert shown.get("publisher") == "UiT"
+        assert shown.get("resource_citations"), "resource_citations is empty"
+
 
 # ---------------------------------------------------------------------------
 # State variable — external datasets

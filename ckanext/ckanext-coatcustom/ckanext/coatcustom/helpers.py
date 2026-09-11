@@ -127,8 +127,7 @@ def coatcustom_get_authors_display(pkg_dict):
     if not author:
         return None
 
-    fullnames = authors_fullnames()
-    resolved = [fullnames.get(e, e) for e in author.split(",") if e]
+    resolved = [a["name"] for a in parse_authors(author) if a["name"]]
 
     if not resolved:
         return None

@@ -30,6 +30,7 @@ INTERVAL = int(os.getenv("INTERVAL", 86400))
 
 def get_datasets(url):
     package_search = urljoin(url, "api/3/action/package_search")
+    package_show = urljoin(url, "api/3/action/package_show")
     res = requests.get(package_search, params={"rows": 0}, timeout=10)
     end = res.json()["result"]["count"]
     log.info("Found %d packages in COAT catalog", end)
@@ -37,8 +38,13 @@ def get_datasets(url):
     for start in range(0, end, rows):
         res = requests.get(package_search, params={"start": start, "rows": rows}, timeout=10)
         for dataset in res.json()["result"]["results"]:
-            if dataset["type"] == "dataset":
-                yield dataset
+            if dataset["type"] != "dataset":
+                continue
+            # Harvest the full record via package_show so derived fields
+            # (e.g. resource_citations) are computed once by the plugin.
+            show = requests.post(package_show, json={"id": dataset["name"]}, timeout=10)
+            show.raise_for_status()
+            yield show.json()["result"]
 
 
 def get_bbox(dataset):

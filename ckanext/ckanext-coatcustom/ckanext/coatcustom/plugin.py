@@ -41,8 +41,26 @@ class CoatcustomPlugin(plugins.SingletonPlugin):
     _CITATION_TYPES = {"dataset", "state-variable", "protocol"}
 
     def after_dataset_show(self, context, pkg_dict):
+        return self.add_derived(pkg_dict)
+
+    def before_dataset_view(self, pkg_dict):
+        return self.add_derived(pkg_dict)
+
+    def before_dataset_index(self, pkg_dict):
+        derived = ("author_email", "publisher", "resource_citations")
+        for field in derived:
+            pkg_dict.pop(field, None)
+        validated = pkg_dict.get("validated_data_dict")
+        if validated:
+            data = json.loads(validated)
+            for field in derived:
+                data.pop(field, None)
+            pkg_dict["validated_data_dict"] = json.dumps(data)
+        return pkg_dict
+
+    def add_derived(self, pkg_dict):
         if pkg_dict.get("type") not in self._CITATION_TYPES:
-            return
+            return pkg_dict
         url = config["ckan.site_url"] + "/dataset/" + pkg_dict["name"]
         created = pkg_dict.get("metadata_created", "")
         year = created[:4] if created else ""
@@ -64,6 +82,7 @@ class CoatcustomPlugin(plugins.SingletonPlugin):
 
         # publisher is derived from the contact person's email domain
         pkg_dict["publisher"] = helpers.publishers_from_authors(author)
+        return pkg_dict
 
     # IValidators
 
