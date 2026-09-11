@@ -46,6 +46,14 @@ def new_version(uid):
 
     # update the new package values
     base_name = extras_dict(package)["base_name"]
+    existing = {v[0] for v in package.get("_versions") or []}
+    version = next_version(package)
+    # avoid colliding with an existing version (e.g. when creating from an
+    # older version whose successors already exist)
+    while f"{base_name}_v{version}" in existing:
+        if not version.isdigit():
+            break
+        version = str(int(version) + 1)
     package.update(
         {
             "resources": [],
@@ -53,7 +61,7 @@ def new_version(uid):
             "medatata_modified": datetime.datetime.now(),
             "name": base_name,
             "private": True,
-            "version": next_version(package),
+            "version": version,
         }
     )
 

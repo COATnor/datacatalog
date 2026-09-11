@@ -64,9 +64,20 @@ def is_protected(obj, action="update"):
 
 
 def next_version(obj):
-    version = obj.get("version", "1")
+    # prefer the latest version across all versions of the dataset, so that
+    # creating a new version from an older one does not collide with an
+    # existing (newer) version.
+    numbers = []
+    for entry in obj.get("_versions") or []:
+        name = entry[0] if isinstance(entry, (list, tuple)) else entry
+        number = str(name).rsplit("_v", 1)[-1]
+        if number.isdigit():
+            numbers.append(int(number))
+    if numbers:
+        return str(max(numbers) + 1)
+    version = str(obj.get("version", "1"))
     if version.isdigit():
-        version = str(int(version) + 1)
+        return str(int(version) + 1)
     return version
 
 
