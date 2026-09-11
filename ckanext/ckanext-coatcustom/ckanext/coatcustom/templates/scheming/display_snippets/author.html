@@ -1,0 +1,5 @@
+{%- set author = data[field.field_name] -%}
+
+{% if author %}
+    {{ h.authors_display_names(author) }}
+{% endif %}

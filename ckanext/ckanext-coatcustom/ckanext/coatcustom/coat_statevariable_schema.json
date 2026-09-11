@@ -136,7 +136,7 @@
     },
     {
       "field_name": "author",
-      "display_snippet": "tag_string.html",
+      "display_snippet": "author.html",
       "required": true,
       "validators": "ignore_missing",
       "create_validators": "merge_from_datasets",

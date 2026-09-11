@@ -284,6 +284,16 @@ def author_emails(author):
     return [a["email"] for a in parse_authors(author) if a["email"]]
 
 
+def authors_display_names(author):
+    """Return a comma-separated string of author display names.
+
+    Names are resolved via :func:`parse_authors` (usernames/emails resolved to
+    full names when possible). Returns an empty string when there are none.
+    """
+    names = [a["name"] for a in parse_authors(author) if a["name"]]
+    return ", ".join(names)
+
+
 with (file_dir / "tags.yml").open() as tags_file:
     tags = yaml.safe_load(tags_file)
 
