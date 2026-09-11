@@ -75,6 +75,12 @@ def _associated_datasets(data):
 
 
 def merge_from_datasets(key, data, errors, context):
+    # Only merge into empty fields: a value provided by the user (e.g. a custom
+    # contact person) must not be overwritten by the linked datasets.
+    current = data.get(key)
+    if current:
+        return
+
     sep = ","
     seen = set()
     merged = []

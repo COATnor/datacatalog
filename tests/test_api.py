@@ -612,6 +612,21 @@ class TestAuthorEmailDerivation:
             f"Expected email-only list from mixed tokens, got: {shown.get('author_email')!r}"
         )
 
+    def test_sv_manual_author_not_overwritten_by_linked_dataset(self, client, org, pkg):
+        """A manually set SV author is kept even when linked to datasets."""
+        custom = "Custom Author <custom.author@nina.no>"
+        sv = client.create_sv(org["id"], pkg["name"], author=custom)
+        assert sv.get("author") == custom, (
+            f"Expected manual author to be preserved, got: {sv.get('author')!r}"
+        )
+
+    def test_sv_author_merged_from_linked_dataset_when_empty(self, client, org, pkg):
+        """An empty SV author is auto-filled from the linked dataset's author."""
+        sv = client.create_sv(org["id"], pkg["name"], author="")
+        assert sv.get("author") == TEST_USER_EMAIL, (
+            f"Expected author merged from linked dataset, got: {sv.get('author')!r}"
+        )
+
     def test_search_index_has_no_derived_fields(self, client, org, pkg):
         """Derived fields are not stored in the Solr index (search results)."""
         tag = uid()
