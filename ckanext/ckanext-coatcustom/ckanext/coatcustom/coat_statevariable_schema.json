@@ -143,7 +143,15 @@
       "edit_validators": "ignore_missing",
       "label": "Contact Persons",
       "display_property": "dc:creator",
-      "form_placeholder": "Comma-separated list of contact persons"
+      "form_placeholder": "Comma-separated list of contact persons, e.g. Name Surname <name.surname@example.com>",
+      "preset": "tag_string_autocomplete",
+      "form_attrs": {
+        "data-module": "autocomplete",
+        "data-module-tags": "",
+        "data-module-source": "/scheming/api/util/author/autocomplete?incomplete=?",
+        "class": ""
+      },
+      "help_text": "Contact persons for the state variable. You can type a username, an email, or a name with email, e.g. \"Name Surname <name.surname@example.com>\"."
     },
     {
       "field_name": "author_email",

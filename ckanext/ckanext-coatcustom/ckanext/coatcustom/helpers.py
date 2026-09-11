@@ -1,4 +1,5 @@
 import json
+import re
 from pathlib import Path
 
 import ckan.logic as logic
@@ -115,6 +116,19 @@ def authors_fullnames():
     return fullnames
 
 
+def scheming_author_autocomplete_tags(field=None):
+    """Suggest authors in ``Full Name <email>`` form so the stored value stays parseable."""
+    for user in model.user.User.all():
+        if user.name in ("default",):
+            continue
+        fullname = user.fullname or user.name
+        email = (user.email or "").strip()
+        if email:
+            yield f"{fullname} <{email}>"
+        else:
+            yield user.name
+
+
 def coatcustom_get_authors_display(pkg_dict):
     """Resolve author usernames/emails to full display names.
 
@@ -209,22 +223,65 @@ def publisher_from_email(email):
 
 
 def publishers_from_authors(author):
-    """Resolve a comma-separated author list to the set of publisher short codes.
+    """Resolve an author list to the set of publisher short codes.
 
-    Non-email tokens (e.g. legacy full names) are ignored; unknown domains are
-    skipped. Returns a comma-separated string of unique codes.
+    Emails are extracted via :func:`parse_authors` (handles usernames and
+    ``Name <email>`` tokens); unknown domains are skipped. Returns a
+    comma-separated string of unique codes.
     """
     codes = []
     seen = set()
-    for token in (author or "").split(","):
-        token = token.strip()
-        if "@" not in token:
-            continue
-        code = publisher_from_email(token)
+    for email in author_emails(author):
+        code = publisher_from_email(email)
         if code and code not in seen:
             seen.add(code)
             codes.append(code)
     return ",".join(codes)
+
+
+ANGLE_PATTERN = re.compile(
+    r"""
+    (?P<name>.*?) \s* < (?P<email>[^<>\s]+) > $
+    """,
+    re.VERBOSE,
+)
+
+
+def parse_authors(authors):
+    """Parse a comma-separated list of authors into ``{"name", "email"}`` dicts.
+
+    Each entry may be a plain email or username, or a ``Name Surname <email>``
+    form. Usernames/emails are resolved to full names via the user list when
+    possible. Anything else is kept as a raw name. Returns a list.
+    """
+    fullnames = authors_fullnames()
+    parsed = []
+    for author in (authors or "").split(","):
+        author = author.strip()
+        if not author:
+            continue
+        match = ANGLE_PATTERN.match(author)
+        if match:
+            name = match.group("name") or None
+            email = match.group("email")
+        else:
+            name, email = None, author
+        if "@" not in email:
+            user = model.user.User.get(email)
+            if user is None:
+                parsed.append({"name": name or author, "email": ""})
+                continue
+            email = (user.email or "").strip()
+            name = name or user.fullname or user.name
+        elif not name:
+            name = fullnames.get(email) or email
+        parsed.append({"name": name, "email": email})
+    return parsed
+
+
+def author_emails(author):
+    """Return the list of email addresses parsed from an author field."""
+    return [a["email"] for a in parse_authors(author) if a["email"]]
 
 
 with (file_dir / "tags.yml").open() as tags_file:

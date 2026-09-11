@@ -555,6 +555,38 @@ class TestAuthorEmailDerivation:
             f"Expected empty publisher for {user['email']!r}, got: {shown.get('publisher')!r}"
         )
 
+    def test_dataset_author_email_resolves_username(self, client, org):
+        """A username in author resolves to the user's email, not the name."""
+        p = client.create_package(org["id"], author=TEST_USER_NAME)
+        shown = client.action("package_show", id=p["id"])
+        assert shown.get("author_email") == TEST_USER_EMAIL, (
+            f"Expected author_email to resolve username to {TEST_USER_EMAIL!r}, "
+            f"got: {shown.get('author_email')!r}"
+        )
+
+    def test_dataset_author_email_parses_name_and_email(self, client, org):
+        """A 'Name <email>' author token yields the email as author_email."""
+        p = client.create_package(
+            org["id"],
+            author=f"Test User <{TEST_USER_EMAIL}>",
+        )
+        shown = client.action("package_show", id=p["id"])
+        assert shown.get("author_email") == TEST_USER_EMAIL, (
+            f"Expected author_email from name-email token, got: {shown.get('author_email')!r}"
+        )
+
+    def test_sv_author_email_parses_mixed_tokens(self, client, org, pkg):
+        """SV author_email is a list of emails from mixed name-email and plain tokens."""
+        sv = client.create_sv(org["id"], pkg["name"])
+        updated = client.update_package(
+            sv["id"],
+            author=f"Test User <{TEST_USER_EMAIL}>,Some Name",
+        )
+        shown = client.action("package_show", id=updated["id"])
+        assert shown.get("author_email") == [TEST_USER_EMAIL], (
+            f"Expected email-only list from mixed tokens, got: {shown.get('author_email')!r}"
+        )
+
     def test_search_index_has_no_derived_fields(self, client, org, pkg):
         """Derived fields are not stored in the Solr index (search results)."""
         tag = uid()

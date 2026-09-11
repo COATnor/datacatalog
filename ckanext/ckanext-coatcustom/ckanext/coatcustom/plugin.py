@@ -38,7 +38,7 @@ class CoatcustomPlugin(plugins.SingletonPlugin):
 
     # IPackageController
 
-    _CITATION_TYPES = {"dataset", "state-variable", "protocol"}
+    _CITATION_TYPES = {"dataset", "state-variable", "protocol", "dmp"}
 
     def after_dataset_show(self, context, pkg_dict):
         return self.add_derived(pkg_dict)
@@ -69,16 +69,15 @@ class CoatcustomPlugin(plugins.SingletonPlugin):
             authors + ", " if authors else ""
         ) + f"{year}, {pkg_dict['name']}: COAT project data. Available online: {url}"
 
-        # author_email is derived from author: the author select stores the
-        # user's email, so show it directly instead of a separately entered value.
-        # State variables hold a comma-separated list of emails and display via
-        # multiple_choice_email.html, which expects a list.
+        # author_email is derived from author: usernames and "Name <email>"
+        # tokens are resolved to real email addresses. State variables display
+        # the list via multiple_choice_email.html, which expects a list.
         author = pkg_dict.get("author") or ""
+        emails = helpers.author_emails(author)
         if pkg_dict.get("type") == "state-variable":
-            emails = [p.strip() for p in author.split(",") if "@" in p]
             pkg_dict["author_email"] = emails
         else:
-            pkg_dict["author_email"] = author
+            pkg_dict["author_email"] = emails[0] if emails else ""
 
         # publisher is derived from the contact person's email domain
         pkg_dict["publisher"] = helpers.publishers_from_authors(author)

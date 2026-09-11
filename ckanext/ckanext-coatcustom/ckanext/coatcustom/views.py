@@ -37,6 +37,8 @@ def autocomplete(field):
             tags.append(dataset["name"])
     elif field == "associated_parties":
         tags = helpers.scheming_publisher_tags(field)
+    elif field == "author":
+        tags = list(helpers.scheming_author_autocomplete_tags(field))
     elif field == "location":
         tags = helpers.scheming_locations_tags(field)
     elif field == "scientific_name":
