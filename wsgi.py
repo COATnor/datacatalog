@@ -1,7 +1,6 @@
 import os
 
 import sentry_sdk
-
 from ckan.cli import CKANConfigLoader
 from ckan.config.middleware import make_app
 
@@ -17,4 +16,3 @@ if os.environ.get("SENTRY_DSN"):
     )
 
 application = make_app(config)
-

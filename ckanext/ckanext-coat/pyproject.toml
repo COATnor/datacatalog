@@ -4,7 +4,7 @@ requires = ["setuptools>=61.0"]
 
 [project]
 authors = [
-  {name = "Francesco Frassinelli", email = "francesco.frassinelli@nina.no"}
+  { name = "Francesco Frassinelli", email = "francesco.frassinelli@nina.no" }
 ]
 description = "COAT extensions for CKAN"
 license = "AGPL-3.0-or-later"
