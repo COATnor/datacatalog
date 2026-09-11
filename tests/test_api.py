@@ -135,6 +135,23 @@ class CKANClient:
         # after_show computes resource_citations; package_create does not trigger it
         return self.action("package_show", id=sv["id"])
 
+    def create_dmp(self, org_id, *, author, **overrides):
+        """Create a data management plan (DMP)."""
+        return self.action(
+            "package_create",
+            **{
+                "type": "dmp",
+                "title": f"Test DMP {uid()}",
+                "notes": "Test data management plan.",
+                "owner_org": org_id,
+                "private": True,
+                "state": "active",
+                "license_id": "CC-BY_4.0",
+                "author": author,
+                **overrides,
+            },
+        )
+
     def update_package(self, pkg_id, **overrides):
         """Fetch current state, apply overrides, and update (CKAN does a full replace)."""
         pkg = self.action("package_show", id=pkg_id)
@@ -573,6 +590,14 @@ class TestAuthorEmailDerivation:
         shown = client.action("package_show", id=p["id"])
         assert shown.get("author_email") == TEST_USER_EMAIL, (
             f"Expected author_email from name-email token, got: {shown.get('author_email')!r}"
+        )
+
+    def test_dmp_author_email_derived_from_username(self, client, org):
+        """DMP author_email is derived from author (username -> email)."""
+        dmp = client.create_dmp(org["id"], author=TEST_USER_NAME)
+        shown = client.action("package_show", id=dmp["id"])
+        assert shown.get("author_email") == TEST_USER_EMAIL, (
+            f"Expected DMP author_email resolved from username, got: {shown.get('author_email')!r}"
         )
 
     def test_sv_author_email_parses_mixed_tokens(self, client, org, pkg):
