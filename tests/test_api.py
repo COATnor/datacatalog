@@ -428,6 +428,100 @@ class TestVersionCollapse:
         assert ids == {v2["id"]}
 
 
+class TestVersionIdentityManaged:
+    """name, version and base_name are managed server-side, not by callers."""
+
+    def test_create_rejects_divergent_name(self, client, org):
+        """A submitted name that does not match base + version is rejected."""
+        resp = client.post(
+            "package_create",
+            **{
+                **PKG_DEFAULTS,
+                "title": f"Identity Test {uid()}",
+                "name": f"custom-name-{uid()}",
+                "owner_org": org["id"],
+                "private": True,
+                "author": TEST_USER_EMAIL,
+            },
+        )
+        assert not resp.json()["success"]
+
+    def test_create_rejects_non_numeric_version(self, client, org):
+        resp = client.post(
+            "package_create",
+            **{
+                **PKG_DEFAULTS,
+                "title": f"Identity Test {uid()}",
+                "version": "abc",
+                "owner_org": org["id"],
+                "private": True,
+                "author": TEST_USER_EMAIL,
+            },
+        )
+        assert not resp.json()["success"]
+
+    def test_create_via_raw_action_enforced(self, client, org):
+        """The ckan_package_create alias enforces the same rules."""
+        resp = client.post(
+            "ckan_package_create",
+            **{
+                **PKG_DEFAULTS,
+                "title": f"Identity Test {uid()}",
+                "name": f"custom-name-{uid()}",
+                "owner_org": org["id"],
+                "private": True,
+                "author": TEST_USER_EMAIL,
+            },
+        )
+        assert not resp.json()["success"]
+
+    def test_create_accepts_consistent_values(self, client, org):
+        tag = uid()
+        pkg = client.create_package(
+            org["id"], author=TEST_USER_EMAIL, title=f"Identity {tag}", version="3"
+        )
+        assert pkg["name"].endswith("_v3")
+        assert extras(pkg)["base_name"] == f"identity-{tag}"
+
+    def test_sysadmin_bypass_honored(self, client, org):
+        """Sysadmins may set divergent identity values (data curation)."""
+        sysadmin_key = os.environ.get("CKAN_API_KEY") or _read_file("/tokens/api_token")
+        if not sysadmin_key:
+            pytest.skip("no sysadmin token available")
+        admin = CKANClient(BASE, sysadmin_key)
+        tag = uid()
+        pkg = admin.action(
+            "package_create",
+            **{
+                **PKG_DEFAULTS,
+                "title": f"Sysadmin Bypass {tag}",
+                "name": f"sysadmin-custom-{tag}",
+                "version": "99",
+                "owner_org": org["id"],
+                "private": True,
+                "author": TEST_USER_EMAIL,
+            },
+        )
+        assert pkg["name"] == f"sysadmin-custom-{tag}"
+        assert pkg["version"] == "99"
+
+    def test_update_rename_rejected(self, client, org, pkg):
+        resp = client.post("package_update", id=pkg["id"], name=f"renamed-{uid()}")
+        assert not resp.json()["success"]
+
+    def test_update_base_change_rejected(self, client, org, pkg):
+        resp = client.post(
+            "package_update",
+            id=pkg["id"],
+            extras=[{"key": "base_name", "value": "other-base"}],
+        )
+        assert not resp.json()["success"]
+
+    def test_update_partial_ok(self, client, org, pkg):
+        updated = client.update_package(pkg["id"], notes="Updated notes.")
+        assert updated["notes"] == "Updated notes."
+
+
 # ---------------------------------------------------------------------------
 # Search
 # ---------------------------------------------------------------------------

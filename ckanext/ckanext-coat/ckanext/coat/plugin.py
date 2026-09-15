@@ -48,14 +48,14 @@ class CoatPlugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm):
 
     def get_actions(self):
         return {
-            "ckan_package_create": ckanext.coat.logic.action.create.ckan_package_create,
+            "ckan_package_create": ckanext.coat.logic.action.create.package_create,
             "package_create": ckanext.coat.logic.action.create.package_create,
             "ckan_package_search": ckanext.coat.logic.action.get.ckan_package_search,
             "package_search": ckanext.coat.logic.action.get.package_search,
-            "ckan_package_update": ckanext.coat.logic.action.update.ckan_package_update,
+            "ckan_package_update": ckanext.coat.logic.action.update.package_update,
             "package_show": ckanext.coat.logic.action.get.package_show,
             "package_update": ckanext.coat.logic.action.update.package_update,
-            "ckan_package_delete": ckanext.coat.logic.action.delete.ckan_package_delete,
+            "ckan_package_delete": ckanext.coat.logic.action.delete.package_delete,
             "package_delete": ckanext.coat.logic.action.delete.package_delete,
             "ckan_resource_show": ckanext.coat.logic.action.get.ckan_resource_show,
             "resource_show": ckanext.coat.logic.action.get.resource_show,

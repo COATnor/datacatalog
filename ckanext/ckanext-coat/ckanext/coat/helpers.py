@@ -7,6 +7,14 @@ from ckan.common import g
 from ckanext.coat import auth
 
 
+def is_sysadmin(context):
+    """Whether the acting user is a sysadmin. Fail-closed: unknown → False."""
+    userobj = context.get("auth_user_obj")
+    if userobj is None:
+        userobj = model.User.get(context.get("user"))
+    return bool(userobj and getattr(userobj, "sysadmin", False))
+
+
 def is_resource(obj):
     return "package_id" in obj
 

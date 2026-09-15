@@ -66,7 +66,7 @@ def new_version(uid):
             "resources": [],
             "metadata_created": datetime.datetime.now(),
             "medatata_modified": datetime.datetime.now(),
-            "name": base_name,
+            "name": f"{base_name}_v{version}",
             "private": True,
             "version": version,
         }

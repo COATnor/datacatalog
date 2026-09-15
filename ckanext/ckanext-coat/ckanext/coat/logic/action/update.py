@@ -1,12 +1,29 @@
 import ckan.plugins.toolkit as toolkit
 from ckan.logic.action.update import package_update as ckan_package_update
 
-from ckanext.coat.helpers import extras_dict, is_protected
+from ckanext.coat.helpers import extras_dict, is_protected, is_sysadmin
 
 
 @toolkit.side_effect_free
 def package_update(context, data_dict):
     package = toolkit.get_action("package_show")(context, data_dict)
+
+    # name, version and base_name are managed internally: reject divergent
+    # submitted values instead of silently ignoring them. Absent values and
+    # sysadmins (data curation) are exempt.
+    if not is_sysadmin(context):
+        for field in ("name", "version"):
+            submitted = data_dict.get(field)
+            if submitted is not None and str(submitted) != str(package.get(field)):
+                raise toolkit.ValidationError(
+                    {field: [f"Dataset {field} is managed internally and cannot be changed"]}
+                )
+        submitted_base = extras_dict(data_dict).get("base_name")
+        stored_base = extras_dict(package).get("base_name")
+        if submitted_base is not None and submitted_base != stored_base:
+            raise toolkit.ValidationError(
+                {"base_name": ["Dataset base name is managed internally and cannot be changed"]}
+            )
 
     # Draft datasets must always be private
     package_state = data_dict.get("state") or package.get("state")
