@@ -428,6 +428,7 @@ dev = [
     { name = "flask-debugtoolbar" },
 ]
 test = [
+    { name = "jinja2" },
     { name = "playwright" },
     { name = "pytest-xdist" },
     { name = "requests" },
@@ -455,6 +456,7 @@ dev = [
     { name = "flask-debugtoolbar", specifier = ">=0.14.1" },
 ]
 test = [
+    { name = "jinja2", specifier = ">=3.0" },
     { name = "playwright", specifier = ">=1.40" },
     { name = "pytest-xdist", specifier = ">=3.0" },
     { name = "requests", specifier = ">=2.28" },

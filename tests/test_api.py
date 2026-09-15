@@ -8,6 +8,7 @@ Requires:
   - coat / coatcustom / datasetversions plugins enabled
 """
 
+import json
 import os
 import uuid
 import zipfile
@@ -15,6 +16,7 @@ from datetime import datetime, timedelta
 from io import BytesIO
 from pathlib import Path
 
+import jinja2
 import pytest
 import requests
 from tenacity import retry, stop_after_delay, wait_fixed
@@ -918,3 +920,47 @@ class TestPycsw:
         assert resp.status_code == 200, f"Expected 200, got {resp.status_code}"
         assert resp.headers["content-type"].startswith("application/xml")
         assert b"GetRecordsResponse" in resp.content
+
+
+# ---------------------------------------------------------------------------
+# Contact display (ClickUp 86c9f0j0a)
+# ---------------------------------------------------------------------------
+
+
+class TestContactDisplayWithoutBullets:
+    """Contact/Organization/Persons render as plain text, not bullet lists."""
+
+    SNIPPETS = (
+        Path(__file__).resolve().parent.parent
+        / "ckanext"
+        / "ckanext-coatcustom"
+        / "ckanext"
+        / "coatcustom"
+        / "templates"
+        / "scheming"
+        / "display_snippets"
+    )
+    SV_SCHEMA = (
+        Path(__file__).resolve().parent.parent
+        / "ckanext"
+        / "ckanext-coatcustom"
+        / "ckanext"
+        / "coatcustom"
+        / "coat_statevariable_schema.json"
+    )
+
+    def test_plain_list_renders_values_without_bullets(self):
+        env = jinja2.Environment(
+            loader=jinja2.FileSystemLoader(str(self.SNIPPETS)), autoescape=True
+        )
+        html = env.get_template("plain_list.html").render(
+            data={"publisher": "UiT, NINA"}, field={"field_name": "publisher"}
+        )
+        assert "UiT, NINA" in html
+        assert "<ul>" not in html and "<li>" not in html
+
+    def test_sv_schema_wiring(self):
+        schema = json.loads(self.SV_SCHEMA.read_text())
+        by_name = {f["field_name"]: f for f in schema["dataset_fields"]}
+        assert by_name["publisher"]["display_snippet"] == "plain_list.html"
+        assert by_name["persons"]["display_snippet"] == "plain_list.html"

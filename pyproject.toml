@@ -4,6 +4,7 @@ dev = [
   "deptry"
 ]
 test = [
+  "jinja2>=3.0",
   "playwright>=1.40",
   "pytest-xdist>=3.0",
   "requests>=2.28",

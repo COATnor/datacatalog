@@ -167,7 +167,7 @@
       "field_name": "publisher",
       "label": "Organization Names",
       "form_snippet": null,
-      "display_snippet": "tag_string.html",
+      "display_snippet": "plain_list.html",
       "display_property": "dc:publisher",
       "validators": "ignore_missing"
     },
@@ -193,7 +193,7 @@
       "validators": "ignore_missing",
       "create_validators": "merge_from_datasets",
       "edit_validators": "ignore_missing",
-      "display_snippet": "tag_string.html",
+      "display_snippet": "plain_list.html",
       "form_placeholder": "Key people related to the dataset (eg: field technicians, PhD students...), comma delimited"
     },
     {
