@@ -64,7 +64,9 @@ class CoatcustomPlugin(plugins.SingletonPlugin):
         url = config["ckan.site_url"] + "/dataset/" + pkg_dict["name"]
         created = pkg_dict.get("metadata_created", "")
         year = created[:4] if created else ""
-        authors = helpers.coatcustom_get_authors_display(pkg_dict)
+        author = pkg_dict.get("author") or ""
+        parsed = helpers.parse_authors(author)
+        authors = helpers.authors_display_from_parsed(parsed)
         pkg_dict["resource_citations"] = (
             authors + ", " if authors else ""
         ) + f"{year}, {pkg_dict['name']}: COAT project data. Available online: {url}"
@@ -72,15 +74,14 @@ class CoatcustomPlugin(plugins.SingletonPlugin):
         # author_email is derived from author: usernames and "Name <email>"
         # tokens are resolved to real email addresses. State variables display
         # the list via multiple_choice_email.html, which expects a list.
-        author = pkg_dict.get("author") or ""
-        emails = helpers.author_emails(author)
+        emails = [a["email"] for a in parsed if a["email"]]
         if pkg_dict.get("type") == "state-variable":
             pkg_dict["author_email"] = emails
         else:
             pkg_dict["author_email"] = emails[0] if emails else ""
 
         # publisher is derived from the contact person's email domain
-        pkg_dict["publisher"] = helpers.publishers_from_authors(author)
+        pkg_dict["publisher"] = helpers.publishers_from_emails(emails)
         return pkg_dict
 
     # IValidators

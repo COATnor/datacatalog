@@ -129,6 +129,14 @@ def scheming_author_autocomplete_tags(field=None):
             yield user.name
 
 
+def authors_display_from_parsed(parsed):
+    """Format parsed authors as "First Author" or "First Author et al."."""
+    resolved = [a["name"] for a in parsed if a["name"]]
+    if not resolved:
+        return None
+    return resolved[0] + (" et al." if len(resolved) > 1 else "")
+
+
 def coatcustom_get_authors_display(pkg_dict):
     """Resolve author usernames/emails to full display names.
 
@@ -140,12 +148,7 @@ def coatcustom_get_authors_display(pkg_dict):
     author = pkg_dict.get("author")
     if not author:
         return None
-
-    resolved = [a["name"] for a in parse_authors(author) if a["name"]]
-
-    if not resolved:
-        return None
-    return resolved[0] + (" et al." if len(resolved) > 1 else "")
+    return authors_display_from_parsed(parse_authors(author))
 
 
 def scheming_author_choice_required(field):
@@ -222,6 +225,22 @@ def publisher_from_email(email):
     return None
 
 
+def publishers_from_emails(emails):
+    """Resolve email addresses to publisher short codes.
+
+    Unknown domains are skipped. Returns a comma-separated string of
+    unique codes.
+    """
+    codes = []
+    seen = set()
+    for email in emails:
+        code = publisher_from_email(email)
+        if code and code not in seen:
+            seen.add(code)
+            codes.append(code)
+    return ",".join(codes)
+
+
 def publishers_from_authors(author):
     """Resolve an author list to the set of publisher short codes.
 
@@ -229,14 +248,7 @@ def publishers_from_authors(author):
     ``Name <email>`` tokens); unknown domains are skipped. Returns a
     comma-separated string of unique codes.
     """
-    codes = []
-    seen = set()
-    for email in author_emails(author):
-        code = publisher_from_email(email)
-        if code and code not in seen:
-            seen.add(code)
-            codes.append(code)
-    return ",".join(codes)
+    return publishers_from_emails(author_emails(author))
 
 
 ANGLE_PATTERN = re.compile(
