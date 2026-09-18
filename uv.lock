@@ -139,8 +139,8 @@ wheels = [
 
 [[package]]
 name = "ckan"
-version = "2.11.4"
-source = { git = "https://github.com/ckan/ckan?rev=ckan-2.11.4#882f16b6de851e30345bfd06417512e79f890941" }
+version = "2.11.6"
+source = { git = "https://github.com/ckan/ckan?rev=ckan-2.11.6#a22d24505d1a5f75820d43cc3b0656c2c6b925a2" }
 dependencies = [
     { name = "setuptools" },
 ]
@@ -222,7 +222,7 @@ requires-dist = [
     { name = "cachelib", specifier = "==0.13.0" },
     { name = "certifi", specifier = "==2024.7.4" },
     { name = "charset-normalizer", specifier = "==3.3.2" },
-    { name = "ckan", git = "https://github.com/ckan/ckan?rev=ckan-2.11.4" },
+    { name = "ckan", git = "https://github.com/ckan/ckan?rev=ckan-2.11.6" },
     { name = "click", specifier = "==8.1.7" },
     { name = "dominate", specifier = "==2.9.1" },
     { name = "feedgen", specifier = "==1.0.0" },
