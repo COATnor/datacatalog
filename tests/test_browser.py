@@ -1,4 +1,5 @@
 import os
+import time
 import uuid
 from pathlib import Path
 
@@ -70,6 +71,23 @@ def test_feide_login(page):
     assert page.query_selector(".account .username") is not None
 
 
+def _wait_for(page, expression, timeout_ms=UI_TIMEOUT_MS):
+    """Poll a JS expression until truthy.
+
+    Lightpanda never notifies wait_for_function/wait_for_selector about
+    DOM mutations, so poll with evaluate, which always sees the live DOM.
+    Values are inlined into the expression: Lightpanda unreliably forwards
+    evaluate's arg parameter.
+    """
+    deadline = time.monotonic() + timeout_ms / 1000
+    while True:
+        if page.evaluate(expression):
+            return
+        if time.monotonic() > deadline:
+            raise TimeoutError(f"condition not met within {timeout_ms}ms: {expression[:80]}")
+        time.sleep(0.5)
+
+
 def _api(action, token, **kwargs):
     resp = requests.post(
         f"{BASE}/api/3/action/{action}",
@@ -85,16 +103,23 @@ def _api(action, token, **kwargs):
 def _author_search(page):
     """Clear the Contact Persons widget and focus its search box.
 
-    select2 hides #field-author and Lightpanda can't click below the fold,
-    so the widget is driven through the DOM anchored at #field-author.
+    select2 (4.x on CKAN 2.12) hides #field-author and Lightpanda can't
+    click below the fold, so the widget is driven through the DOM anchored
+    at #field-author. Waits for select2 enhancement first: the input is
+    rendered before the widget container is inserted.
     """
+    _wait_for(
+        page,
+        "() => { const hid = document.getElementById('field-author');"
+        " return !!hid.parentElement.querySelector('.select2-container'); }",
+    )
     page.evaluate(
         "() => { const box = document.getElementById('field-author')"
         ".parentElement.querySelector('.select2-container');"
         " if (!box) throw new Error('author select2 widget not found');"
-        " const close = box.querySelector('.select2-search-choice-close');"
+        " const close = box.querySelector('.select2-selection__choice__remove');"
         " if (close) close.click();"
-        " box.querySelector('input.select2-input').focus(); }"
+        " box.querySelector('.select2-search__field').focus(); }"
     )
 
 
@@ -185,15 +210,25 @@ def test_sv_author_accepts_custom_value(page):
     page.goto(f"{BASE}/state-variable/edit/{sv['id']}", wait_until="domcontentloaded")
     page.wait_for_selector("#field-author", state="attached", timeout=UI_TIMEOUT_MS)
     _author_search(page)
-    page.keyboard.type(custom, delay=20)
-    page.wait_for_function(
-        "(exp) => [...document.querySelectorAll('.select2-highlighted')]"
-        ".some((el) => el.textContent.includes(exp))",
-        arg=tag,
-        polling=500,
-        timeout=UI_TIMEOUT_MS,
+    _wait_for(
+        page,
+        "() => { const hid = document.getElementById('field-author');"
+        " const box = hid.parentElement.querySelector('.select2-container');"
+        " return !!box && box.classList.contains('select2-container--open'); }",
     )
+    page.keyboard.type(custom, delay=20)
+    _wait_for(
+        page,
+        "() => [...document.querySelectorAll('.select2-results__option--highlighted')]"
+        f".some((el) => (el.getAttribute('data-value') || '').includes('{tag}'))",
+    )
+    # ArrowDown highlights the offered free-text choice before committing it
+    page.keyboard.press("ArrowDown")
     page.keyboard.press("Enter")
+    _wait_for(
+        page,
+        f"() => document.getElementById('field-author').value === {custom!r}",
+    )
     with page.expect_response("**/state-variable/edit/**", timeout=UI_TIMEOUT_MS):
         _submit_author_form(page)
     shown = _api("package_show", token, id=sv["id"])

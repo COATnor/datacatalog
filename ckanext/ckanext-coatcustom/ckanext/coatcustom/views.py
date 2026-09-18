@@ -18,10 +18,10 @@ def escape(text):
 @scheming.route("/scheming/api/util/<field>/autocomplete")
 def autocomplete(field):
     tags = []
-    value = toolkit.request.params.get("incomplete")
+    value = toolkit.request.args.get("incomplete")
     value = escape(value)
     if field == "dataset":
-        dataset_type = toolkit.request.params.get("dataset_type")
+        dataset_type = toolkit.request.args.get("dataset_type")
         context = {
             "user": toolkit.g.user,
             "userobj": toolkit.g.userobj,

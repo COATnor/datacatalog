@@ -1,0 +1,76 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = ["setuptools", "wheel"]
+
+[project]
+authors = [
+  { name = "Natural History Museum", email = "data@nhm.ac.uk" }
+]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.6",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8"
+]
+dependencies = [
+  "jsonschema==3.0.0",
+  "xmltodict==0.12.0",
+  "datacite==1.1.2",
+  "ckantools>=0.4.2"
+]
+description = "A CKAN extension for assigning a digital object identifier (DOI) to datasets, using the DataCite DOI service."
+keywords = ["CKAN", "data", "doi"]
+license = { text = "GPL-3.0-or-later" }
+name = "ckanext-doi"
+readme = "README.md"
+requires-python = ">=3.6"
+version = "4.0.4"
+
+[project.entry-points."ckan.plugins"]
+doi = "ckanext.doi.plugin:DOIPlugin"
+
+[project.optional-dependencies]
+test = [
+  "mock",
+  "pytest>=4.6.5",
+  "pytest-cov>=2.7.1",
+  "coveralls"
+]
+
+[project.urls]
+changelog = "https://github.com/NaturalHistoryMuseum/ckanext-doi/blob/main/CHANGELOG.md"
+repository = "https://github.com/NaturalHistoryMuseum/ckanext-doi"
+
+[tool]
+
+[tool.commitizen]
+changelog_incremental = true
+name = "cz_nhm"
+tag_format = "v$version"
+update_changelog_on_bump = true
+version = "4.0.4"
+version_files = [
+  "pyproject.toml:version",
+  "CITATION.cff:^version"
+]
+
+[tool.docformatter]
+make-summary-multi-line = true
+pre-summary-newline = true
+wrap-descriptions = 88
+wrap-summaries = 88
+
+# COAT: upstream lint config removed so the repo-root ruff config
+# (which excludes this vendored tree) applies uniformly.
+[tool.setuptools]
+zip-safe = false
+
+[tool.setuptools.package-data]
+"ckanext.doi.migration" = ["*", "**/*"]
+"ckanext.doi.theme" = ["*", "**/*"]
+
+[tool.setuptools.packages.find]
+exclude = ["tests", "docs"]

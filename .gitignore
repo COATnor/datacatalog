@@ -19,6 +19,8 @@ downloads/
 eggs/
 .eggs/
 lib/
+# ... except the vendored ckanext-doi package tree
+!ckanext/ckanext-doi/ckanext/doi/lib/
 lib64/
 parts/
 sdist/

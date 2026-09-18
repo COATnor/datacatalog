@@ -1,4 +1,4 @@
-FROM ckan/ckan-solr:2.11-solr9-spatial
+FROM ckan/ckan-solr:2.12-solr9-spatial
 
 USER root
 
