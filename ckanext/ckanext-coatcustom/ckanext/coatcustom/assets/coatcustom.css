@@ -83,3 +83,7 @@ h1, h2, h3, li {
   background-color: #045e7a;
   padding: 20px 0;
 }
+
+.additional-info td.dataset-details {
+  overflow-wrap: anywhere;
+}
