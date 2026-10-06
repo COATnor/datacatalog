@@ -8,3 +8,20 @@
     <p class="empty">{{ h.humanize_entity_type('package', package.type, 'no description') or _("There is no description for this dataset.") }}</p>
   {% endif %}
 {% endblock %}
+
+{% block resources %}
+  {% if package.tags %}
+  <ul class="dataset-resources list-unstyled">
+    {% for tag in package.tags[:5] %}
+    <li>
+      <a href="{% url_for 'dataset.search', tags=tag.name %}" class="badge badge-default">{{ tag.display_name|truncate(22) }}</a>
+    </li>
+    {% endfor %}
+    {% if package.tags|length > 5 %}
+    <li>
+      <a href="{{ h.url_for(package.type ~ '.read', id=package.name) }}" class="badge badge-default">+{{ package.tags|length - 5 }} more</a>
+    </li>
+    {% endif %}
+  </ul>
+  {% endif %}
+{% endblock %}
