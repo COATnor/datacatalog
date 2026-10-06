@@ -75,6 +75,9 @@ def new_version(uid):
     # save the package
     package_new = toolkit.get_action("package_create")(context, package)
 
+    if package.get("type") != "dataset":
+        return h.redirect_to("dataset.read", id=base_name)
+
     # populate the new package with the old resources
     for original_resource in resources:
         # clone the resource
