@@ -1,0 +1,10 @@
+{% ckan_extends %}
+
+{% block notes %}
+  {% set notes = h.markdown_extract(package.notes, extract_length=300) %}
+  {% if notes %}
+    <div>{{ notes|urlize }}</div>
+  {% else %}
+    <p class="empty">{{ h.humanize_entity_type('package', package.type, 'no description') or _("There is no description for this dataset.") }}</p>
+  {% endif %}
+{% endblock %}
