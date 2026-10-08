@@ -65,11 +65,11 @@ class CoatPlugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm):
 
     def before_resource_update(self, context, obj, *args, **kwargs):
         resource = toolkit.get_action("resource_show")(context, obj)
-        helpers.is_protected(resource, action="update")
+        helpers.is_protected(resource, context, action="update")
 
     def before_resource_delete(self, context, obj, *args, **kwargs):
         resource = toolkit.get_action("resource_show")(context, obj)
-        helpers.is_protected(resource, action="delete")
+        helpers.is_protected(resource, context, action="delete")
 
     # IBlueprint
 

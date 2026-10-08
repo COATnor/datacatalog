@@ -54,16 +54,16 @@ def is_public(package):
     return not package.get("private", False)
 
 
-def is_protected(obj, action="update"):
+def is_protected(obj, context, action="update"):
     if is_resource(obj):
         if action == "update":
             return  # WORKAROUND FOR BULK UPLOAD
             raise toolkit.NotAuthorized("Cannot modify a resource: you have to delete it first")
-        package = get_package(obj)
+        package = get_package(obj, context)
     else:
         package = obj
     if is_public(package):
-        if g.userobj and g.userobj.sysadmin:
+        if is_sysadmin(context):
             return  # sysadmins may modify public datasets
         raise toolkit.NotAuthorized(
             "Public datasets cannot be modified: make it private if you "
