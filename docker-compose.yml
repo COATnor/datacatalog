@@ -59,8 +59,6 @@ x-common-ckan:
       condition: service_healthy
     pycsw:
       condition: service_started
-    bulk-download:
-      condition: service_started
     traefik:
       condition: service_started
   volumes:
@@ -137,6 +135,15 @@ services:
     profiles:
       - test
 
+  ckan-worker:
+    << : *common-ckan-prod
+    profiles:
+      - prod
+      - dev
+      - test
+    hostname: ckan-worker
+    command: ["ckan", "jobs", "worker"]
+
   test:
     profiles:
       - test
@@ -180,17 +187,6 @@ services:
       << : [*coat-env, *pycsw-env]
     volumes:
       - pycsw_data:/home/pycsw
-
-  bulk-download:
-    build: services/bulk-download
-    image: ghcr.io/coatnor/coat-bulk-download:main
-    environment:
-      << : *coat-env
-      COAT_PUBLIC_URL: http://127.0.0.1:${CKAN_PORT}/
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.bulk-download.rule=PathRegexp(`^/dataset/[^/]+/(zip|geojson)$`)
-      - traefik.http.services.bulk-download.loadbalancer.server.port=8000
 
   traefik:
     image: traefik:v3.6

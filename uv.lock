@@ -311,6 +311,15 @@ requires-dist = [
 provides-extras = ["test"]
 
 [[package]]
+name = "ckanext-downloadall"
+version = "0.3.0"
+source = { git = "https://github.com/SDM-TIB/ckanext-downloadall.git?tag=v0.3.0#5945d79290fe1e03ec6f2e3622ffb37a099ddc91" }
+dependencies = [
+    { name = "ckanapi" },
+    { name = "zipstream-ng" },
+]
+
+[[package]]
 name = "ckanext-oauth2"
 version = "1.2.2"
 source = { editable = "ckanext/ckanext-oauth2" }
@@ -406,6 +415,7 @@ dependencies = [
     { name = "ckanext-coatcustom" },
     { name = "ckanext-datasetversions" },
     { name = "ckanext-doi" },
+    { name = "ckanext-downloadall" },
     { name = "ckanext-oauth2" },
     { name = "ckanext-scheming" },
     { name = "ckanext-spatial" },
@@ -434,6 +444,7 @@ requires-dist = [
     { name = "ckanext-coatcustom", editable = "ckanext/ckanext-coatcustom" },
     { name = "ckanext-datasetversions", editable = "ckanext/ckanext-datasetversions" },
     { name = "ckanext-doi", editable = "ckanext/ckanext-doi" },
+    { name = "ckanext-downloadall", git = "https://github.com/SDM-TIB/ckanext-downloadall.git?tag=v0.3.0" },
     { name = "ckanext-oauth2", editable = "ckanext/ckanext-oauth2" },
     { name = "ckanext-scheming", git = "https://github.com/COATnor/ckanext-scheming.git?branch=skip-validation-if-parent" },
     { name = "ckanext-spatial", git = "https://github.com/ckan/ckanext-spatial.git?tag=v2.3.2" },
@@ -1585,6 +1596,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/58/40/0d783e14112e064127063fbf5d1fe1351723e5dfe9d6daad346a305f6c49/xmltodict-0.12.0.tar.gz", hash = "sha256:50d8c638ed7ecb88d90561beedbf720c9b4e851a9fa6c47ebd64e99d166d8a21", size = 18481, upload-time = "2019-02-11T07:00:24.529Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/28/fd/30d5c1d3ac29ce229f6bdc40bbc20b28f716e8b363140c26eff19122d8a5/xmltodict-0.12.0-py2.py3-none-any.whl", hash = "sha256:8bbcb45cc982f48b2ca8fe7e7827c5d792f217ecf1792626f808bf41c3b86051", size = 9170, upload-time = "2019-02-11T07:00:26.288Z" },
+]
+
+[[package]]
+name = "zipstream-ng"
+version = "1.9.3"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/f3/e0/76e5a674b0f6a6b7f90af9b87a92fbe1f2b97da447fb09078bcba6f6a28e/zipstream_ng-1.9.3.tar.gz", hash = "sha256:6cebd055025699c0af594c76a9452cdf13f4be67ee005b6907f0d3c9c6f44ced", size = 32729, upload-time = "2026-08-20T03:53:00.746Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/75/44/e6d863aebd6d57a1de20d2350328379b5b970c29a217af349793f12d753c/zipstream_ng-1.9.3-py3-none-any.whl", hash = "sha256:6614580d7ae56bc9f3c2a342210108450e2d191b62038e818bae7845612584b7", size = 23678, upload-time = "2026-08-20T03:52:59.846Z" },
 ]
 
 [[package]]
