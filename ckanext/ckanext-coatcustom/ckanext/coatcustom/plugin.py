@@ -6,6 +6,7 @@ from ckan.common import config
 
 import ckanext.coat.logic.action.create
 import ckanext.coat.logic.action.update
+import ckanext.coatcustom.analytics as analytics
 import ckanext.coatcustom.helpers as helpers
 import ckanext.coatcustom.logic.action.create
 import ckanext.coatcustom.logic.action.update
@@ -23,6 +24,7 @@ class CoatcustomPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IFacets, inherit=True)
     plugins.implements(plugins.ITemplateHelpers)
     plugins.implements(plugins.IValidators)
+    plugins.implements(plugins.IMiddleware, inherit=True)
     plugins.implements(IDoi, inherit=True)
 
     # IBlueprint
@@ -35,6 +37,16 @@ class CoatcustomPlugin(plugins.SingletonPlugin):
         toolkit.add_template_directory(config_, "templates")
         toolkit.add_public_directory(config_, "public")
         toolkit.add_resource("assets", "coatcustom")
+
+    # IMiddleware
+
+    def make_middleware(self, app, config):
+        @app.after_request
+        def track_downloads(response):
+            analytics.track(response)
+            return response
+
+        return app
 
     # IPackageController
 

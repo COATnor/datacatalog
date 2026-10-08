@@ -421,6 +421,7 @@ dependencies = [
     { name = "ckanext-spatial" },
     { name = "crudini" },
     { name = "gunicorn" },
+    { name = "requests" },
     { name = "sentry-sdk" },
 ]
 
@@ -450,6 +451,7 @@ requires-dist = [
     { name = "ckanext-spatial", git = "https://github.com/ckan/ckanext-spatial.git?tag=v2.3.2" },
     { name = "crudini", specifier = ">=0.9.6" },
     { name = "gunicorn", specifier = ">=23.0.0" },
+    { name = "requests", specifier = ">=2.28" },
     { name = "sentry-sdk", specifier = ">=2.68.0" },
 ]
 
