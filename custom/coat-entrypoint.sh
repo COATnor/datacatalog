@@ -91,6 +91,7 @@ conf_set_list ckan.plugins datasetversions
 
 #ckanext-downloadall
 conf_set_list ckan.plugins downloadall
+conf_set ckanext.coat.plausible_download_events "${PLAUSIBLE_DOWNLOAD_TRACKING:-false}"
 
 #ckanext-coat
 conf_set_list ckan.plugins coat
