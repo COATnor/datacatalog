@@ -59,8 +59,6 @@ x-common-ckan:
       condition: service_healthy
     pycsw:
       condition: service_started
-    bulk-download:
-      condition: service_started
     traefik:
       condition: service_started
   volumes:
@@ -68,11 +66,12 @@ x-common-ckan:
       ckan_storage:/var/lib/ckan
   healthcheck:
     test: ["CMD", "wget", "-qO", "/dev/null", "localhost:5000/dataset/"]
-  labels:
-    - traefik.enable=true
-    - traefik.http.routers.ckan.rule=PathPrefix(`/`)
-    - traefik.http.routers.ckan.priority=1
-    - traefik.http.services.ckan.loadbalancer.server.port=5000
+
+x-ckan-traefik-labels: &ckan-traefik-labels
+  - traefik.enable=true
+  - traefik.http.routers.ckan.rule=PathPrefix(`/`)
+  - traefik.http.routers.ckan.priority=1
+  - traefik.http.services.ckan.loadbalancer.server.port=5000
 
 x-common-ckan-prod:
   &common-ckan-prod
@@ -106,11 +105,13 @@ services:
     << : *common-ckan-prod
     profiles:
       - prod
+    labels: *ckan-traefik-labels
 
   ckan-dev:
     << : *common-ckan-dev
     profiles:
       - dev
+    labels: *ckan-traefik-labels
     command: 'python -m pdb -c continue /usr/lib/ckan/.venv/bin/ckan run --host 0.0.0.0 --passthrough-errors'
     tty: true
     stdin_open: true
@@ -123,6 +124,7 @@ services:
     << : *common-ckan
     profiles:
       - test
+    labels: *ckan-traefik-labels
     volumes:
       - tokens:/tokens
     entrypoint: ["bash", "/coat-entrypoint-dev.sh"]
@@ -136,6 +138,21 @@ services:
     image: lightpanda/browser:nightly
     profiles:
       - test
+
+  ckan-worker:
+    << : *common-ckan-prod
+    profiles:
+      - prod
+      - dev
+      - test
+    hostname: ckan-worker
+    command: ["ckan", "jobs", "worker"]
+    healthcheck:
+      disable: true
+    networks:
+      default:
+        aliases:
+          - ckan-worker
 
   test:
     profiles:
@@ -180,17 +197,6 @@ services:
       << : [*coat-env, *pycsw-env]
     volumes:
       - pycsw_data:/home/pycsw
-
-  bulk-download:
-    build: services/bulk-download
-    image: ghcr.io/coatnor/coat-bulk-download:main
-    environment:
-      << : *coat-env
-      COAT_PUBLIC_URL: http://127.0.0.1:${CKAN_PORT}/
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.bulk-download.rule=PathRegexp(`^/dataset/[^/]+/(zip|geojson)$`)
-      - traefik.http.services.bulk-download.loadbalancer.server.port=8000
 
   traefik:
     image: traefik:v3.6

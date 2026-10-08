@@ -89,6 +89,9 @@ conf_set ckan.oauth2.profile_api_mail_field email
 #ckanext-datasetversions
 conf_set_list ckan.plugins datasetversions
 
+#ckanext-downloadall
+conf_set_list ckan.plugins downloadall
+
 #ckanext-coat
 conf_set_list ckan.plugins coat
 conf_set ckanext.coat.resource_name_globally_unique true

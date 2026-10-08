@@ -864,7 +864,7 @@ class TestStateVariableScientificName:
 
 class TestBulkDownload:
     def test_zip_download(self, client, org):
-        """Download a public dataset as zip — response is a valid zip archive."""
+        """Legacy /zip URL redirects to downloadall and yields a valid archive."""
         pkg = client.create_package(org["id"], author=TEST_USER_EMAIL)
         client.action(
             "resource_create",
@@ -873,7 +873,9 @@ class TestBulkDownload:
             url=f"{BASE}/api/3/action/status_show",
         )
         client.publish(pkg["id"])
-        resp = requests.get(f"{BASE}/dataset/{pkg['name']}/zip", timeout=10)
+        resp = requests.get(f"{BASE}/dataset/{pkg['name']}/zip", timeout=120)
+        assert [r.status_code for r in resp.history] == [302]
+        assert "download_all" in resp.history[0].headers["location"]
         assert resp.status_code == 200, f"Expected 200, got {resp.status_code}"
         assert resp.headers["content-type"] == "application/zip"
         zf = zipfile.ZipFile(BytesIO(resp.content))

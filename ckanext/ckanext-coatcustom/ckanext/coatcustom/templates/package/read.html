@@ -50,7 +50,9 @@
   {% endblock %}
 
   {% block package_resources %}
+    {# Pop the pre-generated bundle, as ckanext-downloadall's own template does #}
+    {% set zip_res = h.downloadall__pop_zip_resource(pkg) %}
     {% snippet "package/snippets/resources_list.html", pkg=pkg, resources=pkg.resources, is_activity_archive=is_activity_archive %}
   {% endblock %}
 
-{% endblock %}
+  {% endblock %}

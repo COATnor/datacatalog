@@ -26,9 +26,6 @@ jobs:
           - context: services/pycsw-server
             image_name: pycsw
             dockerfile: services/pycsw-server/Dockerfile
-          - context: services/bulk-download
-            image_name: coat-bulk-download
-            dockerfile: services/bulk-download/Dockerfile
           - context: services/solr
             image_name: solr
             dockerfile: services/solr/Dockerfile

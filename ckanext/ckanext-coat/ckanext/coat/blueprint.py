@@ -80,6 +80,10 @@ def new_version(uid):
 
     # populate the new package with the old resources
     for original_resource in resources:
+        # Skip ckanext-downloadall's pre-generated bundle: it describes the
+        # previous version's data and would be hardlinked into the new one.
+        if original_resource.get("downloadall_metadata_modified"):
+            continue
         # clone the resource
         resource = copy.deepcopy(original_resource)
         for key in ("id", "revision_id"):
@@ -101,4 +105,9 @@ def new_version(uid):
     return h.redirect_to("dataset.read", id=base_name)
 
 
+def legacy_zip(uid):
+    return h.redirect_to("downloadall_stream.download_all", dataset_id=uid)
+
+
 coat.add_url_rule("/dataset/<uid>/new_version", view_func=new_version)
+coat.add_url_rule("/dataset/<uid>/zip", view_func=legacy_zip)
