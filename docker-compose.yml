@@ -116,7 +116,7 @@ services:
     environment:
       << : *common-ckan-env-dev
       WERKZEUG_DEBUG_PIN: 5000
-      GUNICORN_CMD_ARGS: "--workers 4 --worker-class sync --timeout 60"
+      GUNICORN_CMD_ARGS: "--worker-class gthread --workers 2 --threads 8 --timeout 60"
 
   ckan-test:
     << : *common-ckan
@@ -129,7 +129,7 @@ services:
     environment:
       << : *common-ckan-env-dev
       CKAN_SITE_URL: http://traefik
-      GUNICORN_CMD_ARGS: "--workers 4 --worker-class sync --timeout 60"
+      GUNICORN_CMD_ARGS: "--worker-class gthread --workers 2 --threads 8 --timeout 60"
 
   lightpanda:
     image: lightpanda/browser:nightly
