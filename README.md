@@ -24,11 +24,9 @@ This repository contains a complete, production-ready deployment of CKAN tailore
 flowchart TB
     traefik["traefik"] --> ckan["CKAN"]
     traefik --> pycsw["pycsw"]
-    traefik --> bulk["bulk-download"]
     traefik --> solr[("Solr")]
 
     pycsw --> ckan
-    bulk --> ckan
 
     ckan --> db[("PostgreSQL")]
     ckan --> solr
@@ -169,7 +167,6 @@ docker compose logs -f ckan
 │   ├── coat-entrypoint.sh   # Production entrypoint
 │   └── coat-entrypoint-dev.sh
 ├── services/                # Supporting services
-│   ├── bulk-download/       # ZIP download service
 │   ├── pycsw/               # OGC CSW service
 ├── scripts/                 # Utility scripts
 ├── tests/                   # Integration tests

@@ -37,7 +37,7 @@ def package_update(context, data_dict):
     old_private = toolkit.asbool(package.get("private", False))
     is_staying_public = not new_private and not old_private
     if is_staying_public:
-        is_protected(package)
+        is_protected(package, context)
 
     # ckanext-scheming workaround
     base_name = extras_dict(package).get("base_name")

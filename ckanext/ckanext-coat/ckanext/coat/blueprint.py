@@ -101,4 +101,9 @@ def new_version(uid):
     return h.redirect_to("dataset.read", id=base_name)
 
 
+def legacy_zip(uid):
+    return h.redirect_to("downloadall_stream.download_all", dataset_id=uid)
+
+
 coat.add_url_rule("/dataset/<uid>/new_version", view_func=new_version)
+coat.add_url_rule("/dataset/<uid>/zip", view_func=legacy_zip)

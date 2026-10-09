@@ -35,6 +35,7 @@ x-common-ckan-env:
   CKAN_OAUTH2_CLIENT_SECRET: ${CKAN_OAUTH2_CLIENT_SECRET}
   # Sentry
   SENTRY_DSN: ${SENTRY_DSN:-}
+  PLAUSIBLE_DOWNLOAD_TRACKING: ${PLAUSIBLE_DOWNLOAD_TRACKING:-}
   # DOI
   DOI_PREFIX: ${DOI_PREFIX}
   DOI_ACCOUNT_NAME: ${DOI_ACCOUNT_NAME}
@@ -58,8 +59,6 @@ x-common-ckan:
     redis:
       condition: service_healthy
     pycsw:
-      condition: service_started
-    bulk-download:
       condition: service_started
     traefik:
       condition: service_started
@@ -117,7 +116,7 @@ services:
     environment:
       << : *common-ckan-env-dev
       WERKZEUG_DEBUG_PIN: 5000
-      GUNICORN_CMD_ARGS: "--workers 4 --worker-class sync --timeout 60"
+      GUNICORN_CMD_ARGS: "--worker-class gthread --workers 2 --threads 8 --timeout 60"
 
   ckan-test:
     << : *common-ckan
@@ -130,12 +129,21 @@ services:
     environment:
       << : *common-ckan-env-dev
       CKAN_SITE_URL: http://traefik
-      GUNICORN_CMD_ARGS: "--workers 4 --worker-class sync --timeout 60"
+      GUNICORN_CMD_ARGS: "--worker-class gthread --workers 2 --threads 8 --timeout 60"
 
   lightpanda:
     image: lightpanda/browser:nightly
     profiles:
       - test
+
+  ckan-worker:
+    << : *common-ckan-prod
+    profiles:
+      - prod
+      - dev
+      - test
+    hostname: ckan-worker
+    command: ["ckan", "jobs", "worker"]
 
   test:
     profiles:
@@ -180,17 +188,6 @@ services:
       << : [*coat-env, *pycsw-env]
     volumes:
       - pycsw_data:/home/pycsw
-
-  bulk-download:
-    build: services/bulk-download
-    image: ghcr.io/coatnor/coat-bulk-download:main
-    environment:
-      << : *coat-env
-      COAT_PUBLIC_URL: http://127.0.0.1:${CKAN_PORT}/
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.bulk-download.rule=PathRegexp(`^/dataset/[^/]+/(zip|geojson)$`)
-      - traefik.http.services.bulk-download.loadbalancer.server.port=8000
 
   traefik:
     image: traefik:v3.6
