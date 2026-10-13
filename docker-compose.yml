@@ -140,6 +140,7 @@ services:
     image: lightpanda/browser:nightly
     profiles:
       - test
+    command: ["/bin/lightpanda", "serve", "--host", "0.0.0.0", "--port", "9222", "--advertise-host", "lightpanda"]
 
   ckan-worker:
     << : *common-ckan-prod
