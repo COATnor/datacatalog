@@ -16,7 +16,7 @@ from pygeometa.core import read_mcf
 from pygeometa.schemas.iso19139 import ISO19139OutputSchema
 from shapely.geometry import shape
 from sqlalchemy.exc import OperationalError
-from tenacity import before_sleep_log, retry, retry_if_exception_type, stop_after_delay
+from tenacity import before_sleep_log, retry, retry_if_exception_type, stop_after_delay, wait_fixed
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
@@ -121,6 +121,7 @@ def normalize_datetime(timestamp):
 
 @retry(
     stop=stop_after_delay(int(os.getenv("TIMEOUT", 300))),
+    wait=wait_fixed(30),
     retry=retry_if_exception_type((requests.ConnectionError, requests.Timeout)),
     before_sleep=before_sleep_log(log, logging.WARNING),
 )
@@ -132,10 +133,10 @@ def main():
     except OperationalError:
         log.debug("Database already set up")
 
+    fullnames = fetch_fullnames(COAT_URL)
+
     pycsw.core.admin.delete_records(context, DATABASE, TABLE)
     repo = repository.Repository(DATABASE, context, table=TABLE)
-
-    fullnames = fetch_fullnames(COAT_URL)
 
     # https://github.com/geopython/pygeometa/blob/0.19.0/pygeometa/schemas/iso19139/contact.j2
     for dataset in get_datasets(COAT_URL):
