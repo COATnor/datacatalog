@@ -7,6 +7,7 @@ from ckan.common import config
 import ckanext.coat.logic.action.create
 import ckanext.coat.logic.action.update
 import ckanext.coatcustom.analytics as analytics
+import ckanext.coatcustom.embargo as embargo
 import ckanext.coatcustom.helpers as helpers
 import ckanext.coatcustom.logic.action.create
 import ckanext.coatcustom.logic.action.update
@@ -41,6 +42,11 @@ class CoatcustomPlugin(plugins.SingletonPlugin):
     # IMiddleware
 
     def make_middleware(self, app, config):
+        @app.before_request
+        def block_embargoed_bulk_download():
+            if embargo.blocked_dataset(toolkit.request.path):
+                toolkit.abort(403, toolkit._("Dataset under embargo"))
+
         @app.after_request
         def track_downloads(response):
             analytics.track(response)

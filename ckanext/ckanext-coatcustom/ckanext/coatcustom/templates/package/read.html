@@ -50,8 +50,21 @@
   {% endblock %}
 
   {% block package_resources %}
+    {# NOTE: this block intentionally does not call super(): coatcustom owns
+       the read page, so ckanext-downloadall's button block never runs.
+       The Download-all entry point is rendered here instead, matching the
+       zip badge in read_base.html: shown to everyone, hidden while a
+       dataset is under embargo. #}
     {# Pop the pre-generated bundle, as ckanext-downloadall's own template does #}
     {% set zip_res = h.downloadall__pop_zip_resource(pkg) %}
+    {% if pkg.resources and not h.coat_has_active_embargo(pkg) %}
+      <div class="btn-group" style="float:right; margin-top: -7px;">
+        {% set download_url = h.url_for('downloadall_stream.download_all', dataset_id=pkg.name) %}
+        <a class="btn btn-primary resource-url-analytics" href="{{ download_url }}">
+          <i class="fa fa-arrow-circle-o-down"></i> {{ _('Download all') }}
+        </a>
+      </div>
+    {% endif %}
     {% snippet "package/snippets/resources_list.html", pkg=pkg, resources=pkg.resources, is_activity_archive=is_activity_archive %}
   {% endblock %}
 

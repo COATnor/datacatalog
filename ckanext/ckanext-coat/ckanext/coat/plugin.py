@@ -81,6 +81,7 @@ class CoatPlugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm):
     def get_helpers(self):
         return {
             "coat_is_under_embargo": helpers.is_under_embargo,
+            "coat_has_active_embargo": helpers.has_active_embargo,
         }
 
     # IDatasetForm

@@ -1,3 +1,6 @@
+import logging
+from datetime import datetime
+
 import ckan.lib.uploader as uploader
 import ckan.logic as logic
 import ckan.model as model
@@ -5,6 +8,8 @@ import ckan.plugins.toolkit as toolkit
 from ckan.common import g
 
 from ckanext.coat import auth
+
+log = logging.getLogger(__name__)
 
 
 def is_sysadmin(context):
@@ -100,3 +105,41 @@ def is_under_embargo(package):
     except logic.NotAuthorized:
         return True
     return False
+
+
+def embargo_end_date(package):
+    """Raw embargo end-date value, from top-level key or extras (either shape)."""
+    embargo = package.get("embargo", None)
+    if embargo is None:
+        extras = package.get("extras", {})
+        if isinstance(extras, dict):
+            embargo = extras.get("embargo")
+        else:
+            for item in extras or []:
+                if item.get("key") == "embargo":
+                    embargo = item.get("value")
+                    break
+    return embargo
+
+
+def has_active_embargo(package):
+    """Whether the dataset has a future embargo end date, for any viewer.
+
+    Unlike is_under_embargo (which is access-aware), bulk download fetches
+    resources server-side without the viewer's credentials, so it is broken
+    for embargoed datasets for everyone — gate on the date alone.
+
+    Fails closed: an embargo value that cannot be read as a date is treated
+    as still in force, so a malformed value can never unlock data.
+    """
+    raw = str(embargo_end_date(package) or "").strip()
+    if not raw:
+        return False
+    try:
+        # Tolerate the datetime form the scheming form snippet renders
+        # ("2030-01-01 00:00:00") as well as a bare date.
+        end = datetime.strptime(raw[:10], "%Y-%m-%d")
+    except ValueError:
+        log.warning("Unparseable embargo value %r; treating as active", raw)
+        return True
+    return datetime.now() < end

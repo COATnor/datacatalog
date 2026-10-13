@@ -1,5 +1,3 @@
-from datetime import datetime
-
 import ckan.plugins.toolkit as toolkit
 
 import ckanext.coat.helpers as h
@@ -13,10 +11,8 @@ def embargo_access(context, data_dict):
     auth_user = context.get("auth_user_obj")
     is_anonymous = not auth_user or not getattr(auth_user, "is_authenticated", bool(auth_user))
     if is_anonymous:
-        embargo = package.get("embargo", None)
-        if embargo:
-            try:
-                if datetime.now() < datetime.strptime(embargo, "%Y-%m-%d"):
-                    raise toolkit.NotAuthorized(f"The dataset is under embargo until {embargo}.")
-            except ValueError:
-                pass  # warning
+        # has_active_embargo fails closed: an unreadable embargo value keeps
+        # the data restricted rather than releasing it.
+        embargo = h.embargo_end_date(package)
+        if h.has_active_embargo(package):
+            raise toolkit.NotAuthorized(f"The dataset is under embargo until {embargo}.")
