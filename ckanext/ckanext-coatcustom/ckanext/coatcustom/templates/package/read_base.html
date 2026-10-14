@@ -42,7 +42,7 @@
     {% endblock %}
     <span>
     {# ckanext.coat customization - start #}
-    {% if h.coat_is_under_embargo(pkg) %}
+    {% if h.coat_has_active_embargo(pkg) %}
       <span class="badge bg-warning text-dark">Dataset under embargo</span>
     {% else %}
       <a class="badge bg-primary" href="/dataset/{{ pkg.name }}/zip">Download {{ pkg.name }}.zip</a>

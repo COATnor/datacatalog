@@ -10,6 +10,7 @@ Requires:
 
 import json
 import os
+import time
 import uuid
 import zipfile
 from datetime import datetime, timedelta
@@ -624,6 +625,18 @@ class TestAnonymousAccess:
 
 
 class TestAuthorEmailDerivation:
+    @staticmethod
+    def _search_until_indexed(client, query, package_id, timeout=30):
+        """Poll package_search until the package surfaces; Solr indexes async."""
+        deadline = datetime.now() + timedelta(seconds=timeout)
+        result = {"count": 0, "results": []}
+        while datetime.now() < deadline:
+            result = client.action("package_search", q=query)
+            if any(item["id"] == package_id for item in result["results"]):
+                return result
+            time.sleep(1)
+        return result
+
     def test_dataset_author_email_is_string(self, client, org, pkg):
         """A dataset's author_email is derived from author as a plain string."""
         shown = client.action("package_show", id=pkg["id"])
@@ -725,10 +738,12 @@ class TestAuthorEmailDerivation:
 
     def test_search_index_has_no_derived_fields(self, client, org, pkg):
         """Derived fields are not stored in the Solr index (search results)."""
-        tag = uid()
-        client.update_package(pkg["id"], tag_string=tag, private=False)
-        result = client.action("package_search", q=tag)
-        assert result["count"] >= 1, f"Expected package to be findable, got {result['count']}"
+        client.update_package(pkg["id"], private=False)
+        shown = client.action("package_show", id=pkg["id"])
+        # Query by name: a random tag token matches hundreds of packages, so
+        # the dataset can fall outside the default result window.
+        result = self._search_until_indexed(client, f"name:{shown['name']}", pkg["id"])
+        assert result["count"] == 1, f"Expected exactly one hit, got {result['count']}"
         found = False
         for item in result["results"]:
             if item["id"] != pkg["id"]:
@@ -863,8 +878,13 @@ class TestStateVariableScientificName:
 
 
 class TestBulkDownload:
-    def test_zip_download(self, client, org):
-        """Download a public dataset as zip — response is a valid zip archive."""
+    def test_anon_bulk_download_allowed(self, client, org):
+        """Public non-embargoed data is downloadable without logging in.
+
+        Pins the endpoint to the UI: the read page shows the Download-all
+        button and zip badge to anonymous visitors, so the endpoint must
+        serve them too.
+        """
         pkg = client.create_package(org["id"], author=TEST_USER_EMAIL)
         client.action(
             "resource_create",
@@ -873,11 +893,45 @@ class TestBulkDownload:
             url=f"{BASE}/api/3/action/status_show",
         )
         client.publish(pkg["id"])
-        resp = requests.get(f"{BASE}/dataset/{pkg['name']}/zip", timeout=10)
+        resp = requests.get(f"{BASE}/dataset/{pkg['name']}/download_all", timeout=120)
+        assert resp.status_code == 200, f"Expected 200, got {resp.status_code}"
+        assert resp.headers["content-type"] == "application/zip"
+
+    def test_zip_download(self, client, org):
+        """Legacy /zip URL redirects to downloadall and yields a valid archive."""
+        pkg = client.create_package(org["id"], author=TEST_USER_EMAIL)
+        client.action(
+            "resource_create",
+            package_id=pkg["id"],
+            name="data.csv",
+            url=f"{BASE}/api/3/action/status_show",
+        )
+        client.publish(pkg["id"])
+        resp = requests.get(f"{BASE}/dataset/{pkg['name']}/zip", timeout=120)
+        assert [r.status_code for r in resp.history] == [302]
+        assert "download_all" in resp.history[0].headers["location"]
         assert resp.status_code == 200, f"Expected 200, got {resp.status_code}"
         assert resp.headers["content-type"] == "application/zip"
         zf = zipfile.ZipFile(BytesIO(resp.content))
         assert zf.namelist()
+
+    def test_embargoed_bulk_download_refused(self, client, org):
+        """Embargoed datasets get a clean 403, not a mid-stream failure."""
+        embargo = (datetime.now() + timedelta(days=30)).strftime("%Y-%m-%d")
+        pkg = client.create_package(org["id"], author=TEST_USER_EMAIL, embargo=embargo)
+        client.action(
+            "resource_create",
+            package_id=pkg["id"],
+            name="data.csv",
+            url=f"{BASE}/api/3/action/status_show",
+        )
+        client.publish(pkg["id"])
+        for url in (
+            f"{BASE}/dataset/{pkg['name']}/download_all",
+            f"{BASE}/dataset/{pkg['name']}/zip",
+        ):
+            resp = requests.get(url, timeout=60)
+            assert resp.status_code == 403, f"{url}: expected 403, got {resp.status_code}"
 
 
 class TestPycsw:
