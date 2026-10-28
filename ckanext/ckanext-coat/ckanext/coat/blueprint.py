@@ -28,7 +28,7 @@ def new_version(uid):
     # check if package exists
     try:
         package = toolkit.get_action("package_show")(context, data_dict)
-    except (logic.NotFound, logic.NotAuthorized):
+    except logic.NotFound, logic.NotAuthorized:
         base.abort(404, _("Dataset not found"))
 
     # always fork from the latest version (package_show on the base name resolves to it).
@@ -36,7 +36,7 @@ def new_version(uid):
     if package.get("name") != base_name:
         try:
             package = toolkit.get_action("package_show")(context, {"id": base_name})
-        except (logic.NotFound, logic.NotAuthorized):
+        except logic.NotFound, logic.NotAuthorized:
             base.abort(404, _("Dataset not found"))
 
     resources = package["resources"]

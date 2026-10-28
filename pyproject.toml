@@ -34,7 +34,7 @@ description = "CKAN-based data catalog for natural heritage data"
 license = "GPL-3.0+"
 name = "coat_datacatalog"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.14,<3.15"
 version = "0.1.0"
 
 [tool.deptry]

@@ -24,7 +24,7 @@ def bool_to_str(value):
 def commalist_to_json(value):
     try:
         return json.loads(value)
-    except (TypeError, ValueError):
+    except TypeError, ValueError:
         if isinstance(value, str):
             return value.split(",")
         else:

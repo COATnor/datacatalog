@@ -2,7 +2,7 @@
 
 set -ex
 
-VERSION="2.11.4"
+VERSION="2.12.1"
 
 uvx crudini --set pyproject.toml project dependencies '[]'
 

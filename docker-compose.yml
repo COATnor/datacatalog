@@ -176,7 +176,7 @@ services:
       - tokens:/tokens:ro
 
   pycsw:
-    image: geopython/pycsw:3.0.0-beta3
+    image: geopython/pycsw:3.0.0-beta4
     environment:
       << : *pycsw-env
       PYCSW_CONFIG: /etc/pycsw.yml

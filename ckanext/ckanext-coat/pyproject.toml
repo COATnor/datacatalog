@@ -10,7 +10,7 @@ description = "COAT extensions for CKAN"
 license = "AGPL-3.0-or-later"
 name = "ckanext-coat"
 readme = "README.rst"
-requires-python = ">=3.11"
+requires-python = ">=3.14,<3.15"
 version = "0.0.1"
 
 [project.entry-points."babel.extractors"]

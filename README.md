@@ -57,7 +57,7 @@ flowchart TB
 
 **Dependencies:**
 - Docker 20.10+ with Compose V2
-- Python 3.11+ (for scripts only)
+- Python 3.14+ (for scripts only)
 - Git with submodule support
 
 ## Quick Start
