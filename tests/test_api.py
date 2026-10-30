@@ -613,6 +613,33 @@ class TestSearchFacets:
         assert "Lemmus lemmus" in facets["scientific_names"]
 
 
+class TestSpatialRecompute:
+    def test_update_same_location_without_spatial_restores_it(self, client, org):
+        pkg = client.create_package(org["id"], author=TEST_USER_EMAIL, location="Finnmark")
+        assert "spatial" in extras(pkg)
+        payload = {
+            k: v
+            for k, v in pkg.items()
+            if not k.startswith("metadata_") and k not in ("organization", "tracking_summary")
+        }
+        payload["notes"] = f"spatial recompute {uid()}"
+        payload["extras"] = [e for e in pkg["extras"] if e["key"] != "spatial"]
+        updated = client.action("package_update", **payload)
+        assert "spatial" in extras(updated)
+
+    def test_update_same_location_without_extras_restores_spatial(self, client, org):
+        pkg = client.create_package(org["id"], author=TEST_USER_EMAIL, location="Finnmark")
+        payload = {
+            k: v
+            for k, v in pkg.items()
+            if not k.startswith("metadata_") and k not in ("organization", "tracking_summary")
+        }
+        payload["notes"] = f"spatial recompute {uid()}"
+        del payload["extras"]
+        updated = client.action("package_update", **payload)
+        assert "spatial" in extras(updated)
+
+
 # ---------------------------------------------------------------------------
 # Anonymous access
 # ---------------------------------------------------------------------------
