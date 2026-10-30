@@ -13,7 +13,8 @@ _get_or_bust = logic.get_or_bust
 
 
 def data_dict_with_spatial(context, data_dict, old_location=None):
-    if old_location is not None and old_location == data_dict.get("location"):
+    has_spatial = any(e.get("key") == "spatial" for e in data_dict.get("extras") or [])
+    if old_location is not None and old_location == data_dict.get("location") and has_spatial:
         return data_dict
     # t = _get_or_bust(data_dict, "type")
     t = "dataset"
