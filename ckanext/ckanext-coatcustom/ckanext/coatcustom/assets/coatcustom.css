@@ -84,6 +84,8 @@ h1, h2, h3, li {
   padding: 20px 0;
 }
 
-.additional-info td.dataset-details {
+.additional-info td.dataset-details,
+.notes,
+.dataset-content {
   overflow-wrap: anywhere;
 }
