@@ -3,9 +3,10 @@ API-level integration tests for COAT CKAN extensions.
 
 Runs against a live CKAN instance (COAT_URL env var or http://localhost:5000).
 Requires:
-  - ckan.auth.create_user_via_api = true
   - ckan.auth.user_create_organizations = true
   - coat / coatcustom / datasetversions plugins enabled
+  - a regular (non-sysadmin) test user created by the test entrypoint,
+    with its token at /tokens/api_user_token or $CKAN_TEST_USER_TOKEN
 """
 
 import json
@@ -23,10 +24,12 @@ import requests
 from tenacity import retry, stop_after_delay, wait_fixed
 
 BASE = os.environ.get("COAT_URL", "http://localhost:5000")
-_RUN_ID = uuid.uuid4().hex[:8]
 
-TEST_USER_NAME = f"test_apiuser_{_RUN_ID}"
-TEST_USER_EMAIL = f"apiuser_{_RUN_ID}@uit.no"
+# Fixed identity: the user is created once by the test entrypoint (see
+# custom/coat-entrypoint-dev.sh) and its token is shared via the /tokens
+# volume, so the name must be stable across runs.
+TEST_USER_NAME = "test_apiuser"
+TEST_USER_EMAIL = "apiuser@uit.no"
 TEST_USER_PASSWORD = "TestPassword123!"  # pragma: allowlist secret
 TEST_USER_FULLNAME = "Test API User"
 
@@ -190,6 +193,14 @@ def client():
     _wait_for_ckan()
     anon = CKANClient(BASE)
     api_key = None
+
+    # --- Test entrypoint path: regular user created via the CKAN CLI ---
+    # The oauth2 plugin blocks user_create for everyone (including
+    # sysadmins), so the dev entrypoint creates the user with the CLI and
+    # writes its token to the shared /tokens volume.
+    user_token = os.environ.get("CKAN_TEST_USER_TOKEN") or _read_file("/tokens/api_user_token")
+    if user_token:
+        return CKANClient(BASE, user_token)
 
     # --- CKAN 2.10+ path: api keys removed; use sysadmin token ---
     sysadmin_key = os.environ.get("CKAN_API_KEY") or _read_file("/tokens/api_token")
