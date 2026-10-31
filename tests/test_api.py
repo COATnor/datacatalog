@@ -581,6 +581,15 @@ class TestSpatialSearch:
         assert pkg["id"] not in ids
 
 
+class TestOrganizationSearchErrors:
+    """Malformed Solr queries render an error page, not a 500."""
+
+    @pytest.mark.parametrize("params", [{"tags": 'x"))))'}, {"q": '"'}])
+    def test_malformed_query_does_not_crash_org_page(self, org, params):
+        resp = requests.get(f"{BASE}/organization/{org['name']}", params=params, timeout=30)
+        assert resp.status_code == 200, resp.text[:500]
+
+
 class TestSearchFacets:
     """Faceting on the tokenized locations/scientific_names Solr fields."""
 
