@@ -1,7 +1,8 @@
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
-from ckan.common import config
+from ckan.common import config, g, login_user, request
 from ckan.config.declaration import Declaration, Key
+from ckan.lib.api_token import get_user_from_token
 
 import ckanext.coat.logic.action.create
 import ckanext.coat.logic.action.delete
@@ -21,6 +22,7 @@ class CoatPlugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm):
     plugins.implements(plugins.IValidators)
     # https://github.com/NaturalHistoryMuseum/ckanext-doi/issues/126
     plugins.implements(plugins.IConfigDeclaration, inherit=True)
+    plugins.implements(plugins.IAuthenticator)
 
     # IConfigurer
 
@@ -43,6 +45,54 @@ class CoatPlugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm):
         # ckanext.doi.site_url is intentionally not declared: ckanext-doi
         # reads it with a fallback to ckan.site_url, and declaring it would
         # inject None and break that fallback.
+
+    # IAuthenticator
+
+    def _user_from_legacy_api_token_header(self):
+        """User for the API token sent in the legacy ``X-CKAN-API-Key``
+        header, or None.
+
+        CKAN < 2.11 read the API token from ``apikey_header_name`` (default
+        ``X-CKAN-API-KEY``); since 2.11 the token is only read from the header
+        named by ``apitoken_header_name`` (default ``Authorization``), so
+        tokens sent in the legacy header are otherwise silently ignored,
+        leaving older clients (e.g. ckanr < 2025-11) anonymous and without
+        access to private datasets.
+        """
+        token = request.headers.get("X-CKAN-API-KEY")
+        if not token:
+            return None
+        return get_user_from_token(token)
+
+    def identify_user(self, user_id=None):
+        """New-style IAuthenticator hook, used by CKAN's Flask-Login request
+        loader.
+
+        Note: ckanext-oauth2 replaces that loader with its own on the first
+        request, so after that only ``identify`` (below) runs.
+        """
+        user = self._user_from_legacy_api_token_header()
+        if user is not None:
+            # same effect as CKAN's own header-based login: disable CSRF
+            # protection for this request
+            g.login_via_auth_header = True
+        return user
+
+    def identify(self):
+        """Deprecated side-effect hook, still invoked by CKAN 2.12 for every
+        IAuthenticator plugin on every request.
+
+        ckanext-oauth2 replaces CKAN's Flask-Login request loader with its
+        own (which only checks the ``Authorization``/``X-Tapis-Token``
+        headers), so the legacy header can only be honoured here, by logging
+        the user in directly.
+        """
+        user = self._user_from_legacy_api_token_header()
+        if user is None:
+            return None
+        g.login_via_auth_header = True
+        login_user(user)
+        return None
 
     # IActions
 
