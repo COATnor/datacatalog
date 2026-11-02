@@ -75,10 +75,16 @@ def new_version(uid):
     # save the package
     package_new = toolkit.get_action("package_create")(context, package)
 
-    if package.get("type") != "dataset":
-        return h.redirect_to("dataset.read", id=base_name)
+    # Only datasets carry data resources. State variables, protocols, DMPs and
+    # any other scheming type start a new version with an empty resource list.
+    if package.get("type") == "dataset":
+        _clone_resources(context, package_new, resources)
 
-    # populate the new package with the old resources
+    return h.redirect_to("dataset.read", id=base_name)
+
+
+def _clone_resources(context, package, resources):
+    """Copy resources (and uploaded files) from the previous version."""
     for original_resource in resources:
         # Skip ckanext-downloadall's pre-generated bundle: it describes the
         # previous version's data and would be hardlinked into the new one.
@@ -90,7 +96,7 @@ def new_version(uid):
             if key in resource:
                 del resource[key]
         # modify the new resource
-        resource["package_id"] = package_new["id"]
+        resource["package_id"] = package["id"]
         if resource["url_type"] != "upload":
             resource["url"] = resource["name"]
         resource_new = toolkit.get_action("resource_create")(context, resource)
@@ -101,8 +107,6 @@ def new_version(uid):
         dst = get_resource_path(resource_new)
         Path(dst).parent.mkdir(parents=True, exist_ok=True)
         os.link(src, dst)
-
-    return h.redirect_to("dataset.read", id=base_name)
 
 
 def legacy_zip(uid):

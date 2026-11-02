@@ -43,6 +43,28 @@ def test_search_map_renders(page):
     assert page.query_selector(".leaflet-container") is not None
 
 
+@pytest.mark.xdist_group("browser")
+def test_organization_facet_filter_keeps_page(page):
+    """Clicking a module in the sidebar filters in place instead of blanking the page."""
+    token = Path("/tokens/api_token").read_text().strip()
+    tag = uuid.uuid4().hex[:8]
+    org, pkg = _create_public_dataset(token, tag)
+
+    page.context.clear_cookies()
+    page.goto(f"{BASE}/dataset/?q=name:{pkg['name']}", wait_until="domcontentloaded")
+    selector = f'#search-facets a[href*="organization={org["name"]}"]'
+    _wait_for(page, f"() => !!document.querySelector({selector!r})")
+    page.evaluate(f"() => document.querySelector({selector!r}).click()")
+    # The clicked module becomes an active facet in the OOB-swapped sidebar.
+    _wait_for(
+        page,
+        "() => [...document.querySelectorAll('#search-facets .nav-item.active .item-label')]"
+        ".some((el) => el.textContent.trim() === 'Download Org')",
+    )
+    assert page.evaluate("() => !!document.querySelector('body > .main')")
+    assert page.evaluate("() => document.querySelectorAll('.dataset-item').length") == 1
+
+
 def _feide_login(page):
     """Log in through Feide; the deployment offers no local login form."""
     page.context.clear_cookies()
@@ -98,6 +120,17 @@ def _api(action, token, **kwargs):
     body = resp.json()
     assert body.get("success"), f"{action} failed: {body}"
     return body["result"]
+
+
+def _wait_until_indexed(token, query, package_id, timeout=30):
+    """Poll package_search until the package surfaces; Solr indexes async."""
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        result = _api("package_search", token, q=query)
+        if any(item["id"] == package_id for item in result["results"]):
+            return
+        time.sleep(1)
+    raise TimeoutError(f"package {package_id} not indexed within {timeout}s")
 
 
 def _author_search(page):
@@ -291,7 +324,9 @@ def _create_public_dataset(token, tag, embargo=None):
     shown = _api("package_show", token, id=pkg["id"])
     shown["private"] = False
     _api("package_update", token, **shown)
-    return org, _api("package_show", token, id=pkg["id"])
+    shown = _api("package_show", token, id=pkg["id"])
+    _wait_until_indexed(token, f"name:{shown['name']}", shown["id"])
+    return org, shown
 
 
 def _ready(page):
