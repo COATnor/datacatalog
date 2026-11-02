@@ -18,7 +18,7 @@ def escape(text):
 @scheming.route("/scheming/api/util/<field>/autocomplete")
 def autocomplete(field):
     tags = []
-    value = toolkit.request.args.get("incomplete")
+    value = toolkit.request.args.get("incomplete", "")
     value = escape(value)
     if field == "dataset":
         dataset_type = toolkit.request.args.get("dataset_type")

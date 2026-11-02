@@ -29,6 +29,17 @@ then
     if [ -n "$TOKEN" ]; then
         echo "$TOKEN" > /tokens/api_token
     fi
+    # The API test suite authenticates as a regular (non-sysadmin) user.
+    # Local user registration via the API is blocked by the oauth2 plugin,
+    # so the user is created here via the CLI and its token written to the
+    # shared volume (consumed by the `client` fixture in tests/test_api.py).
+    ckan user add test_apiuser email=apiuser@uit.no \
+        password="TestPassword123!" fullname="Test API User" 2>/dev/null || true  # pragma: allowlist secret
+    USER_TOKEN=$(ckan user token add test_apiuser integration_test 2>&1 \
+        | grep -oE 'eyJ[A-Za-z0-9_.-]+' || true)
+    if [ -n "$USER_TOKEN" ]; then
+        echo "$USER_TOKEN" > /tokens/api_user_token
+    fi
 fi
 
 exec "$@"

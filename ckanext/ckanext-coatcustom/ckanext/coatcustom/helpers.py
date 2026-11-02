@@ -9,7 +9,6 @@ import yaml
 from ckanext.scheming.helpers import scheming_get_dataset_schema
 
 file_dir = Path(__file__).resolve().parent / "presets"
-_get_or_bust = logic.get_or_bust
 
 
 def data_dict_with_spatial(context, data_dict, old_location=None):
@@ -89,10 +88,6 @@ def scheming_dataset_choices(field, dataset_type="dataset"):
             "value": dataset["name"],
             "label": label,
         }
-
-
-def scheming_protocol_choices(field):
-    yield from scheming_dataset_choices(field, dataset_type="protocol")
 
 
 def scheming_author_choice(field):
@@ -240,16 +235,6 @@ def publishers_from_emails(emails):
             seen.add(code)
             codes.append(code)
     return ",".join(codes)
-
-
-def publishers_from_authors(author):
-    """Resolve an author list to the set of publisher short codes.
-
-    Emails are extracted via :func:`parse_authors` (handles usernames and
-    ``Name <email>`` tokens); unknown domains are skipped. Returns a
-    comma-separated string of unique codes.
-    """
-    return publishers_from_emails(author_emails(author))
 
 
 ANGLE_PATTERN = re.compile(

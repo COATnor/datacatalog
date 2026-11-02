@@ -1,0 +1,11 @@
+{#
+  CKAN 2.12 organization/group pages crash when package_search fails:
+  ckan/views/group.py sets query_error, but not search_facets, on SearchError.
+  organization/read.html and group/read.html still pass search_facets to this
+  snippet, and the stock facet_list calls search_facets.get(...), raising
+  UndefinedError and returning HTTP 500 for e.g. /organization/<org>?q=".
+  Default to an empty dict so the page renders (with empty facets) instead of
+  crashing. Remove this override once CKAN initializes search_facets on error.
+#}
+{% set search_facets = search_facets or {} %}
+{% ckan_extends %}

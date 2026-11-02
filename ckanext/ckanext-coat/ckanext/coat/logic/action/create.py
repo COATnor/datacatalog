@@ -9,7 +9,6 @@ from ckanext.coat.helpers import extras_dict, is_sysadmin
 allowed_characters = string.ascii_lowercase + string.digits + "-_"
 
 
-@toolkit.side_effect_free
 def package_create(context, data_dict):
     # parent dataset
     # https://github.com/aptivate/ckanext-datasetversions/issues/10
