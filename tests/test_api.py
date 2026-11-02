@@ -331,6 +331,11 @@ class TestPackageLifecycle:
         assert not resp.json()["success"]
         assert resp.status_code == 403
 
+    def test_mutations_not_callable_via_get(self, client, pkg):
+        resp = client.session.get(f"{client.api}/package_delete", params={"id": pkg["id"]})
+        assert resp.status_code == 400
+        assert client.action("package_show", id=pkg["id"])["state"] == "active"
+
 
 # ---------------------------------------------------------------------------
 # Draft
