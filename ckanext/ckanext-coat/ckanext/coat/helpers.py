@@ -29,17 +29,14 @@ def extras_dict(package):
 
 
 def new_context():
-    context = {
+    return {
         "model": model,
         "session": model.Session,
-        "user": g.user,
+        "user": getattr(g, "user", None),
+        "userobj": getattr(g, "userobj", None),
         "for_view": True,
-        "auth_user_obj": g.userobj,
+        "auth_user_obj": getattr(g, "userobj", None),
     }
-    for attr in ("user", "userobj"):
-        if hasattr(g, attr):
-            context[attr] = getattr(g, attr)
-    return context
 
 
 def get_package(obj, context=None):
