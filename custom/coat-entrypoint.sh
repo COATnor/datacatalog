@@ -100,6 +100,29 @@ conf_set ckanext.coat.custom_form false
 
 ckan db upgrade
 
+#ckanext-datastore
+conf_set_list ckan.plugins datastore datapusher
+conf_set ckan.datastore.write_url postgresql://ckan:${POSTGRES_PASSWORD}@db/ckan
+conf_set ckan.datastore.read_url postgresql://ckan:${POSTGRES_PASSWORD}@db/ckan
+conf_set ckan.datapusher.url "${CKAN_DATAPUSHER_URL:-http://datapusher:8800/}"
+conf_set ckan.datapusher.callback_url_base "${CKAN_DATAPUSHER_CALLBACK_URL:-http://ckan-test:5000/}"
+# DataPusher 2.10+ needs a valid API token; by default a dedicated sysadmin
+# bot is created at boot and its token injected into the config.
+if [ -n "${CKAN_DATAPUSHER_API_TOKEN:-}" ]
+then
+    conf_set ckan.datapusher.api_token "${CKAN_DATAPUSHER_API_TOKEN}"
+else
+    ckan user add datapusher_bot email=datapusher_bot@coat.no \
+        password="$(openssl rand -hex 16)" 2>/dev/null || true
+    ckan sysadmin add datapusher_bot 2>/dev/null || true
+    DP_TOKEN=$(ckan user token add datapusher_bot 2>&1 \
+        | grep -oE 'eyJ[A-Za-z0-9_.-]+' || true)
+    if [ -n "$DP_TOKEN" ]
+    then
+        conf_set ckan.datapusher.api_token "$DP_TOKEN"
+    fi
+fi
+
 crudini --set "$CKAN_INI" logger_ckanext level WARNING
 
 while ! wget -qO /dev/null "${CKAN_SOLR_URL}/admin/ping"; do

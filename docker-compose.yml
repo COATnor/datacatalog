@@ -40,6 +40,10 @@ x-common-ckan-env:
   DOI_PREFIX: ${DOI_PREFIX}
   DOI_ACCOUNT_NAME: ${DOI_ACCOUNT_NAME}
   DOI_ACCOUNT_PWD: ${DOI_ACCOUNT_PWD}
+  # DataStore / DataPusher
+  CKAN_DATAPUSHER_URL: ${CKAN_DATAPUSHER_URL:-}
+  CKAN_DATAPUSHER_CALLBACK_URL: ${CKAN_DATAPUSHER_CALLBACK_URL:-}
+  CKAN_DATAPUSHER_API_TOKEN: ${CKAN_DATAPUSHER_API_TOKEN:-}
   # Misc
   USERSPEC: ckan
 
@@ -156,6 +160,17 @@ services:
       default:
         aliases:
           - ckan-worker
+
+  datapusher:
+    image: ckan/ckan-base-datapusher:0.0.21
+    profiles:
+      - prod
+      - dev
+      - test
+    networks:
+      default:
+        aliases:
+          - datapusher
 
   test:
     profiles:
