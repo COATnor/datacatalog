@@ -1,5 +1,3 @@
-import json
-
 import ckan.plugins.toolkit as toolkit
 from ckan.lib.navl import validators as ckan_validators
 from ckan.logic import NotFound
@@ -19,16 +17,6 @@ def str_to_bool(value):
 
 def bool_to_str(value):
     return str(value)
-
-
-def commalist_to_json(value):
-    try:
-        return json.loads(value)
-    except TypeError, ValueError:
-        if isinstance(value, str):
-            return value.split(",")
-        else:
-            return value
 
 
 def select_parent_locations(selected_values, *, sep=" - "):
