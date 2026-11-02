@@ -1,8 +1,31 @@
 # DataStore ingestion — upgrade plan
 
-Status: implemented on branch `feat/datastore-ingest` (base 78b1bcb), verified
-on the local test stack. This document describes what changed, how to deploy
-it in production, and the known risks.
+Status: implemented on branch `feat/datastore-ingest` (base 78b1bcb). The
+original commit did not boot CKAN; the fixes in the follow-up commit
+`fix(datastore): make CKAN boot with datastore and datapusher enabled` are
+required. Boot with both plugins and the anonymous 403 embargo check are
+described under "Verification status" below. This document describes what
+changed, how to deploy it in production, and the known risks.
+
+## Verification status
+
+Verified (dev stack, rebuilt from this branch):
+- Image builds; `ckan-dev` boots healthy with `datastore` and `datapusher`
+  enabled, no DataStore or DataPusher configuration errors in the log.
+- `ckan-test` boots healthy with the same configuration (test profile).
+- `datastore_search` is served by CKAN; anonymous requests reach the action.
+- The `datastore_ro` role is non-superuser and password-authenticated.
+- Repo lint: `ruff check`, `ruff format --check` and `prek` hooks on the
+  changed files pass.
+
+Not verified:
+- Embargo: anonymous `datastore_search` on a private dataset's resource
+  returning 403. Creating datasets requires DataCite credentials, which are
+  not in the local `.env`, so this could not be exercised locally.
+- Full test suite (`tests/`). It fails for the same reason: 62 of the
+  dataset creations hit `Failed to generate a DOI`. The non-dataset tests pass.
+- DataPusher ingestion of a real CSV end to end and the backfill script
+  against real data.
 
 ## Background
 
@@ -28,15 +51,20 @@ strictly smaller diff.
 
 | File | Change |
 |---|---|
-| `custom/coat-entrypoint.sh` | Enables `datastore datapusher` plugins; sets `ckan.datastore.write_url`/`read_url` to the main CKAN Postgres; sets `ckan.datapusher.url` + `ckan.datapusher.callback_url_base`; mints an API token at boot for auto-created `datapusher_bot` sysadmin (or uses `CKAN_DATAPUSHER_API_TOKEN` if provided). |
+| `custom/coat-entrypoint.sh` | Creates a `datastore` database and a `datastore_ro` read-only role at boot, applies `ckan datastore set-permissions`, sets `ckan.datastore.write_url`/`read_url` to them; sets `ckan.datapusher.url` + `ckan.datapusher.callback_url_base`; mints an API token at boot for auto-created `datapusher_bot` sysadmin (or uses `CKAN_DATAPUSHER_API_TOKEN` if provided); enables `datastore datapusher` last. |
 | `docker-compose.yml` | New `datapusher` service (`ckan/ckan-base-datapusher:0.0.21`, port 8800 inside the network) + env passthrough `CKAN_DATAPUSHER_URL/CALLBACK_URL/API_TOKEN`. |
 | `template.env` | Three new (empty-by-default) DataStore/Datapusher vars with comments. |
 | `scripts/ingest_existing_resources.py` | Backfill tool (see below). |
 | `docs/datastore-ingestion-plan.md` | This document. |
 
 Notes
-- DataStore tables live in the same `ckan` Postgres database; no other
-  database, user or migration is needed (the `ckan` role owns the database).
+- DataStore tables live in a separate `datastore` database on the same
+  Postgres server. CKAN refuses to load the datastore plugin if the write and
+  read-only URLs are the same database or the read-only role can write, so
+  the entrypoint provisions `datastore` and `datastore_ro` on every boot
+  (idempotent). The `datastore_ro` password is regenerated per boot. The
+  write URL uses the `ckan` role, which is a Postgres superuser in the
+  compose setup, so the separation is by database, not by privilege.
 - DataPusher receives the API token in the job payload; it holds no secrets
   itself. `ckan.datapusher.api_token` is mandatory since CKAN 2.10 — hence
   the boot-time bot user.
@@ -112,13 +140,16 @@ cleanly.
 
 ## Risks & open questions
 
-- **Embargo/private datasets**: verified on the test stack — anonymous
-  `datastore_search` on a private dataset's resource returns 403 because
-  `datastore_auth` chains through `resource_show`. Because the embargo logic
-  is custom to this portal, keep the 403 check in the acceptance criteria of
-  any future datastore change (regression test exists on this branch? — the
-  verify worker's report records the live evidence; treat this as a manual
-  acceptance test until automatable).
+- **Embargo/private datasets**: NOT re-verified in the follow-up review. The
+  expected behaviour is that anonymous `datastore_search` on a private
+  dataset's resource returns 403 because `datastore_auth` chains through
+  `resource_show`. This must be checked on a stack with DataCite credentials
+  (see Verification status). Because the embargo logic is custom to this
+  portal, keep the 403 check in the acceptance criteria of any future
+  datastore change; it is a manual acceptance test until automated.
+- **DataCite credentials**: creating any dataset requires a DOI, so the test
+  suite and any manual dataset creation fail with 500 without
+  `DOI_ACCOUNT_NAME`/`DOI_ACCOUNT_PWD`/`DOI_PREFIX` in `.env`.
 - **`.txt`-but-actually-tabular**: the bulk of COAT tabular data lives in
   `.txt` files where comma/tab/space delimiters vary per dataset. The
   backfill treats txt as tabular, but `datastore_create`'s parser may guess
