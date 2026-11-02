@@ -101,13 +101,24 @@ conf_set ckanext.coat.custom_form false
 ckan db upgrade
 
 #ckanext-datastore
-conf_set_list ckan.plugins datastore datapusher
-conf_set ckan.datastore.write_url postgresql://ckan:${POSTGRES_PASSWORD}@db/ckan
-conf_set ckan.datastore.read_url postgresql://ckan:${POSTGRES_PASSWORD}@db/ckan
+# CKAN refuses to load the datastore plugin unless its tables live in a separate
+# database and the read-only URL is a role without write privileges. Both are
+# (re)provisioned idempotently at boot; the read-only password is per-boot.
+PG_ADMIN="postgresql://ckan:${POSTGRES_PASSWORD}@db"
+DS_RO_PASSWORD="$(openssl rand -hex 16)"
+psql "$PG_ADMIN/ckan" -qtAc "SELECT 1 FROM pg_database WHERE datname='datastore'" | grep -q 1 \
+    || psql "$PG_ADMIN/ckan" -qc "CREATE DATABASE datastore OWNER ckan"
+psql "$PG_ADMIN/ckan" -qc "DO \$\$ BEGIN CREATE ROLE datastore_ro; EXCEPTION WHEN duplicate_object THEN NULL; END \$\$"
+psql "$PG_ADMIN/ckan" -qc "ALTER ROLE datastore_ro LOGIN PASSWORD '$DS_RO_PASSWORD'"
+conf_set ckan.datastore.write_url "$PG_ADMIN/datastore"
+conf_set ckan.datastore.read_url "postgresql://datastore_ro:${DS_RO_PASSWORD}@db/datastore"
+ckan datastore set-permissions | psql "$PG_ADMIN/datastore" -qv ON_ERROR_STOP=1
 conf_set ckan.datapusher.url "${CKAN_DATAPUSHER_URL:-http://datapusher:8800/}"
-conf_set ckan.datapusher.callback_url_base "${CKAN_DATAPUSHER_CALLBACK_URL:-http://ckan-test:5000/}"
-# DataPusher 2.10+ needs a valid API token; by default a dedicated sysadmin
-# bot is created at boot and its token injected into the config.
+conf_set ckan.datapusher.callback_url_base "${CKAN_DATAPUSHER_CALLBACK_URL:-http://ckan:5000/}"
+# DataPusher 2.10+ needs a valid API token, and its plugin refuses to load
+# without one, so the token must be in place before the plugins are enabled
+# (any `ckan` CLI call would otherwise crash). A dedicated sysadmin bot is
+# created at boot unless CKAN_DATAPUSHER_API_TOKEN is provided.
 if [ -n "${CKAN_DATAPUSHER_API_TOKEN:-}" ]
 then
     conf_set ckan.datapusher.api_token "${CKAN_DATAPUSHER_API_TOKEN}"
@@ -115,13 +126,14 @@ else
     ckan user add datapusher_bot email=datapusher_bot@coat.no \
         password="$(openssl rand -hex 16)" 2>/dev/null || true
     ckan sysadmin add datapusher_bot 2>/dev/null || true
-    DP_TOKEN=$(ckan user token add datapusher_bot 2>&1 \
+    DP_TOKEN=$(ckan user token add datapusher_bot datapusher 2>&1 \
         | grep -oE 'eyJ[A-Za-z0-9_.-]+' || true)
     if [ -n "$DP_TOKEN" ]
     then
         conf_set ckan.datapusher.api_token "$DP_TOKEN"
     fi
 fi
+conf_set_list ckan.plugins datastore datapusher
 
 crudini --set "$CKAN_INI" logger_ckanext level WARNING
 
